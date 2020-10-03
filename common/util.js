@@ -1,6 +1,9 @@
 function toRadians(angle) {
     return angle * (Math.PI / 180);
 }
+function toDegrees(angle) {
+    return angle * (180 / Math.PI);
+}
 
 class Position {
     constructor(x, y) {
@@ -67,5 +70,14 @@ class Vector {
     add(pos) {
         pos.add(this.toPosition);
 
+    }
+
+    static fromXY(x, y) {
+        var vec = new Vector(0, 0);
+        vec.magnitude = Math.sqrt(x**2 + y**2);
+
+        vec.angle = toDegrees(Math.tan(y/x));
+
+        return vec;
     }
 }
