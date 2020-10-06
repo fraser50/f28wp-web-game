@@ -1,4 +1,5 @@
-var socket = io();
+var socketPath = window.location.pathname + "socket.io";
+var socket = io({path: socketPath});
 
 // Temporary variable to store the current level. Definitly change the way this works
 var currentLevel = new GameLevel();
