@@ -1,6 +1,8 @@
 class GameLevel {
     constructor() {
         this.gameobjects = [];
+        this.newobjects = []; // To allow the server to determine when it needs to send information about a new object to the client, and to allow the client to render new objects
+        this.removedObjects = [];
     }
 
     update() {
@@ -19,6 +21,7 @@ class GameLevel {
         for (let i=0; i<toremove; i++) {
             if (this.gameobjects.indexOf(this.toremove[i]) != -1) {
                 this.gameobjects.splice(this.gameobjects.indexOf(i));
+                this.removedObjects.push(this.toremove[i]);
             }
 
         }
@@ -26,6 +29,7 @@ class GameLevel {
 
     addObject(obj) {
         this.gameobjects.push(obj);
+        this.newobjects.push(obj);
     }
 
     removeObject(obj) {
