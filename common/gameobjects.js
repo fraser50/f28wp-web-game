@@ -17,7 +17,8 @@ class GameObject {
 }
 
 class Player extends GameObject {
-    constructor(pos, rotation, level) {
+    constructor(pos, rotation, level, velocity) {
         super(pos, rotation, level);
+        this.velocity = velocity;
     }
 }

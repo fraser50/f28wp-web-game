@@ -81,3 +81,7 @@ class Vector {
         return vec;
     }
 }
+
+function genChunkId(cx, cy) {
+    return cx.toString() + "," + cy.toString();
+}

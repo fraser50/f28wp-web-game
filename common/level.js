@@ -1,38 +1,58 @@
 class GameLevel {
-    constructor() {
-        this.gameobjects = [];
-        this.newobjects = []; // To allow the server to determine when it needs to send information about a new object to the client, and to allow the client to render new objects
-        this.removedobjects = [];
-    }
+	constructor() {
+		this.gameobjects = [];
+		this.newobjects = []; // To allow the server to determine when it needs to send information about a new object to the client, and to allow the client to render new objects
+		this.removedobjects = [];
 
-    update() {
-        for (let i=0; i<this.gameobjects.length; i++) {
-            var obj = this.gameobjects[i];
-            var toremove = [];
+		/* Each chunk is stored as an array of JSON objects with keys from their coordinates (e.g. "0,0")
+		Within each chunk, the tiles are also JSON objects, with the structure {id:0,layer:0,isTransition:false} */
+		this.newChunks = [];
+		this.chunks = {};
+	}
 
-            if (obj.removed) {
-                toremove.push(obj);
-                continue;
-            }
+	update() {
+		for (let i=0; i<this.gameobjects.length; i++) {
+			var obj = this.gameobjects[i];
+			var toremove = [];
 
-            this.gameobjects[i].update();
-        }
+			if (obj.removed) {
+				toremove.push(obj);
+				continue;
+			}
 
-        for (let i=0; i<toremove; i++) {
-            if (this.gameobjects.indexOf(this.toremove[i]) != -1) {
-                this.gameobjects.splice(this.gameobjects.indexOf(i));
-                this.removedobjects.push(this.toremove[i]);
-            }
+			this.gameobjects[i].update();
+		}
 
-        }
-    }
+		for (let i=0; i<toremove; i++) {
+			if (this.gameobjects.indexOf(this.toremove[i]) != -1) {
+				this.gameobjects.splice(this.gameobjects.indexOf(i));
+				this.removedobjects.push(this.toremove[i]);
+			}
 
-    addObject(obj) {
-        this.gameobjects.push(obj);
-        this.newobjects.push(obj);
-    }
+		}
 
-    removeObject(obj) {
-        obj.removed = true;
-    }
+		// Move all chunks from newChunks to chunks. This might have a purpose later
+		while (this.newChunks.length > 0) {
+			let currChunk = this.newChunks.pop();
+			this.chunks[currChunk.id] = currChunk.chunk;
+		}
+	}
+
+	addObject(obj) {
+		this.gameobjects.push(obj);
+		this.newobjects.push(obj);
+	}
+
+	removeObject(obj) {
+		obj.removed = true;
+	}
+
+
+	addChunk(id, chunk) {
+		this.newChunks.push({'id':id,'chunk':chunk});
+	}
+	clearChunks() {
+		this.newChunks = [];
+		this.chunks = {};
+	}
 }
