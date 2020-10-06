@@ -4,9 +4,22 @@
 
 var express = require('express');
 var app = express();
-var server = require('http').Server(app)
-var path = require('path')
+var server = require('http').Server(app);
+var path = require('path');
+var fs = require('fs');
 var io = require('socket.io')(server);
+
+// Use eval to import files from common
+var GameLevel = eval('(' + fs.readFileSync('../common/level.js') + ')');
+eval(fs.readFileSync('../common/util.js') + '');
+eval(fs.readFileSync('../common/gameobjects.js') + ''); // Probably broken
+
+// Create level for testing
+var level0 = new GameLevel();
+
+// Add an empty chunk to the level
+level0.addChunk(genChunkId(0, 0), new Array(16*16).fill({id:0,layer:0,isTransition:false}));
+level0.update();
 
 app.get('/',function(req, res) {
     res.sendFile(path.join(__dirname, '../client/WebDevGame.html'));
@@ -22,9 +35,11 @@ io.on('connection', (socket) => {
 		var data = JSON.parse(dataStr);
 		console.log("getchunk: " + dataStr);
 
-		var tempTiles = new Array(16*16).fill({id:0,layer:0,isTransition:false})
+		//var tempTiles = new Array(16*16).fill({id:0,layer:0,isTransition:false})
 
-		socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':tempTiles}));
+		//socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':tempTiles}));
+
+		socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':level0.chunks[genChunkId(data.x, data.y)]}));
 	});
 
 	socket.on('disconnect', () => {
