@@ -1,5 +1,7 @@
 class GameLevel {
-	constructor() {
+	constructor(id) {
+		this.id = id;
+
 		this.gameobjects = [];
 		this.newobjects = []; // To allow the server to determine when it needs to send information about a new object to the client, and to allow the client to render new objects
 		this.removedobjects = [];
@@ -31,10 +33,11 @@ class GameLevel {
 
 		}
 
-		// Move all chunks from newChunks to chunks. This might have a purpose later
+		// Move all chunks from newChunks to chunks ignoring undefined chunks
 		while (this.newChunks.length > 0) {
 			let currChunk = this.newChunks.pop();
-			this.chunks[currChunk.id] = currChunk.chunk;
+			if (currChunk.chunk != undefined)
+				this.chunks[currChunk.id] = currChunk.chunk;
 		}
 	}
 

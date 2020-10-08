@@ -1,2 +1,29 @@
 /* Static CSS for the main page */
 
+* {
+	padding: 0;
+	margin: 0;
+}
+
+div {
+	width: 100vw;
+	height: 100vh;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+img {
+	image-rendering: -moz-crisp-edges;
+	image-rendering: crisp-edges;
+}
+
+div#gamearea {
+	overflow: hidden;
+}
+div#gamearea div#world {
+	line-height: 0;
+}
+div#gamearea div#world img {
+	display: inline-block;
+}

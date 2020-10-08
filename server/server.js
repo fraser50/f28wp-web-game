@@ -14,11 +14,18 @@ var GameLevel = eval('(' + fs.readFileSync('../common/level.js') + ')');
 eval(fs.readFileSync('../common/util.js') + '');
 eval(fs.readFileSync('../common/gameobjects.js') + ''); // Probably broken
 
+var tilesFolder = "client/assets/images/tiles/";
+var blockTypes = {
+	0: {'src':tilesFolder+"dev_grey.png"},
+	1: {'src':tilesFolder+"dev_orange.png"}
+}
+
 // Create level for testing
-var level0 = new GameLevel();
+var level0 = new GameLevel(0);
 
 // Add an empty chunk to the level
 level0.addChunk(genChunkId(0, 0), new Array(16*16).fill({id:0,layer:0,isTransition:false}));
+level0.addChunk(genChunkId(1, 0), new Array(16*16).fill({id:1,layer:0,isTransition:false}));
 level0.update();
 
 app.get('/',function(req, res) {
@@ -40,6 +47,10 @@ io.on('connection', (socket) => {
 		//socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':tempTiles}));
 
 		socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':level0.chunks[genChunkId(data.x, data.y)]}));
+	});
+
+	socket.on('getblocktypes', () => {
+		socket.emit('getblocktypes', JSON.stringify(blockTypes));
 	});
 
 	socket.on('disconnect', () => {

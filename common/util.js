@@ -83,5 +83,14 @@ class Vector {
 }
 
 function genChunkId(cx, cy) {
-    return cx.toString() + "," + cy.toString();
+    return "c" + cx.toString() + "_" + cy.toString();
+}
+
+function fromChunkId(cId) {
+    var arr = cId.substr(1).split("_");
+    return [parseInt(arr[0]), parseInt(arr[1])];
+}
+
+function genTileImageId(t) {
+    return "t" + t.toString();
 }
