@@ -15,7 +15,7 @@ div {
 
 img {
 	image-rendering: -moz-crisp-edges;
-	image-rendering: crisp-edges;
+	image-rendering: pixelated;
 }
 
 div#gamearea {
