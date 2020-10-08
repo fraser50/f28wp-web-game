@@ -1,7 +1,8 @@
 // TODO: Write server
 // Might need to install node js
-// Install express, socket.io through npm
+// Install express, socket.io, colors through npm
 
+var colors = require('colors');
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
@@ -36,30 +37,79 @@ app.use('/common',express.static(path.join(__dirname, '/../common')));
 
 // Stuff for handling socket connections
 io.on('connection', (socket) => {
-	console.log("connection opened");
+	printLog("connection opened");
 
 	socket.on('getchunk', (dataStr) => {
 		var data = JSON.parse(dataStr);
-		console.log("getchunk: " + dataStr);
 
 		//var tempTiles = new Array(16*16).fill({id:0,layer:0,isTransition:false})
 
 		//socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':tempTiles}));
 
-		socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':level0.chunks[genChunkId(data.x, data.y)]}));
+		var tiles = level0.chunks[genChunkId(data.x, data.y)];
+
+		if (tiles != undefined) {
+			socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':tiles}));
+			printLog("getchunk: " + dataStr);
+		} else {
+			printLog("getchunk: " + dataStr + ` chunk ${data.x},${data.y} is undefined`, "warning");
+		}
 	});
 
 	socket.on('getblocktypes', () => {
 		socket.emit('getblocktypes', JSON.stringify(blockTypes));
+		printLog("getblocktypes");
 	});
 
 	socket.on('disconnect', () => {
-		console.log("connection closed");
+		printLog("connection closed");
 	});
 });
 
 //To run this, navigate to server folder in the command line. Enter "node server.js"
 //Go to browser enter localhost:2000 as url 
 
-server.listen(2000);      //Connect with port 2000
-console.log("Server started.");     //Send a log to console to confirm connection
+server.listen(2000);              //Connect with port 2000y
+printLog("Server started".green); //Send a log to console to confirm connection
+
+// Write to the console in a standard format with different levels (valid levels: warning, error, info (default))
+function printLog(text, level) {
+	var getTimeString = () => {
+		var makeLength = (input, l) => {
+			var inputStr = input.toString();
+			while (inputStr.length < l)
+				inputStr = '0' + inputStr;
+			return inputStr;
+		};
+
+		var date = new Date();
+
+		var yyyy = date.getFullYear();
+		var mm = makeLength(date.getMonth(), 2);
+		var dd = makeLength(date.getDate(), 2);
+
+		var hours = makeLength(date.getHours(), 2);
+		var mins = makeLength(date.getMinutes(), 2);
+		var secs = makeLength(date.getSeconds(), 2);
+		var millis = makeLength(Math.round(date.getMilliseconds()/10), 2);
+
+		return `${yyyy}-${mm}-${dd} ${hours}:${mins}:${secs}.${millis}`;
+	};
+
+	//var out = (new Date().toISOString()).magenta + " [".grey;
+	//var out = ((new Date(new Date() + new Date().getTimezoneOffset())).toISOString()).magenta + " [".grey;
+	var out = getTimeString().magenta + " [".grey;
+	switch(level) {
+		case "error":
+			out += "ERROR".red + "] ".gray + text.red;
+			break;
+		case "warning":
+			out += "WARN".yellow + "] ".gray + text.yellow;
+			break;
+		case "info":
+		default:
+			out += "INFO".white + "] ".gray + text.white;
+			break;
+	}
+	console.log(out);
+}

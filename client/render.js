@@ -80,9 +80,10 @@ function render(level) {
 
 }
 
-// Move this somewhere else
+// TODO: move this somewhere else
 var zoomLevel = 4*16;
 
+// Image size is currently hard coded as 16x16, TODO: make the images scale properly
 function createWorld(level) {
 	var keys = Object.keys(level.chunks);
 	for (var i=0; i<keys.length; i++) {
