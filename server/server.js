@@ -124,7 +124,7 @@ function printLog(text, level) {
 			break;
 		case "info":
 		default:
-			out += "INFO".white + "] ".gray + text.white;
+			out += "INFO".white + "] ".gray + text;
 			break;
 	}
 	console.log(out);
