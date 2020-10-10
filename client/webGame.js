@@ -51,6 +51,7 @@ socket.on('getchunk', (dataStr) => {
 // Function to test the loading and rendering of chunks
 function test() {
 	loadChunk(0,0);
+	loadChunk(1,0);
 	setTimeout(() => {
 		currentLevel.update();
 		createWorld(currentLevel);

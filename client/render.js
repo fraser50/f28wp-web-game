@@ -80,8 +80,11 @@ function render(level) {
 
 }
 
+var texSize = 16;
 // TODO: move this somewhere else
-var zoomLevel = 4*16;
+var zoomLevel = 4*texSize;
+
+var chunkSize = 16;
 
 // Image size is currently hard coded as 16x16, TODO: make the images scale properly
 function createWorld(level) {
@@ -99,20 +102,20 @@ function createWorld(level) {
 		var chunkElem = document.createElement("div");
 		chunkElem.id = keys[i];
 
-		chunkElem.style.width = (zoomLevel*16).toString() + "px";
-		chunkElem.style.height = (zoomLevel*16).toString() + "px";
+		chunkElem.style.width = (zoomLevel*chunkSize).toString() + "px";
+		chunkElem.style.height = (zoomLevel*chunkSize).toString() + "px";
 
-		for (var t=0; t<16*16; t++) {
+		var chunkPos = fromChunkId(keys[i]);
+		chunkElem.style.left = (zoomLevel*chunkSize)*chunkPos[0] + "px";
+		chunkElem.style.top = (zoomLevel*chunkSize)*chunkPos[1] + "px";
+
+		for (var t=0; t<chunkSize**2; t++) {
 			var tile = chunk[t];
 
 			var tileElem = document.createElement("img");
 			tileElem.id = genTileImageId(t);
 
 			tileElem.src = blockTypes[tile.id].src;
-
-			// tileElem.style.position = "relative";
-			// tileElem.style.left = ((t % 16) * zoomLevel).toString() + "px";
-			// tileElem.style.top = (Math.floor(t/16) * zoomLevel).toString() + "px";
 
 			tileElem.width = zoomLevel;
 			tileElem.height = zoomLevel;
