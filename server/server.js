@@ -72,6 +72,22 @@ io.on('connection', (socket) => {
 server.listen(2000);              //Connect with port 2000y
 printLog("Server started".green); //Send a log to console to confirm connection
 
+//game loop for server
+const FPS = 60;
+var gameObjectsList = {};
+
+function urGameObjects() {
+	for (let i in gameObjectsList) {
+		var tempObject = gameObjectsList[i];
+		tempObject.update();
+		tempObject.render();
+	}
+}
+
+setInterval(urGameObjects, 1000/FPS);
+
+
+
 // Write to the console in a standard format with different levels (valid levels: warning, error, info (default))
 function printLog(text, level) {
 	var getTimeString = () => {
@@ -114,16 +130,4 @@ function printLog(text, level) {
 	console.log(out);
 }
 
-//game loop for server
-const FPS = 60;
-var gameObjectsList = {};
-
-function urGameObjects() {
-	for (let i in gameObjectsList) {
-		var tempObject = gameObjectsList[i];
-		tempObject.update();
-		tempObject.render();
-	}
-}
-
-setInterval(urGameObjects(), 1000/FPS);
+// Only put other util stuff here
