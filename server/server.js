@@ -95,6 +95,8 @@ function printLog(text, level) {
 			var inputStr = input.toString();
 			while (inputStr.length < l)
 				inputStr = '0' + inputStr;
+			while (inputStr.length > l)
+				inputStr = Math.round(parseInt(inputStr)/10).toString();
 			return inputStr;
 		};
 
