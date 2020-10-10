@@ -113,3 +113,17 @@ function printLog(text, level) {
 	}
 	console.log(out);
 }
+
+//game loop for server
+const FPS = 60;
+var gameObjectsList = {};
+
+function urGameObjects() {
+	for (let i in gameObjectsList) {
+		var tempObject = gameObjectsList[i];
+		tempObject.update();
+		tempObject.render();
+	}
+}
+
+setInterval(urGameObjects(), 1000/FPS);
