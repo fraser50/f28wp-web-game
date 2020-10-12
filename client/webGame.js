@@ -17,6 +17,7 @@ world.id = "world";
 var objects = document.createElement("div");
 objects.id = "objects";
 
+
 // Add the elements to the page when it finishes loading
 window.addEventListener("load", () => {
 	socket.emit('getblocktypes');
@@ -26,6 +27,18 @@ window.addEventListener("load", () => {
 	gamearea.appendChild(ui);
 	gamearea.appendChild(world);
 	gamearea.appendChild(objects);
+	
+
+//	testData = {
+//			user: "testUser2",
+//			pass: "testPass2"
+//	};
+//
+//	socket.emit('addUser', testData);
+//
+//	socket.on('addUser', (data) => {		//THIS IS COOL TEST STUFF (FOR SIGN UP/ LOG IN/ GUEST)
+//		alert(data.message);
+//	});
 });
 
 socket.on('getblocktypes', (dataStr) => {

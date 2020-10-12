@@ -9,6 +9,9 @@ var server = require('http').Server(app);
 var path = require('path');
 var fs = require('fs');
 var io = require('socket.io')(server);
+var sqlite3 = require('sqlite3').verbose();
+var dbfilePath = './users.db';
+
 
 // Use eval to import files from common
 var GameLevel = eval('(' + fs.readFileSync('../common/level.js') + ')');
@@ -60,6 +63,36 @@ io.on('connection', (socket) => {
 		socket.emit('getblocktypes', JSON.stringify(blockTypes));
 		printLog("getblocktypes");
 	});
+	
+	socket.on('addUser', (data) => {			//Listens for addUser requests
+		var returnPack = {			//Create a package to return the users id and a message
+			userId : "",
+			message : ""
+		};
+		addUser(data.user, data.pass, returnPack);		//Call the addUser method
+		setTimeout(() => {socket.emit('addUser', returnPack)}, 50);		//Give addUser time to complete, emit 'addUser' pack with the returnPack as the data
+		printLog("addUser");
+	});
+	
+	socket.on('login', (data) => {				//Listens for login requests
+		var returnPack = {			//Create a package to return the users id and a message
+			userId : "",
+			message : ""
+		};
+		login(data.user, data.pass, returnPack);
+		setTimeout(() => {socket.emit('login', returnPack)}, 50);
+		printLog("login");
+	});
+	
+	socket.on('guest', () => {				//Listens for guest login requests
+		var returnPack = {			//Create a package to return the users id and a message
+			userId : "",
+			message : ""
+		};
+		guest(returnPack);
+		setTimeout(() => {socket.emit('guest', returnPack)}, 50);
+		printLog("guest");
+	})
 
 	socket.on('disconnect', () => {
 		printLog("connection closed");
@@ -85,6 +118,95 @@ function urGameObjects() {
 }
 
 setInterval(urGameObjects, 1000/FPS);
+
+//Create db to store player info
+
+var dbExists = fs.existsSync(dbfilePath);
+
+if (!dbExists) {
+	fs.openSync(dbfilePath, 'w');
+}
+
+var db = new sqlite3.Database(dbfilePath, function(err) {
+	if(err) {
+		return printLog(err);
+	}
+	printLog('Connected to DB');
+});
+
+//Initialize user database if not created already
+createDatabase();
+
+function createDatabase() {
+	db.run('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, pass TEXT, wins INTEGER, kills INTEGER, totalPoints INTEGER);', function(err){
+		if (err)
+			return printLog(err.message);
+		printLog('Table created');
+	});
+}
+
+function addUser(user, pass, returnPack) {		//Might want to return user id on success
+	var found = findMatch(user);		//Store true or undefined in the found variable for whether there is a match with the given username and an account already stored in the db
+	setTimeout(() => {addToDb(user, pass, returnPack, found)}, 10);		//Give the findMatch some time to complete, call the addToDb method to manipulate the returnPack based on conditions
+	function addToDb(user, pass, returnPack, found) {
+		if (!(found)) {			//If there isnt a match for the entered username in the database
+			db.run('INSERT INTO users(user, pass) VALUES(?, ?)', [user, pass], (err) => {		// add username and password to the database
+				if (err) {		//Error handling
+					printLog(err.message, returnPack);
+					returnPack.message = "Sorry, there was an error in creating your account, please try again.";
+					returnPack.userId = "";
+				} else {
+					printLog("Added " + user + " to database");	
+					returnPack.message = "Welcome, " + user + " your account has been created.";
+					returnPack.userId = db.run('SELECT id FROM users WHERE user = ?', (user));		//Modify the returnPack to tell user the account has been created
+				}
+			});
+		} else {
+			printLog("found match")		//If there is already an account in the db with the given username
+			returnPack.message = "Account name " + user + " is already taken, please choose another.";	//Modify the returnPack to tell the user so
+			returnPack.userId = "";
+		}
+	}
+	
+	function findMatch(user) {
+		db.each('SELECT user FROM users',(err, row) => {		// Loops through each entry in the table, looking for an account that already has the entered name
+			if (err)
+				printLog(err.message);
+			if (row.user == user)		// If one is found, set found to true
+				found = true;
+		});
+	}
+}
+
+function login(user, pass, returnPack) {
+	var found = false;
+	db.each('SELECT user, pass, id FROM users',
+			(err, row) => {
+				if (err)
+					printLog(err.message);
+				if (row.user == user && row.pass == pass) {		//Find an entry that matches user and pass, return player id and welcome message
+					returnPack.message = "Welcome, " + user + ".";
+					returnPack.userId = db.run('SELECT id FROM users WHERE user = ?', (user));
+					found = true;
+				};
+				if (found == false) {
+					returnPack.message = "The details you have entered were incorrect, please try again.";
+					returnPack.userId = "";
+				};
+			});
+	
+}
+
+// TODO When guest disconnects, remove record from db
+function guest(returnPack) {
+	var rand = Math.floor(Math.random() * (10000 - 1000) + 1000);	//Creates a random id in the range 1000-10000
+	db.run('INSERT INTO users(id) VALUES(?)', [rand], function(err) {
+		if (err)
+			printLog(err.message);
+		returnPack.message = "Welcome, Guest " + rand;
+		returnPack.userId = rand;
+	});
+}
 
 
 
