@@ -82,7 +82,7 @@ function test() {
 	testLabel = new UiLabel("testlabel", 5, 5, "tl", "asdf", "16px monospace");
 	testLabel2 = new UiLabel("testlabel2", 5, 5, "tr", "tr test", "16px monospace");
 	testLabel3 = new UiLabel("testlabel2", 5, 5, "bl", "bottom text", "16px Impact");
-	testButton = new UiButton("testbutton", 5, 5, "br", null, null, "Hide window", "15px sans-serif", () => {testWindow.hide()});
+	testButton = new UiButton("testbutton", 5, 5, "br", null, null, "Hide window for 2s", "15px sans-serif", () => {testWindow.hide(); setTimeout(() => {testWindow.show()}, 2000)});
 
 	testWindow.addObject(testLabel);
 	testWindow.addObject(testLabel2);
