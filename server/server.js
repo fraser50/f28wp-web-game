@@ -138,7 +138,7 @@ var db = new sqlite3.Database(dbfilePath, function(err) {
 createDatabase();
 
 function createDatabase() {
-	db.run('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, pass TEXT, wins INTEGER, kills INTEGER, totalPoints INTEGER);', function(err){
+	db.run('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT UNIQUE, pass TEXT, wins INTEGER, kills INTEGER, totalPoints INTEGER);', function(err){
 		if (err)
 			return printLog(err.message);
 		printLog('Table created');
@@ -180,20 +180,19 @@ function addUser(user, pass, returnPack) {		//Might want to return user id on su
 
 function login(user, pass, returnPack) {
 	var found = false;
-	db.each('SELECT user, pass, id FROM users',
-			(err, row) => {
-				if (err)
-					printLog(err.message);
-				if (row.user == user && row.pass == pass) {		//Find an entry that matches user and pass, return player id and welcome message
-					returnPack.message = "Welcome, " + user + ".";
-					returnPack.userId = db.run('SELECT id FROM users WHERE user = ?', (user));
-					found = true;
-				};
-				if (found == false) {
-					returnPack.message = "The details you have entered were incorrect, please try again.";
-					returnPack.userId = "";
-				};
-			});
+
+	returnPack.message = "The details you have entered were incorrect, please try again.";
+	returnPack.userId = "";
+
+	db.each('SELECT id, user FROM users WHERE user=? AND pass=?', [user, pass], (err, row) => {
+		if (err) {
+			printLog(err.message);
+			return;
+		} else {
+			returnPack.message = "Welcome, " + user + ".";
+			returnPack.userId = id;
+		}
+	});
 	
 }
 
