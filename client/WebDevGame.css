@@ -36,6 +36,7 @@ div#ui {
 }
 div#ui .uiWindow {
 	background-color: #0008;
+	color: white;
 }
 div#ui .uiWindow * {
 	position: absolute;

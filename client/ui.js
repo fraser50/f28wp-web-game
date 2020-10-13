@@ -1,5 +1,20 @@
+/*
+	Everything to to with the UI should be in this file
+
+	Some general stuff about UI objects:
+	  • The id parameter is not strictly necessary, but help when looking at the html code in a browser
+	  • The align parameter must be one of:
+	      - "tl" - Top left
+	      - "bl" - Bottom left
+	      - "tr" - Top right
+	      - "br" - Bottom right
+	  • The create() function is to set things specific to that type of element; it should always be overridden
+*/
+
 class UiElement {
 	constructor(elemType, id, x, y, align) {
+		if (new.target === UiElement) throw TypeError("Cannot instantiate UiElement class");
+
 		this.elemType = elemType;
 		this.id = id;
 		this.x = x;
@@ -38,8 +53,15 @@ class UiWindow {
 
 		object.elem = objElem;
 
-		object.elem.style.left = object.x + "px";
-		object.elem.style.top = object.y + "px";
+		if (object.align.substr(1) == "l") // If aligned to left
+			object.style.left = object.x + "px";
+		else // Assume not "l" means align to right
+			object.style.left = `calc(100% - ${object.x}px - ${object.w}px)`;
+
+		if (object.align.substr(0, 1) == "t") // If aligned to top
+			object.style.top = object.y + "px";
+		else // Assume not "t" means align to bottom
+			object.style.top = `calc(100% - ${object.y}px - ${object.h}px)`;
 
 		object.create();
 	}

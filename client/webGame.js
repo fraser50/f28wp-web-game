@@ -81,7 +81,7 @@ function test() {
 	testLabel.updateValue("yeetus"); // Try updating the value after it has been added to the page
 }
 
-// Run the test 200ms after the page loads
+// Run the chunk test 200ms after the page loads
 window.addEventListener("load", () => {
 	setTimeout(test, 200);
 });
