@@ -53,15 +53,16 @@ class UiWindow {
 
 		object.elem = objElem;
 
+		// Set the position of the element, using the alignment
 		if (object.align.substr(1) == "l") // If aligned to left
-			object.style.left = object.x + "px";
+			objElem.style.left = object.x + "px";
 		else // Assume not "l" means align to right
-			object.style.left = `calc(100% - ${object.x}px - ${object.w}px)`;
+			objElem.style.left = `calc(100% - ${object.x}px - ${object.w}px)`;
 
 		if (object.align.substr(0, 1) == "t") // If aligned to top
-			object.style.top = object.y + "px";
+			objElem.style.top = object.y + "px";
 		else // Assume not "t" means align to bottom
-			object.style.top = `calc(100% - ${object.y}px - ${object.h}px)`;
+			objElem.style.top = `calc(100% - ${object.y}px - ${object.h}px)`;
 
 		object.create();
 	}
