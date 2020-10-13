@@ -61,14 +61,24 @@ socket.on('getchunk', (dataStr) => {
 
 
 
-// Function to test the loading and rendering of chunks
+// Function to test the loading and rendering of chunks and UI elements
 function test() {
+	// Chunk tests
 	loadChunk(0,0);
 	loadChunk(1,0);
 	setTimeout(() => {
 		currentLevel.update();
 		createWorld(currentLevel);
 	}, 1000);
+
+	// UI tests
+	var testWindow = new UiWindow("testwindow", 20, 20, "bl", 400, 250);
+	var testLabel = new UiLabel("testlabel", 5, 5, "tl", "asdf", "16px monospace");
+
+	testWindow.addObject(testLabel);
+	testWindow.addToPage();
+
+	testLabel.updateValue("yeetus"); // Try updating the value after it has been added to the page
 }
 
 // Run the test 200ms after the page loads

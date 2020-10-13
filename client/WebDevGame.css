@@ -30,3 +30,13 @@ div#gamearea div#world div {
 div#gamearea div#world img {
 	display: inline-block;
 }
+
+div#ui {
+	z-index: 10000;
+}
+div#ui .uiWindow {
+	background-color: #0008;
+}
+div#ui .uiWindow * {
+	position: absolute;
+}
