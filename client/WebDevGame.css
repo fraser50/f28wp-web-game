@@ -42,6 +42,7 @@ div#ui .uiWindow {
 }
 div#ui .uiWindow * {
 	position: absolute;
+	box-sizing: border-box;
 }
 div#ui .uiWindow .uiButton {
 	cursor: pointer;
@@ -51,5 +52,13 @@ div#ui .uiWindow .uiButton {
 	color: white;
 }
 div#ui .uiWindow .uiButton:hover {
-	box-shadow: 0 0 5px #fff8;
+	/* box-shadow: 0 0 5px #fff8; */
+	background-color: #fff3;
+}
+
+div#ui .uiWindow .uiTextInput {
+	padding: 4px 5px;
+	border: 1px solid #ddd;
+	background-color: transparent;
+	color: white;
 }

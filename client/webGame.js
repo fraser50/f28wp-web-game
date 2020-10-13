@@ -67,6 +67,9 @@ var testLabel2;
 var testLabel3;
 var testButton;
 
+var testWindow2;
+var testInput;
+
 // Function to test the loading and rendering of chunks and UI elements
 function test() {
 	// Chunk tests
@@ -91,6 +94,14 @@ function test() {
 	testWindow.addToPage();
 
 	testLabel.updateValue("yeetus"); // Try updating the value after it has been added to the page
+
+	testWindow2 = new UiWindow("testwindow2", 20, 20, "tr", 400, 100);
+	testInput = new UiTextInput("testinput", 5, 5, "bl", 345, 90, "thingy");
+	testButton2 = new UiButton("testbutton2", 5, 5, "br", 40, null, "Send", "15px sans-serif", () => {alert(testInput.getValue()); testInput.clear()});
+
+	testWindow2.addObject(testInput);
+	testWindow2.addObject(testButton2);
+	testWindow2.addToPage();
 }
 
 // Run the tests 200ms after the page loads

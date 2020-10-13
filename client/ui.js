@@ -159,3 +159,35 @@ class UiButton extends UiElement {
 		this.elem.addEventListener("click", this.callback);
 	}
 }
+
+class UiTextInput extends UiElement {
+	constructor(id, x, y, align, w, h, placeholder) {
+		super("input", id, x, y, align);
+
+		this.w = w;
+		this.h = h;
+		this.placeholder = placeholder;
+	}
+
+	create() {
+		this.elem.className = "uiTextInput";
+
+		this.elem.placeholder = this.placeholder;
+		console.log(this.w, this.h);
+		this.elem.style.width = this.w + "px";
+	}
+
+	getValue() {
+		return this.elem.value;
+	}
+
+	clear() {
+		this.elem.value = "";
+	}
+
+	pop() {
+		var val = this.getValue();
+		this.clear();
+		return val;
+	}
+}
