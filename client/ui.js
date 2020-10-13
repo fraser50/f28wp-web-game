@@ -45,26 +45,23 @@ class UiWindow {
 	addObject(object) {
 		this.objects.push(object);
 
-		//if (object.class == undefined || object.class == null) throw `Tried to render UI element with invalid class "${object.class}"`;
-
 		var objElem = document.createElement(object.elemType);
-		//objElem.className = object.class;
 		objElem.id = object.id;
 
 		object.elem = objElem;
+
+		object.create();
 
 		// Set the position of the element, using the alignment
 		if (object.align.substr(1) == "l") // If aligned to left
 			objElem.style.left = object.x + "px";
 		else // Assume not "l" means align to right
-			objElem.style.left = `calc(100% - ${object.x}px - ${object.w}px)`;
+			objElem.style.right = object.x + "px";
 
 		if (object.align.substr(0, 1) == "t") // If aligned to top
 			objElem.style.top = object.y + "px";
 		else // Assume not "t" means align to bottom
-			objElem.style.top = `calc(100% - ${object.y}px - ${object.h}px)`;
-
-		object.create();
+			objElem.style.bottom = object.y + "px";
 	}
 
 	addToPage() {
@@ -102,6 +99,14 @@ class UiWindow {
 
 		this.win = win;
 	}
+
+	hide() {
+		this.win.style.display = "none";
+	}
+
+	show() {
+		this.win.style.display = "block";
+	}
 }
 
 class UiLabel extends UiElement {
@@ -120,7 +125,37 @@ class UiLabel extends UiElement {
 	}
 
 	create() {
+		this.elem.className = "uiLabel";
+
 		this.elem.style.font = this.font;
 		this.elem.innerText = this.text.toString();
+	}
+}
+
+class UiButton extends UiElement {
+	constructor(id, x, y, align, w, h, text, font, callback) {
+		super("button", id, x, y, align);
+
+		this.w = w;
+		this.y = y;
+		this.text = text;
+		this.font = font;
+
+		this.callback = callback;
+	}
+
+	updateValue(newValue) {
+		this.text = newValue.toString();
+
+		if (this.elem == undefined) return;
+		this.elem.innerText = newValue.toString();
+	}
+
+	create() {
+		this.elem.className = "uiButton";
+
+		this.elem.innerText = this.text.toString();
+
+		this.elem.addEventListener("click", this.callback);
 	}
 }

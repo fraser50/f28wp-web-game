@@ -60,6 +60,12 @@ socket.on('getchunk', (dataStr) => {
 });
 
 
+// Test variables (global to allow modification from the console)
+var testWindow;
+var testLabel;
+var testLabel2;
+var testLabel3;
+var testButton;
 
 // Function to test the loading and rendering of chunks and UI elements
 function test() {
@@ -72,16 +78,22 @@ function test() {
 	}, 1000);
 
 	// UI tests
-	var testWindow = new UiWindow("testwindow", 20, 20, "bl", 400, 250);
-	var testLabel = new UiLabel("testlabel", 5, 5, "tl", "asdf", "16px monospace");
+	testWindow = new UiWindow("testwindow", 20, 20, "bl", 400, 250);
+	testLabel = new UiLabel("testlabel", 5, 5, "tl", "asdf", "16px monospace");
+	testLabel2 = new UiLabel("testlabel2", 5, 5, "tr", "tr test", "16px monospace");
+	testLabel3 = new UiLabel("testlabel2", 5, 5, "bl", "bottom text", "16px Impact");
+	testButton = new UiButton("testbutton", 5, 5, "br", null, null, "Hide window", "15px sans-serif", () => {testWindow.hide()});
 
 	testWindow.addObject(testLabel);
+	testWindow.addObject(testLabel2);
+	testWindow.addObject(testLabel3);
+	testWindow.addObject(testButton);
 	testWindow.addToPage();
 
 	testLabel.updateValue("yeetus"); // Try updating the value after it has been added to the page
 }
 
-// Run the chunk test 200ms after the page loads
+// Run the tests 200ms after the page loads
 window.addEventListener("load", () => {
 	setTimeout(test, 200);
 });

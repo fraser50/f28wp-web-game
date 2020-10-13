@@ -31,6 +31,8 @@ div#gamearea div#world img {
 	display: inline-block;
 }
 
+/* Static CSS for UI elements */
+
 div#ui {
 	z-index: 10000;
 }
@@ -40,4 +42,14 @@ div#ui .uiWindow {
 }
 div#ui .uiWindow * {
 	position: absolute;
+}
+div#ui .uiWindow .uiButton {
+	cursor: pointer;
+	padding: 4px 5px;
+	border: 1px solid #ddd;
+	background-color: transparent;
+	color: white;
+}
+div#ui .uiWindow .uiButton:hover {
+	box-shadow: 0 0 5px #fff8;
 }
