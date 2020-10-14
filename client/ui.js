@@ -62,6 +62,12 @@ class UiWindow {
 			objElem.style.top = object.y + "px";
 		else // Assume not "t" means align to bottom
 			objElem.style.bottom = object.y + "px";
+
+		// Set the size of the element
+		if (object.w != undefined)
+			objElem.style.width = object.w + "px";
+		if (object.h != undefined)
+			objElem.style.height = object.h + "px";
 	}
 
 	addToPage() {
@@ -173,8 +179,6 @@ class UiTextInput extends UiElement {
 		this.elem.className = "uiTextInput";
 
 		this.elem.placeholder = this.placeholder;
-		console.log(this.w, this.h);
-		this.elem.style.width = this.w + "px";
 	}
 
 	getValue() {

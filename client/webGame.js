@@ -96,7 +96,7 @@ function test() {
 	testLabel.updateValue("yeetus"); // Try updating the value after it has been added to the page
 
 	testWindow2 = new UiWindow("testwindow2", 20, 20, "tr", 400, 100);
-	testInput = new UiTextInput("testinput", 5, 5, "bl", 345, 90, "thingy");
+	testInput = new UiTextInput("testinput", 5, 5, "bl", 345, null, "thingy");
 	testButton2 = new UiButton("testbutton2", 5, 5, "br", 40, null, "Send", "15px sans-serif", () => {alert(testInput.getValue()); testInput.clear()});
 
 	testWindow2.addObject(testInput);
