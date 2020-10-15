@@ -176,8 +176,6 @@ function addUser(user, pass, returnPack) {		//Might want to return user id on su
 }
 
 function login(user, pass, returnPack) {
-	var found = false;
-
 	returnPack.message = "The details you have entered were incorrect, please try again.";
 	returnPack.userId = "";
 
@@ -186,8 +184,8 @@ function login(user, pass, returnPack) {
 			printLog(err.message);
 			return;
 		} else {
-			returnPack.message = "Welcome, " + user + ".";
-			returnPack.userId = id;
+			returnPack.message = "Welcome, " + row.user + ".";
+			returnPack.userId = row.id;
 		}
 	});
 	
