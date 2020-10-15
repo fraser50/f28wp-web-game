@@ -102,19 +102,17 @@ io.on('connection', (socket) => {
 server.listen(2000);              //Connect with port 2000y
 printLog("Server started".green); //Send a log to console to confirm connection
 
-//game loop for server
-const FPS = 60;
-var gameObjectsList = {};
-
-function urGameObjects() {
-	for (let i in gameObjectsList) {
-		var tempObject = gameObjectsList[i];
-		tempObject.update();
-		tempObject.render();
+//create new game and start game loop.
+function newGame(gameId) { //game id so multiple games can run?
+	var gameLevel = new GameLevel(gameId)
+	const FPS = 60;
+	
+	while(gameLevel.isRunning) {
+		setInterval(gameLevel.update(), 1000/FPS);
 	}
 }
 
-setInterval(urGameObjects, 1000/FPS);
+
 
 //Create db to store player info
 
