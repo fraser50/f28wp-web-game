@@ -121,15 +121,12 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('disconnect', () => {
-		console.info(loggedInUsers, guests);
 		if (socket.isGuest)
 			delete guests[socket.guestId];
 		if (loggedInUsers[socket.id] != undefined) {
 			printLog(`Logged out user ${loggedInUsers[socket.id]}`);
 		}
 		delete loggedInUsers[socket.id];
-
-		console.info(loggedInUsers, guests);
 
 		printLog(`Connection closed (id: ${socket.id})`);
 	});
@@ -283,11 +280,8 @@ function guest(returnPack, socket) {
 		socket.isGuest = true;
 		socket.guestId = rand;
 
-		console.info(returnPack, rand);
-
 		socket.emit('guest', returnPack);
 		loggedInUsers[socket.id] = genGuestName(returnPack.userId);
-		console.info("after", returnPack);
 		printLog("guest Id: "+returnPack.userId);
 	});
 }
