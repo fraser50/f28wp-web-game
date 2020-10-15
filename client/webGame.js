@@ -33,6 +33,8 @@ window.addEventListener("load", () => {
 	gamearea.appendChild(world);
 	gamearea.appendChild(objects);
 
+	// Login window
+
 	var loginWindow = new UiWindow("logsignform", 0, 0, "cc", 300, 355);
 
 	loginWindow.addObject(new UiLabel("", 20, 20, "tl", "Please enter your username", "16px sans-serif"));
@@ -114,6 +116,56 @@ window.addEventListener("load", () => {
 	logActivateWindow.addObject(loginActivateButton);
 	logActivateWindow.addToPage();
 
+	// Chat window
+
+	var chatWindow = new UiWindow("chatWindow", 20, 20, "tr", 400, 150);
+
+	var chatScrollContainer = new UiScrollContainer("chatScrollContainer", 5, 5, "tl", 390, 110, true);
+	chatWindow.addObject(chatScrollContainer);
+
+	var chatInput = new UiTextInput("chatInput", 5, 5, "bl", 345, null, "Chat");
+	chatWindow.addObject(chatInput);
+
+	var maxMessages = 10;
+
+	chatSendButton = new UiButton("chatSendButton", 5, 5, "br", 40, null, "Send", "", () => {
+		var message = chatInput.pop().substr(0, 200); // Limit the message length to 200 characters
+		if (message.length == 0) return;
+		var label = new UiLabel("", 0, 0, "s", "<" + userDetails.name + "> " + message, "14px sans-serif");
+		if (!userDetails.loginSuccess) {
+			label.updateValue("Not logged in");
+			label.updateColor("red");
+		} else {
+			socket.emit('chatmessage', {'level':currentLevel.id, 'user':userDetails.name, 'message':message});
+		}
+		var elem = chatScrollContainer.elem;
+		chatScrollContainer.addObject(label);
+		elem.scrollTo(0, elem.scrollHeight);
+		while (elem.childElementCount > maxMessages)
+			elem.removeChild(elem.childNodes[0]);
+	});
+	chatWindow.addObject(chatSendButton);
+
+	chatWindow.addToPage();
+
+	socket.on('chatmessage', (data) => {
+		if (data.level != currentLevel.id) return;
+		var label = new UiLabel("", 0, 0, "s", "<" + data.user + "> " + data.message, "14px sans-serif");
+		var elem = chatScrollContainer.elem;
+		chatScrollContainer.addObject(label);
+		elem.scrollTo(0, elem.scrollHeight);
+		while (elem.childElementCount > maxMessages)
+			elem.removeChild(elem.childNodes[0]);
+	});
+	socket.on('chatmessagefail', (reason) => {
+		var label = new UiLabel("", 0, 0, "s", reason, "14px sans-serif", "yellow");
+		var elem = chatScrollContainer.elem;
+		chatScrollContainer.addObject(label);
+		elem.scrollTo(0, elem.scrollHeight);
+		while (elem.childElementCount > maxMessages)
+			elem.removeChild(elem.childNodes[0]);
+	});
+		
 
 	// testData = {
 	// 		user: "testUser2",
@@ -153,14 +205,6 @@ var testLabel2;
 var testLabel3;
 var testButton;
 
-var testWindow2;
-var testInput;
-var testScrollContainer;
-
-var testWindow3;
-var testLabel4;
-var testInput2;
-
 // Function to test the loading and rendering of chunks and UI elements
 function test() {
 	// Chunk tests
@@ -186,49 +230,6 @@ function test() {
 	testWindow.addToPage();
 
 	testLabel.updateValue("yeetus"); // Try updating the value after it has been added to the page
-
-	testWindow2 = new UiWindow("testwindow2", 20, 20, "tr", 400, 100);
-	testScrollContainer = new UiScrollContainer("testscrollcontainer", 5, 5, "tl", 390, 60, true);
-	testInput = new UiTextInput("testinput", 5, 5, "bl", 345, null, "Type here");
-	var maxMessages = 6;
-	testButton2 = new UiButton("testbutton2", 5, 5, "br", 40, null, "Send", "", () => {
-		var message = testInput.pop().substr(0, 200); // Limit the message length to 200 characters
-		var label = new UiLabel("", 0, 0, "s", "<" + userDetails.name + "> " + message, "14px sans-serif");
-		if (!userDetails.loginSuccess) {
-			label.updateValue("Not logged in");
-			label.updateColor("red");
-		} else {
-			socket.emit('chatmessage', {'level':currentLevel.id, 'user':userDetails.name, 'message':message});
-		}
-		var elem = testScrollContainer.elem;
-		testScrollContainer.addObject(label);
-		elem.scrollTo(0, elem.scrollHeight);
-		while (elem.childElementCount > maxMessages)
-			elem.removeChild(elem.childNodes[0]);
-	});
-
-	socket.on('chatmessage', (data) => {
-		if (data.level != currentLevel.id) return;
-		var label = new UiLabel("", 0, 0, "s", "<" + data.user + "> " + data.message, "14px sans-serif");
-		var elem = testScrollContainer.elem;
-		testScrollContainer.addObject(label);
-		elem.scrollTo(0, elem.scrollHeight);
-		while (elem.childElementCount > maxMessages)
-			elem.removeChild(elem.childNodes[0]);
-	});
-	socket.on('chatmessagefail', (reason) => {
-		var label = new UiLabel("", 0, 0, "s", reason, "14px sans-serif", "yellow");
-		var elem = testScrollContainer.elem;
-		testScrollContainer.addObject(label);
-		elem.scrollTo(0, elem.scrollHeight);
-		while (elem.childElementCount > maxMessages)
-			elem.removeChild(elem.childNodes[0]);
-	});
-
-	testWindow2.addObject(testInput);
-	testWindow2.addObject(testButton2);
-	testWindow2.addObject(testScrollContainer);
-	testWindow2.addToPage();
 }
 
 // Run the tests 200ms after the page loads
