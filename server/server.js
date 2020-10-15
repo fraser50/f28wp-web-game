@@ -72,8 +72,11 @@ io.on('connection', (socket) => {
 			message : "",
 			success: false
 		};
-		addUser(data.user, data.pass, returnPack);		//Call the addUser method
-		setTimeout(() => {socket.emit('addUser', returnPack); printLog("User Created Id: "+returnPack.userId);}, 50);		//Give addUser time to complete, emit 'addUser' pack with the returnPack as the data
+		addUser(data, returnPack, socket);		//Call the addUser method
+		setTimeout(() => {
+			// socket.emit('addUser', returnPack); 
+			// printLog("User Created Id: "+returnPack.userId);
+		}, 50);		//Give addUser time to complete, emit 'addUser' pack with the returnPack as the data
 	});
 	
 	socket.on('login', (data) => {				//Listens for login requests
@@ -82,12 +85,12 @@ io.on('connection', (socket) => {
 			message : "",
 			success: false
 		};
-		login(data.user, data.pass, returnPack);
+		login(data, returnPack, socket);
 		setTimeout(() => {
-			socket.emit('login', returnPack);
-			loggedInUsers[socket.id] = data.user;
-			socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
-			printLog("login Id: "+returnPack.userId+", "+returnPack.success);
+			// socket.emit('login', returnPack);
+			// loggedInUsers[socket.id] = data.user;
+			// socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
+			// printLog("login Id: "+returnPack.userId+", "+returnPack.success);
 		}, 50);
 	});
 	
@@ -98,10 +101,11 @@ io.on('connection', (socket) => {
 			success : false
 		};
 		guest(returnPack, socket);
-		setTimeout(() => {
-			socket.emit('guest', returnPack);
-			loggedInUsers[socket.id] = genGuestName(returnPack.userId);
-			printLog("guest Id: "+returnPack.userId);
+		setTimeout(() => { // Moved to guest function; doesn't work if it takes more than 50ms to read the database
+			// socket.emit('guest', returnPack);
+			// loggedInUsers[socket.id] = genGuestName(returnPack.userId);
+			// console.info("after", returnPack);
+			// printLog("guest Id: "+returnPack.userId);
 		}, 50);	
 	});
 
@@ -177,45 +181,48 @@ function createDatabase() {
 	});
 }
 
-function addUser(user, pass, returnPack) {		//Might want to return user id on success
-	var found = findMatch(user);		//Store true or undefined in the found variable for whether there is a match with the given username and an account already stored in the db
-	setTimeout(() => {addToDb(user, pass, returnPack, found)}, 10);		//Give the findMatch some time to complete, call the addToDb method to manipulate the returnPack based on conditions
-	function addToDb(user, pass, returnPack, found) {
+function addUser(data, returnPack, socket) {
+	db.all('SELECT user FROM users WHERE user=?', [data.user], (err, rows) => {		// Loops through each entry in the table, looking for an account that already has the entered name
+		if (err)
+			printLog(err.message);
+
+		var found = false;
+		rows.forEach((row) => {
+			if (row.user == data.user) found = true; // If one is found, set found to true
+		});
+
+		// Where function addToDb started
 		if (!(found)) {			//If there isnt a match for the entered username in the database
-			db.run('INSERT INTO users(user, pass) VALUES(?, ?)', [user, pass], (err) => {		// add username and password to the database
-				if (err) {		//Error handling
-					printLog(err.message, returnPack);
-					returnPack.message = "Sorry, there was an error in creating your account, please try again.";
-					returnPack.userId = "";
-				} else {
-					printLog("Added " + user + " to database");	
-					returnPack.message = "Welcome, " + user + " your account has been created.";
-					returnPack.userId = db.run('SELECT id FROM users WHERE user = ?', (user));		//Modify the returnPack to tell user the account has been created
-					returnPack.success = true;
-				}
-			});
+		db.run('INSERT INTO users(user, pass) VALUES(?, ?)', [data.user, data.pass], (err) => {		// add username and password to the database
+			if (err) {		//Error handling
+				printLog(err.message, returnPack);
+				returnPack.message = "Sorry, there was an error in creating your account, please try again.";
+				returnPack.userId = "";
+			} else {
+				printLog("Added " + data.user + " to database");	
+				returnPack.message = "Welcome, " + data.user + " your account has been created.";
+				returnPack.userId = db.run('SELECT id FROM users WHERE user = ?', (data.user));		//Modify the returnPack to tell user the account has been created
+				returnPack.success = true;
+				loggedInUsers[socket.id] = data.user;
+			}
+			socket.emit('addUser', returnPack); 
+			printLog("User Created Id: "+returnPack.userId);
+		});
 		} else {
 			printLog("found match", "warning")		//If there is already an account in the db with the given username
-			returnPack.message = "Account name " + user + " is already taken, please choose another.";	//Modify the returnPack to tell the user so
+			returnPack.message = "Account name " + data.user + " is already taken, please choose another.";	//Modify the returnPack to tell the user so
 			returnPack.userId = "";
+
+			socket.emit('addUser', returnPack);
 		}
-	}
-	
-	function findMatch(user) {
-		db.each('SELECT user FROM users',(err, row) => {		// Loops through each entry in the table, looking for an account that already has the entered name
-			if (err)
-				printLog(err.message);
-			if (row.user == user)		// If one is found, set found to true
-				found = true;
-		});
-	}
+	});
 }
 
-function login(user, pass, returnPack) {
+function login(data, returnPack, socket) {
 	returnPack.message = "The details you have entered were incorrect, please try again.";
 	returnPack.userId = "null";
 
-	db.each('SELECT id, user FROM users WHERE user=? AND pass=?', [user, pass], (err, row) => {
+	db.each('SELECT id, user FROM users WHERE user=? AND pass=?', [data.user, data.pass], (err, row) => {
 		if (err) {
 			printLog(err.message);
 			return;
@@ -231,6 +238,11 @@ function login(user, pass, returnPack) {
 			returnPack.userId = row.id;
 			returnPack.success = true;
 		}
+
+		socket.emit('login', returnPack);
+		loggedInUsers[socket.id] = data.user;
+		socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
+		printLog("login Id: "+returnPack.userId+", "+returnPack.success);
 	});
 	
 }
@@ -254,6 +266,13 @@ function guest(returnPack, socket) {
 
 		socket.isGuest = true;
 		socket.guestId = rand;
+
+		console.info(returnPack, rand);
+
+		socket.emit('guest', returnPack);
+		loggedInUsers[socket.id] = genGuestName(returnPack.userId);
+		console.info("after", returnPack);
+		printLog("guest Id: "+returnPack.userId);
 	});
 }
 
