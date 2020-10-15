@@ -69,6 +69,7 @@ var testButton;
 
 var testWindow2;
 var testInput;
+var testScrollContainer;
 
 var testWindow3;
 var testLabel4;
@@ -101,11 +102,17 @@ function test() {
 	testLabel.updateValue("yeetus"); // Try updating the value after it has been added to the page
 
 	testWindow2 = new UiWindow("testwindow2", 20, 20, "tr", 400, 100);
+	testScrollContainer = new UiScrollContainer("testscrollcontainer", 5, 5, "tl", 390, 60, true);
 	testInput = new UiTextInput("testinput", 5, 5, "bl", 345, null, "thingy");
-	testButton2 = new UiButton("testbutton2", 5, 5, "br", 40, null, "Send", "15px sans-serif", () => {alert(testInput.getValue()); testInput.clear()});
+	testButton2 = new UiButton("testbutton2", 5, 5, "br", 40, null, "Send", "15px sans-serif", () => {
+		var label = new UiLabel("", 0, 0, "s", testInput.getValue(), "14px sans-serif");
+		testScrollContainer.addObject(label); testInput.clear();
+		testScrollContainer.elem.scrollTo(0, testScrollContainer.elem.scrollHeight);
+	});
 
 	testWindow2.addObject(testInput);
 	testWindow2.addObject(testButton2);
+	testWindow2.addObject(testScrollContainer);
 	testWindow2.addToPage();
 
 	testWindowLogSign = new UiWindow("logsignform", 0, 0, "cc", 300, 450);
