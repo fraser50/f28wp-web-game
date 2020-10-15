@@ -67,7 +67,8 @@ io.on('connection', (socket) => {
 	socket.on('addUser', (data) => {			//Listens for addUser requests
 		var returnPack = {			//Create a package to return the users id and a message
 			userId : "",
-			message : ""
+			message : "",
+			success: false
 		};
 		addUser(data.user, data.pass, returnPack);		//Call the addUser method
 		setTimeout(() => {socket.emit('addUser', returnPack); printLog("User Created Id: "+returnPack.userId);}, 50);		//Give addUser time to complete, emit 'addUser' pack with the returnPack as the data
@@ -76,16 +77,18 @@ io.on('connection', (socket) => {
 	socket.on('login', (data) => {				//Listens for login requests
 		var returnPack = {			//Create a package to return the users id and a message
 			userId : "",
-			message : ""
+			message : "",
+			success: false
 		};
 		login(data.user, data.pass, returnPack);
-		setTimeout(() => {socket.emit('login', returnPack); printLog("login Id:"+returnPack.userId);}, 50);
+		setTimeout(() => {socket.emit('login', returnPack); printLog("login Id:"+returnPack.userId+returnPack.success);}, 50);
 	});
 	
 	socket.on('guest', () => {				//Listens for guest login requests
 		var returnPack = {			//Create a package to return the users id and a message
 			userId : "",
-			message : ""
+			message : "",
+			success : false
 		};
 		guest(returnPack);
 		setTimeout(() => {socket.emit('guest', returnPack); printLog("guest Id:"+returnPack.userId);}, 50);	
@@ -156,6 +159,7 @@ function addUser(user, pass, returnPack) {		//Might want to return user id on su
 					printLog("Added " + user + " to database");	
 					returnPack.message = "Welcome, " + user + " your account has been created.";
 					returnPack.userId = db.run('SELECT id FROM users WHERE user = ?', (user));		//Modify the returnPack to tell user the account has been created
+					returnPack.success = true;
 				}
 			});
 		} else {
@@ -177,7 +181,7 @@ function addUser(user, pass, returnPack) {		//Might want to return user id on su
 
 function login(user, pass, returnPack) {
 	returnPack.message = "The details you have entered were incorrect, please try again.";
-	returnPack.userId = "";
+	returnPack.userId = "null";
 
 	db.each('SELECT id, user FROM users WHERE user=? AND pass=?', [user, pass], (err, row) => {
 		if (err) {
@@ -186,6 +190,7 @@ function login(user, pass, returnPack) {
 		} else {
 			returnPack.message = "Welcome, " + row.user + ".";
 			returnPack.userId = row.id;
+			returnPack.success = true;
 		}
 	});
 	
@@ -199,6 +204,7 @@ function guest(returnPack) {
 			printLog(err.message);
 		returnPack.message = "Welcome, Guest " + rand;
 		returnPack.userId = rand;
+		returnPack.success = true;
 	});
 }
 
