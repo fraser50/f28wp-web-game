@@ -232,6 +232,6 @@ function test() {
 }
 
 // Run the tests 200ms after the page loads
-window.addEventListener("load", () => {
-	setTimeout(test, 200);
-});
+// window.addEventListener("load", () => {
+// 	setTimeout(test, 200);
+// });
