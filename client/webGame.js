@@ -108,13 +108,41 @@ function test() {
 	testWindow2.addObject(testButton2);
 	testWindow2.addToPage();
 
-	testWindow3 = new UiWindow("testwindow3", 0, 0, "cc", 300, 350);
-	testLabel4 = new UiLabel("testlabel4", 25, 25, "cl", "asdf", "20px Comic Sans MS");
-	testInput2 = new UiTextInput("testinput2", 0, 0, "cc", 290, 40, "oof", "password");
-
-	testWindow3.addObject(testLabel4);
-	testWindow3.addObject(testInput2);
-	testWindow3.addToPage();
+	testWindowLogSign = new UiWindow("logsignform", 0, 0, "cc", 300, 450);
+	testUserLabel = new UiLabel("userlabel", 20, 20, "tl", "Please enter your username", "16px monospace");
+	testUserBox = new UiTextInput("userinput", 20, 45, "tl", 260, 40, "Username");
+	testPassLabel = new UiLabel("passlabel", 20, 95, "tl", "Please enter your password", "16px monospace");
+	testPassBox = new UiTextInput("passinput", 20, 120, "tl", 260, 40, "Password", "password");
+	testLoginButton = new UiButton("loginButton", 0, 180, "bc", 260, 60, "Login", "20px sans-serif", () => {
+				testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
+				socket.emit('login', testData)});
+	testSignButton = new UiButton("signButton", 0, 100, "bc", 260, 60, "Sign Up", "20px sans-serif", () => {
+				testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
+				socket.emit('addUser', testData)});
+	testGuestButton = new UiButton("guestButton", 0, 20, "bc", 260, 60, "Guest", "20px sans-serif", () => {
+				socket.emit('guest');
+	})
+	
+	testWindowLogSign.addObject(testUserBox);
+	testWindowLogSign.addObject(testUserLabel);
+	testWindowLogSign.addObject(testPassBox);
+	testWindowLogSign.addObject(testPassLabel);
+	testWindowLogSign.addObject(testLoginButton);
+	testWindowLogSign.addObject(testSignButton);
+	testWindowLogSign.addObject(testGuestButton);
+	testWindowLogSign.addToPage();
+	
+	socket.on('addUser', (data) => {
+		alert(data.message);
+	});
+	
+	socket.on('login', (data) => {
+		alert(data.message);
+	});
+	
+	socket.on('guest', (data) => {
+		alert(data.message);
+	});
 }
 
 // Run the tests 200ms after the page loads
