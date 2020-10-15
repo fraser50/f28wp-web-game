@@ -141,21 +141,24 @@ function test() {
 	socket.on('addUser', (data) => {
 		testUserBox.clear();
 		testPassBox.clear();
-		if (data.success == true) testWindowLogSign.hide();
+		if (data.success == true) 
+			testWindowLogSign.hide();
 		alert(data.message);
 	});
 	
 	socket.on('login', (data) => {
 		testUserBox.clear();
 		testPassBox.clear();
-		if (data.success == true) testWindowLogSign.hide();
+		if (data.success == true) 
+			testWindowLogSign.hide();
 		alert(data.message);
 	});
 	
 	socket.on('guest', (data) => {
 		testUserBox.clear();
 		testPassBox.clear();
-		if (data.success == true) testWindowLogSign.hide();
+		if (data.success == true) 
+			testWindowLogSign.hide();
 		alert(data.message);
 	});
 	
