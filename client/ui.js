@@ -3,11 +3,16 @@
 
 	Some general stuff about UI objects:
 	  • The id parameter is not strictly necessary, but help when looking at the html code in a browser
-	  • The align parameter must be one of:
-	      - "tl" - Top left
-	      - "bl" - Bottom left
-	      - "tr" - Top right
-	      - "br" - Bottom right
+	  • The align parameter is a string with 2 characters:
+	      - The first character is vertical alignment; the second is horizontal.
+	      - Possible vertical values are:
+	          ~ "t" - Top
+	          ~ "c" - Centre (only works if width and height are specified)
+	          ~ "b" - Bottom
+	      - Possible horizontal values are:
+	          ~ "l" - Left
+	          ~ "c" - Centre (only works if width and height are specified)
+	          ~ "r" - Right
 	  • The create() function is to set things specific to that type of element; it should always be overridden
 */
 
@@ -54,22 +59,30 @@ class UiWindow {
 
 		object.create();
 
-		// Set the position of the element, using the alignment
-		if (object.align.substr(1) == "l") // If aligned to left
-			objElem.style.left = object.x + "px";
-		else // Assume not "l" means align to right
-			objElem.style.right = object.x + "px";
-
-		if (object.align.substr(0, 1) == "t") // If aligned to top
-			objElem.style.top = object.y + "px";
-		else // Assume not "t" means align to bottom
-			objElem.style.bottom = object.y + "px";
-
 		// Set the size of the element
 		if (object.w != undefined)
 			objElem.style.width = object.w + "px";
 		if (object.h != undefined)
 			objElem.style.height = object.h + "px";
+
+		// Set the position of the element, using the alignment
+		var horizAlign = object.align.substr(1);
+
+		if (horizAlign == "l") // If aligned to left
+			objElem.style.left = object.x + "px";
+		else if (horizAlign == "r") // If aligned to right
+			objElem.style.right = object.x + "px";
+		else if (horizAlign == "c") // If aligned to center
+			objElem.style.left = `calc(50% - ${object.w == undefined ? 0 : object.w/2}px + ${object.x}px)`;
+
+		var vertAlign = object.align.substr(0, 1);
+
+		if (vertAlign == "t") // If aligned to top
+			objElem.style.top = object.y + "px";
+		else if (vertAlign == "b") // If aligned to bottom
+			objElem.style.bottom = object.y + "px";
+		else if (vertAlign == "c") // If aligned to center
+			objElem.style.top = `calc(50% - ${object.h == undefined ? 0 : object.h/2}px + ${object.y}px)`;
 	}
 
 	addToPage() {
@@ -86,15 +99,23 @@ class UiWindow {
 		win.style.height = this.h + "px";
 
 		// Set the position of the window, using the alignment
-		if (this.align.substr(1) == "l") // If aligned to left
-			win.style.left = this.x + "px";
-		else // Assume not "l" means align to right
-			win.style.left = `calc(100% - ${this.x}px - ${this.w}px)`;
+		var horizAlign = this.align.substr(1);
 
-		if (this.align.substr(0, 1) == "t") // If aligned to top
+		if (horizAlign == "l") // If aligned to left
+			win.style.left = this.x + "px";
+		else if (horizAlign == "r") // If aligned to right
+			win.style.left = `calc(100% - ${this.x}px - ${this.w}px)`;
+		else if (horizAlign == "c") // If aligned to center
+			win.style.left = `calc(50% - ${this.w/2}px + ${this.x}px)`;
+
+		var vertAlign = this.align.substr(0, 1);
+
+		if (vertAlign == "t") // If aligned to top
 			win.style.top = this.y + "px";
-		else // Assume not "t" means align to bottom
+		else if (vertAlign == "b") // If aligned to bottom
 			win.style.top = `calc(100% - ${this.y}px - ${this.h}px)`;
+		else if (vertAlign == "c") // If aligned to center
+			win.style.top = `calc(50% - ${this.h/2}px + ${this.y}px)`;
 
 		// 
 		for (var i=0; i<this.objects.length; i++) {

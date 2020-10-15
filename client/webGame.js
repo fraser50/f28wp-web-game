@@ -70,6 +70,10 @@ var testButton;
 var testWindow2;
 var testInput;
 
+var testWindow3;
+var testLabel4;
+var testInput2;
+
 // Function to test the loading and rendering of chunks and UI elements
 function test() {
 	// Chunk tests
@@ -103,6 +107,14 @@ function test() {
 	testWindow2.addObject(testInput);
 	testWindow2.addObject(testButton2);
 	testWindow2.addToPage();
+
+	testWindow3 = new UiWindow("testwindow3", 0, 0, "cc", 300, 350);
+	testLabel4 = new UiLabel("testlabel4", 25, 25, "cl", "asdf", "20px Comic Sans MS");
+	testInput2 = new UiTextInput("testinput2", 0, 0, "cc", 290, 40, "oof", "password");
+
+	testWindow3.addObject(testLabel4);
+	testWindow3.addObject(testInput2);
+	testWindow3.addToPage();
 }
 
 // Run the tests 200ms after the page loads
