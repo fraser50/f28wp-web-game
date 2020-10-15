@@ -70,8 +70,7 @@ io.on('connection', (socket) => {
 			message : ""
 		};
 		addUser(data.user, data.pass, returnPack);		//Call the addUser method
-		setTimeout(() => {socket.emit('addUser', returnPack)}, 50);		//Give addUser time to complete, emit 'addUser' pack with the returnPack as the data
-		printLog("addUser");
+		setTimeout(() => {socket.emit('addUser', returnPack); printLog("User Created Id: "+returnPack.userId);}, 50);		//Give addUser time to complete, emit 'addUser' pack with the returnPack as the data
 	});
 	
 	socket.on('login', (data) => {				//Listens for login requests
@@ -80,8 +79,7 @@ io.on('connection', (socket) => {
 			message : ""
 		};
 		login(data.user, data.pass, returnPack);
-		setTimeout(() => {socket.emit('login', returnPack)}, 50);
-		printLog("login");
+		setTimeout(() => {socket.emit('login', returnPack); printLog("login Id:"+returnPack.userId);}, 50);
 	});
 	
 	socket.on('guest', () => {				//Listens for guest login requests
@@ -90,8 +88,7 @@ io.on('connection', (socket) => {
 			message : ""
 		};
 		guest(returnPack);
-		setTimeout(() => {socket.emit('guest', returnPack)}, 50);
-		printLog("guest");
+		setTimeout(() => {socket.emit('guest', returnPack); printLog("guest Id:"+returnPack.userId);}, 50);	
 	})
 
 	socket.on('disconnect', () => {
