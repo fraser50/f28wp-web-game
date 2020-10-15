@@ -94,3 +94,18 @@ function fromChunkId(cId) {
 function genTileImageId(t) {
     return "t" + t.toString();
 }
+
+function getBackgroundColorRGBA(element) {
+    var colstr = window.getComputedStyle(element).backgroundColor;
+    colstr = colstr.substr(colstr.indexOf("(")+1); // Remove "rgba("
+    colstr = colstr.substr(0, colstr.length-1); // Remove ")"
+
+    jsonstr = "[" + colstr + "]";
+    console.log(jsonstr);
+
+    return JSON.parse(jsonstr);
+}
+
+function setBackgroundColorRGBA(element, newRGBA) {
+    element.style.backgroundColor = "rgba(" + newRGBA[0] + "," + newRGBA[1] + "," + newRGBA[2] + "," + newRGBA[3] + ")";
+}
