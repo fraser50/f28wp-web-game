@@ -1,9 +1,6 @@
 elementbuilders = [ // A new function will be placed here for creating the elements for different kinds of objects in the game
 	[Player, function(obj) {
 		var e = document.createElement("img");
-		//e.style.position = 'absolute';
-		//e.style.width = '64px';
-		//e.style.height = '64px';
 		e.style.top = 0;
 		e.style.left = 0;
 		e.src = "client/assets/images/temp_player.png"
