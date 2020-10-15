@@ -198,15 +198,22 @@ function addUser(data, returnPack, socket) {
 				printLog(err.message, returnPack);
 				returnPack.message = "Sorry, there was an error in creating your account, please try again.";
 				returnPack.userId = "";
+				socket.emit('addUser', returnPack);
 			} else {
 				printLog("Added " + data.user + " to database");	
 				returnPack.message = "Welcome, " + data.user + " your account has been created.";
-				returnPack.userId = db.run('SELECT id FROM users WHERE user = ?', (data.user));		//Modify the returnPack to tell user the account has been created
-				returnPack.success = true;
-				loggedInUsers[socket.id] = data.user;
+				returnPack.userId = db.all('SELECT id FROM users WHERE user = ?', (data.user), (err, rows) => {
+					if (err)
+						printLog(err.message, "error");
+					else {
+						returnPack.userId = rows[0].id;
+						returnPack.success = true;
+						loggedInUsers[socket.id] = data.user;
+						socket.emit('addUser', returnPack);
+						printLog("User Created Id: "+returnPack.userId);
+					}
+				});
 			}
-			socket.emit('addUser', returnPack); 
-			printLog("User Created Id: "+returnPack.userId);
 		});
 		} else {
 			printLog("found match", "warning")		//If there is already an account in the db with the given username
@@ -222,27 +229,31 @@ function login(data, returnPack, socket) {
 	returnPack.message = "The details you have entered were incorrect, please try again.";
 	returnPack.userId = "null";
 
-	db.each('SELECT id, user FROM users WHERE user=? AND pass=?', [data.user, data.pass], (err, row) => {
+	db.all('SELECT id, user FROM users WHERE user=? AND pass=?', [data.user, data.pass], (err, rows) => {
 		if (err) {
 			printLog(err.message);
 			return;
-		} else {
-			for (var u in loggedInUsers) {
-				if (row.user == loggedInUsers[u]) {
-					returnPack.message = "That account is already logged in";
-					return;
-				}
-			}
-
-			returnPack.message = "Welcome, " + row.user + ".";
-			returnPack.userId = row.id;
-			returnPack.success = true;
 		}
+		rows.forEach((row) => {
+			if (row.user == data.user) {
+				for (var u in loggedInUsers) {
+					if (row.user == loggedInUsers[u]) {
+						returnPack.message = "That account is already logged in";
+						return;
+					}
+				}
 
+				returnPack.message = "Welcome, " + row.user + ".";
+				returnPack.userId = row.id;
+				returnPack.success = true;
+
+				socket.emit('login', returnPack);
+				loggedInUsers[socket.id] = data.user;
+				socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
+				printLog("login Id: "+returnPack.userId+", "+returnPack.success);
+			}
+		});
 		socket.emit('login', returnPack);
-		loggedInUsers[socket.id] = data.user;
-		socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
-		printLog("login Id: "+returnPack.userId+", "+returnPack.success);
 	});
 	
 }
