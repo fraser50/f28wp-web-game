@@ -1,7 +1,9 @@
 class GameLevel {
 	constructor(id) {
 		this.id = id;
-
+		
+		this.isRunning = true;
+		
 		this.gameobjects = [];
 		this.newobjects = []; // To allow the server to determine when it needs to send information about a new object to the client, and to allow the client to render new objects
 		this.removedobjects = [];
@@ -39,6 +41,10 @@ class GameLevel {
 			if (currChunk.chunk != undefined)
 				this.chunks[currChunk.id] = currChunk.chunk;
 		}
+	}
+	
+	stopRunning() {
+		this.isRunning = false;
 	}
 
 	addObject(obj) {
