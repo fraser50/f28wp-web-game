@@ -115,13 +115,21 @@ function test() {
 	testPassBox = new UiTextInput("passinput", 20, 120, "tl", 260, 40, "Password", "password");
 	testLoginButton = new UiButton("loginButton", 0, 180, "bc", 260, 60, "Login", "20px sans-serif", () => {
 				testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
-				socket.emit('login', testData)});
+				socket.emit('login', testData);
+				testUserBox.clear();
+				testPassBox.clear();
+				testWindowLogSign.hide()});
 	testSignButton = new UiButton("signButton", 0, 100, "bc", 260, 60, "Sign Up", "20px sans-serif", () => {
 				testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
-				socket.emit('addUser', testData)});
+				socket.emit('addUser', testData);
+				testUserBox.clear();
+				testPassBox.clear();
+				testWindowLogSign.hide()});
 	testGuestButton = new UiButton("guestButton", 0, 20, "bc", 260, 60, "Guest", "20px sans-serif", () => {
 				socket.emit('guest');
-	})
+				testUserBox.clear();
+				testPassBox.clear();
+				testWindowLogSign.hide()});
 	
 	testWindowLogSign.addObject(testUserBox);
 	testWindowLogSign.addObject(testUserLabel);
@@ -143,6 +151,19 @@ function test() {
 	socket.on('guest', (data) => {
 		alert(data.message);
 	});
+	
+	testLogActivateWindow = new UiWindow("activateLogWindow",20,20,"tl",100,40);
+	testLoginButton = new UiButton("activateLogWindowButton", 0, 0, "tl", 100, 40, "Login/Sign Up", "20px sans-serif", () => {
+		if (testWindowLogSign.hidden == true) {
+			testWindowLogSign.show();
+		} else {
+			testWindowLogSign.hide();
+		}
+	})
+	testLogActivateWindow.addObject(testLoginButton);
+	testLogActivateWindow.addToPage();
+	
+	
 }
 
 // Run the tests 200ms after the page loads
