@@ -81,9 +81,10 @@ io.on('connection', (socket) => {
 		};
 		login(data.user, data.pass, returnPack);
 		setTimeout(() => {
-			socket.emit('login', returnPack); 
-			printLog("login Id:"+returnPack.userId+returnPack.success);
+			socket.emit('login', returnPack);
 			loggedInUsers[socket.id] = data.user;
+			socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
+			printLog("login Id:"+returnPack.userId+returnPack.success);
 		}, 50);
 	});
 	
@@ -207,6 +208,14 @@ function login(user, pass, returnPack) {
 			printLog(err.message);
 			return;
 		} else {
+			for (var u in loggedInUsers) {
+				console.log(loggedInUsers[u], row.user);
+				if (row.user == loggedInUsers[u]) {
+					returnPack.message = "That account is already logged in";
+					return;
+				}
+			}
+
 			returnPack.message = "Welcome, " + row.user + ".";
 			returnPack.userId = row.id;
 			returnPack.success = true;
