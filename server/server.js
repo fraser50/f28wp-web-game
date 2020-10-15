@@ -2,15 +2,15 @@
 // Might need to install node js
 // Install express, socket.io, colors through npm
 
-var colors = require('colors');
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
-var path = require('path');
-var fs = require('fs');
-var io = require('socket.io')(server);
-var sqlite3 = require('sqlite3').verbose();
-var dbfilePath = './users.db';
+const colors = require('colors');
+const express = require('express');
+const app = express();
+const server = require('http').Server(app);
+const path = require('path');
+const fs = require('fs');
+const io = require('socket.io')(server);
+const sqlite3 = require('sqlite3').verbose();
+const dbfilePath = './users.db';
 
 
 // Use eval to import files from common
