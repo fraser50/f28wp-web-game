@@ -29,16 +29,16 @@ window.addEventListener("load", () => {
 	gamearea.appendChild(objects);
 	
 
-//	testData = {
-//			user: "testUser2",
-//			pass: "testPass2"
-//	};
-//
-//	socket.emit('addUser', testData);
-//
-//	socket.on('addUser', (data) => {		//THIS IS COOL TEST STUFF (FOR SIGN UP/ LOG IN/ GUEST)
-//		alert(data.message);
-//	});
+	// testData = {
+	// 		user: "testUser2",
+	// 		pass: "testPass2"
+	// };
+
+	// socket.emit('addUser', testData);
+
+	// socket.on('addUser', (data) => {		//THIS IS COOL TEST STUFF (FOR SIGN UP/ LOG IN/ GUEST)
+	// 	alert(data.message);
+	// });
 });
 
 socket.on('getblocktypes', (dataStr) => {
@@ -75,6 +75,7 @@ function test() {
 	// Chunk tests
 	loadChunk(0,0);
 	loadChunk(1,0);
+	loadChunk(69, 69); // Try loading non-existent chunk
 	setTimeout(() => {
 		currentLevel.update();
 		createWorld(currentLevel);

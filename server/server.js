@@ -40,7 +40,7 @@ app.use('/common',express.static(path.join(__dirname, '/../common')));
 
 // Stuff for handling socket connections
 io.on('connection', (socket) => {
-	printLog("connection opened");
+	printLog(`Connection opened (id: ${socket.id})`);
 
 	socket.on('getchunk', (dataStr) => {
 		var data = JSON.parse(dataStr);
@@ -95,7 +95,7 @@ io.on('connection', (socket) => {
 	})
 
 	socket.on('disconnect', () => {
-		printLog("connection closed");
+		printLog(`Connection closed (id: ${socket.id})`);
 	});
 });
 
@@ -162,7 +162,7 @@ function addUser(user, pass, returnPack) {		//Might want to return user id on su
 				}
 			});
 		} else {
-			printLog("found match")		//If there is already an account in the db with the given username
+			printLog("found match", "warning")		//If there is already an account in the db with the given username
 			returnPack.message = "Account name " + user + " is already taken, please choose another.";	//Modify the returnPack to tell the user so
 			returnPack.userId = "";
 		}
