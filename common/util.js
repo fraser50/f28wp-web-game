@@ -109,3 +109,7 @@ function getBackgroundColorRGBA(element) {
 function setBackgroundColorRGBA(element, newRGBA) {
     element.style.backgroundColor = "rgba(" + newRGBA[0] + "," + newRGBA[1] + "," + newRGBA[2] + "," + newRGBA[3] + ")";
 }
+
+function genGuestName(gId) {
+    return "Guest " + gId.toString();
+}

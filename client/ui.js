@@ -298,6 +298,8 @@ class UiButton extends UiElement {
 		this.elem.className = "uiButton";
 
 		this.elem.innerText = this.text.toString();
+		if (this.font != undefined)
+			this.elem.style.font = this.font;
 
 		this.elem.addEventListener("click", this.callback);
 	}

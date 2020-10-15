@@ -35,6 +35,9 @@ level0.update();
 // Store all the logged in users to use for security
 var loggedInUsers = {};
 
+// Store all currently used guest IDs
+var guests = {};
+
 app.get('/',function(req, res) {
     res.sendFile(path.join(__dirname, '../client/WebDevGame.html'));
 });
@@ -84,7 +87,7 @@ io.on('connection', (socket) => {
 			socket.emit('login', returnPack);
 			loggedInUsers[socket.id] = data.user;
 			socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
-			printLog("login Id:"+returnPack.userId+returnPack.success);
+			printLog("login Id: "+returnPack.userId+", "+returnPack.success);
 		}, 50);
 	});
 	
@@ -94,8 +97,12 @@ io.on('connection', (socket) => {
 			message : "",
 			success : false
 		};
-		guest(returnPack);
-		setTimeout(() => {socket.emit('guest', returnPack); printLog("guest Id:"+returnPack.userId);}, 50);	
+		guest(returnPack, socket);
+		setTimeout(() => {
+			socket.emit('guest', returnPack);
+			loggedInUsers[socket.id] = genGuestName(returnPack.userId);
+			printLog("guest Id: "+returnPack.userId);
+		}, 50);	
 	});
 
 
@@ -110,10 +117,15 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('disconnect', () => {
+		console.info(loggedInUsers, guests);
+		if (socket.isGuest)
+			delete guests[socket.guestId];
 		if (loggedInUsers[socket.id] != undefined) {
 			printLog(`Logged out user ${loggedInUsers[socket.id]}`);
 		}
 		delete loggedInUsers[socket.id];
+
+		console.info(loggedInUsers, guests);
 
 		printLog(`Connection closed (id: ${socket.id})`);
 	});
@@ -209,7 +221,6 @@ function login(user, pass, returnPack) {
 			return;
 		} else {
 			for (var u in loggedInUsers) {
-				console.log(loggedInUsers[u], row.user);
 				if (row.user == loggedInUsers[u]) {
 					returnPack.message = "That account is already logged in";
 					return;
@@ -225,17 +236,30 @@ function login(user, pass, returnPack) {
 }
 
 // TODO When guest disconnects, remove record from db
-function guest(returnPack) {
-	var rand = Math.floor(Math.random() * (10000 - 1000) + 1000);	//Creates a random id in the range 1000-10000
+function guest(returnPack, socket) {
+	//Creates a random id in the range 1000-10000
+	var createId = () => {return Math.floor(Math.random() * (10000 - 1000) + 1000)};
+	var rand = createId();
+	while (guests[rand] != undefined)
+		rand = createId();
+
 	db.run('INSERT INTO users(id) VALUES(?)', [rand], function(err) {
 		if (err)
-			printLog(err.message);
-		returnPack.message = "Welcome, Guest " + rand;
+			printLog(err.message, "error");
+		returnPack.message = "Welcome, " + genGuestName(rand);
 		returnPack.userId = rand;
 		returnPack.success = true;
+
+		guests[rand] = {sid:socket.id};
+
+		socket.isGuest = true;
+		socket.guestId = rand;
 	});
 }
 
+function isLoggedIn() {
+
+}
 
 
 // Write to the console in a standard format with different levels (valid levels: warning, error, info (default))
@@ -269,7 +293,7 @@ function printLog(text, level) {
 	var out = getTimeString().magenta + " [".grey;
 	switch(level) {
 		case "error":
-			out += "ERROR".red + "] ".gray + text.red;
+			out += "!ERR".red + "] ".gray + text.red;
 			break;
 		case "warning":
 			out += "WARN".yellow + "] ".gray + text.yellow;

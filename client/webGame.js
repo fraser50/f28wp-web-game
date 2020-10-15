@@ -32,7 +32,88 @@ window.addEventListener("load", () => {
 	gamearea.appendChild(ui);
 	gamearea.appendChild(world);
 	gamearea.appendChild(objects);
+
+	var loginWindow = new UiWindow("logsignform", 0, 0, "cc", 300, 355);
+
+	loginWindow.addObject(new UiLabel("", 20, 20, "tl", "Please enter your username", "16px sans-serif"));
+	var loginUserBox = new UiTextInput("loguserinput", 20, 45, "tl", 260, 40, "Username");
+	loginWindow.addObject(loginUserBox);
 	
+	loginWindow.addObject(new UiLabel("", 20, 95, "tl", "Please enter your password", "16px sans-serif"));
+	var loginPassBox = new UiTextInput("passinput", 20, 120, "tl", 260, 40, "Password", "password");
+	loginWindow.addObject(loginPassBox);
+
+	var loginButton = new UiButton("loginButton", 0, 205, "tc", 260, 60, "Login", "20px sans-serif", () => {
+		if (loginUserBox.getValue() == "" || loginPassBox.getValue() == "") {
+			alert("Username and password cannot be empty");
+			return;
+		}
+		userDetails.name = loginUserBox.getValue();
+		var data = {user: loginUserBox.getValue(), pass: loginPassBox.getValue()};
+		socket.emit('login', data);
+	});
+	loginWindow.addObject(loginButton);
+
+	var signupButton = new UiButton("signButton", 20, 275, "tl", 125, 60, "Sign Up", "20px sans-serif", () => {
+		if (loginUserBox.getValue() == "" || loginPassBox.getValue() == "") {
+			alert("Username and password cannot be empty");
+			return;
+		}
+		userDetails.name = loginUserBox.getValue();
+		var data = {user: loginUserBox.getValue(), pass: loginPassBox.getValue()};
+		socket.emit('addUser', data);
+	});
+	loginWindow.addObject(signupButton);
+
+	var guestButton = new UiButton("guestButton", 20, 275, "tr", 125, 60, "Login as guest", "20px sans-serif", () => {
+		socket.emit('guest');
+	});
+	loginWindow.addObject(guestButton);
+	
+	loginWindow.addToPage();
+
+	socket.on('addUser', (data) => {
+		loginUserBox.clear();
+		loginPassBox.clear();
+		if (data.success == true) 
+			loginWindow.hide();
+			userDetails.loginSuccess = true;
+		alert(data.message);
+	});
+	
+	socket.on('login', (data) => {
+		loginUserBox.clear();
+		loginPassBox.clear();
+		if (data.success == true) {
+			loginWindow.hide();
+			userDetails.loginSuccess = true;
+		}
+		alert(data.message);
+	});
+	
+	socket.on('guest', (data) => {
+		loginUserBox.clear();
+		loginPassBox.clear();
+		if (data.success == true) {
+			loginWindow.hide();
+			console.info(data);
+			userDetails.name = genGuestName(data.userId);
+			userDetails.loginSuccess = true;
+		}
+		alert(data.message);
+	});
+	
+	logActivateWindow = new UiWindow("activateLogWindow",20,20,"tl",100,40);
+	loginActivateButton = new UiButton("activateLogWindowButton", 0, 0, "tl", 100, 40, "Login/Sign Up", "", () => {
+		if (loginWindow.hidden == true) {
+			loginWindow.show();
+		} else {
+			loginWindow.hide();
+		}
+	})
+	logActivateWindow.addObject(loginActivateButton);
+	logActivateWindow.addToPage();
+
 
 	// testData = {
 	// 		user: "testUser2",
@@ -110,7 +191,7 @@ function test() {
 	testScrollContainer = new UiScrollContainer("testscrollcontainer", 5, 5, "tl", 390, 60, true);
 	testInput = new UiTextInput("testinput", 5, 5, "bl", 345, null, "Type here");
 	var maxMessages = 6;
-	testButton2 = new UiButton("testbutton2", 5, 5, "br", 40, null, "Send", "15px sans-serif", () => {
+	testButton2 = new UiButton("testbutton2", 5, 5, "br", 40, null, "Send", "", () => {
 		var message = testInput.pop().substr(0, 200); // Limit the message length to 200 characters
 		var label = new UiLabel("", 0, 0, "s", "<" + userDetails.name + "> " + message, "14px sans-serif");
 		if (!userDetails.loginSuccess) {
@@ -149,31 +230,78 @@ function test() {
 	testWindow2.addObject(testScrollContainer);
 	testWindow2.addToPage();
 
-	testWindowLogSign = new UiWindow("logsignform", 0, 0, "cc", 300, 450);
-	testUserLabel = new UiLabel("userlabel", 20, 20, "tl", "Please enter your username", "16px monospace");
-	testUserBox = new UiTextInput("userinput", 20, 45, "tl", 260, 40, "Username");
-	testPassLabel = new UiLabel("passlabel", 20, 95, "tl", "Please enter your password", "16px monospace");
-	testPassBox = new UiTextInput("passinput", 20, 120, "tl", 260, 40, "Password", "password");
-	testLoginButton = new UiButton("loginButton", 0, 180, "bc", 260, 60, "Login", "20px sans-serif", () => {
-		if (testUserBox.getValue() == "" || testPassBox.getValue() == "") {
-			alert("Username and password cannot be empty");
-			return;
-		}
-		userDetails.name = testUserBox.getValue();
-		testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
-		socket.emit('login', testData)});
-	testSignButton = new UiButton("signButton", 0, 100, "bc", 260, 60, "Sign Up", "20px sans-serif", () => {
-		if (testUserBox.getValue() == "" || testPassBox.getValue() == "") {
-			alert("Username and password cannot be empty");
-			return;
-		}
-		userDetails.name = testUserBox.getValue();
-		testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
-		socket.emit('addUser', testData)});
-	testGuestButton = new UiButton("guestButton", 0, 20, "bc", 260, 60, "Guest", "20px sans-serif", () => {
-		socket.emit('guest')
-	});
+	// testWindowLogSign = new UiWindow("logsignform", 0, 0, "cc", 300, 450);
+	// testUserLabel = new UiLabel("userlabel", 20, 20, "tl", "Please enter your username", "16px monospace");
+	// testUserBox = new UiTextInput("userinput", 20, 45, "tl", 260, 40, "Username");
+	// testPassLabel = new UiLabel("passlabel", 20, 95, "tl", "Please enter your password", "16px monospace");
+	// testPassBox = new UiTextInput("passinput", 20, 120, "tl", 260, 40, "Password", "password");
+	// testLoginButton = new UiButton("loginButton", 0, 180, "bc", 260, 60, "Login", "20px sans-serif", () => {
+	// 	if (testUserBox.getValue() == "" || testPassBox.getValue() == "") {
+	// 		alert("Username and password cannot be empty");
+	// 		return;
+	// 	}
+	// 	userDetails.name = testUserBox.getValue();
+	// 	testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
+	// 	socket.emit('login', testData)});
+	// testSignButton = new UiButton("signButton", 0, 100, "bc", 260, 60, "Sign Up", "20px sans-serif", () => {
+	// 	if (testUserBox.getValue() == "" || testPassBox.getValue() == "") {
+	// 		alert("Username and password cannot be empty");
+	// 		return;
+	// 	}
+	// 	userDetails.name = testUserBox.getValue();
+	// 	testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
+	// 	socket.emit('addUser', testData)});
+	// testGuestButton = new UiButton("guestButton", 0, 20, "bc", 260, 60, "Guest", "20px sans-serif", () => {
+	// 	socket.emit('guest')
+	// });
 	
+<<<<<<< HEAD
+	// testWindowLogSign.addObject(testUserBox);
+	// testWindowLogSign.addObject(testUserLabel);
+	// testWindowLogSign.addObject(testPassBox);
+	// testWindowLogSign.addObject(testPassLabel);
+	// testWindowLogSign.addObject(testLoginButton);
+	// testWindowLogSign.addObject(testSignButton);
+	// testWindowLogSign.addObject(testGuestButton);
+	// //testWindowLogSign.addToPage();
+	
+	// socket.on('addUser', (data) => {
+	// 	testUserBox.clear();
+	// 	testPassBox.clear();
+	// 	if (data.success == true) 
+	// 		testWindowLogSign.hide();
+	// 	alert(data.message);
+	// });
+	
+	// socket.on('login', (data) => {
+	// 	testUserBox.clear();
+	// 	testPassBox.clear();
+	// 	if (data.success == true) {
+	// 		testWindowLogSign.hide();
+	// 		userDetails.loginSuccess = true;
+	// 	}
+	// 	alert(data.message);
+	// });
+	
+	// socket.on('guest', (data) => {
+	// 	testUserBox.clear();
+	// 	testPassBox.clear();
+	// 	if (data.success == true) 
+	// 		testWindowLogSign.hide();
+	// 	alert(data.message);
+	// });
+	
+	// testLogActivateWindow = new UiWindow("activateLogWindow",20,20,"tl",100,40);
+	// testLoginButton = new UiButton("activateLogWindowButton", 0, 0, "tl", 100, 40, "Login/Sign Up", "20px sans-serif", () => {
+	// 	if (testWindowLogSign.hidden == true) {
+	// 		testWindowLogSign.show();
+	// 	} else {
+	// 		testWindowLogSign.hide();
+	// 	}
+	// })
+	// testLogActivateWindow.addObject(testLoginButton);
+	// testLogActivateWindow.addToPage();
+=======
 	testWindowLogSign.addObject(testUserBox);
 	testWindowLogSign.addObject(testUserLabel);
 	testWindowLogSign.addObject(testPassBox);
@@ -225,6 +353,7 @@ function test() {
 	})
 	testLogActivateWindow.addObject(testLoginButton);
 	testLogActivateWindow.addToPage();
+>>>>>>> 25ddd176dd50a5ee1d5029fdb908a28db3e0e8a1
 	
 	
 }
