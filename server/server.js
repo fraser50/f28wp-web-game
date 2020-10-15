@@ -234,6 +234,7 @@ function login(data, returnPack, socket) {
 			printLog(err.message);
 			return;
 		}
+		var done = false;
 		rows.forEach((row) => {
 			if (row.user == data.user) {
 				for (var u in loggedInUsers) {
@@ -251,9 +252,13 @@ function login(data, returnPack, socket) {
 				loggedInUsers[socket.id] = data.user;
 				socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
 				printLog("login Id: "+returnPack.userId+", "+returnPack.success);
+
+				done = true;
+				return;
 			}
 		});
-		socket.emit('login', returnPack);
+		if (!done)
+			socket.emit('login', returnPack);
 	});
 	
 }
