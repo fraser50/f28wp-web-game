@@ -2,8 +2,12 @@
 	Everything to to with the UI should be in this file
 
 	Some general stuff about UI objects:
-	  • The id parameter is not strictly necessary, but help when looking at the html code in a browser
-	  • The align parameter is a string with 2 characters:
+	  • The id parameter is not strictly necessary, but help when looking at the
+	    html code in a browser
+	  • The align parameter is a string with 1 or 2 characters:
+	      - If the string only has 1 character, the only possible value is "s", 
+	        which sets the object's position to static (therefore x and y have 
+	        no effect)
 	      - The first character is vertical alignment; the second is horizontal.
 	      - Possible vertical values are:
 	          ~ "t" - Top
@@ -13,7 +17,8 @@
 	          ~ "l" - Left
 	          ~ "c" - Centre (only works if width and height are specified)
 	          ~ "r" - Right
-	  • The create() function is to set things specific to that type of element; it should always be overridden
+	  • The create() function is to set things specific to that type of element;
+	    it should always be overridden
 */
 
 class UiElement {
@@ -83,6 +88,9 @@ class UiWindow {
 			objElem.style.bottom = object.y + "px";
 		else if (vertAlign == "c") // If aligned to center
 			objElem.style.top = `calc(50% - ${object.h == undefined ? 0 : object.h/2}px + ${object.y}px)`;
+
+		// If the window is already on the page, add the element to the page
+		if (this.elem != undefined) this.elem.appendChild(objElem);
 	}
 
 	addToPage() {
@@ -141,6 +149,89 @@ class UiWindow {
 		var rgba = getBackgroundColorRGBA(this.win);
 		rgba[3] = newOpacity;
 		setBackgroundColorRGBA(this.win, rgba);
+	}
+}
+
+class UiContainer extends UiElement {
+	constructor(id, x, y, align, w, h) {
+		super("div", id, x, y, align);
+
+		this.w = w;
+		this.h = h;
+
+		this.objects = [];
+	}
+
+	addObject(object) {
+		this.objects.push(object);
+
+		var objElem = document.createElement(object.elemType);
+		objElem.id = object.id;
+
+		object.elem = objElem;
+
+		object.create();
+
+		// Set the size of the element
+		if (object.w != undefined)
+			objElem.style.width = object.w + "px";
+		if (object.h != undefined)
+			objElem.style.height = object.h + "px";
+
+		// Set the position of the element, using the alignment
+		if (object.align == "s") {
+			objElem.style.position = "static";
+			objElem.style.display = "block";
+		} else {
+			var horizAlign = object.align.substr(1);
+
+			if (horizAlign == "l") // If aligned to left
+				objElem.style.left = object.x + "px";
+			else if (horizAlign == "r") // If aligned to right
+				objElem.style.right = object.x + "px";
+			else if (horizAlign == "c") // If aligned to center
+				objElem.style.left = `calc(50% - ${object.w == undefined ? 0 : object.w/2}px + ${object.x}px)`;
+
+			var vertAlign = object.align.substr(0, 1);
+
+			if (vertAlign == "t") // If aligned to top
+				objElem.style.top = object.y + "px";
+			else if (vertAlign == "b") // If aligned to bottom
+				objElem.style.bottom = object.y + "px";
+			else if (vertAlign == "c") // If aligned to center
+				objElem.style.top = `calc(50% - ${object.h == undefined ? 0 : object.h/2}px + ${object.y}px)`;
+		}
+
+		// If the container is already on the page, add the element to the page
+		if (this.elem != undefined) this.elem.appendChild(objElem);
+	}
+
+	create() {
+		for (var i=0; i<this.objects.length; i++)
+			this.elem.appendChild(this.objects[i].elem);
+	}
+}
+
+class UiScrollContainer extends UiContainer {
+	constructor(id, x, y, align, w, h, scrollY, scrollX) {
+		super(id, x, y, align);
+
+		this.w = w;
+		this.h = h;
+
+		this.scrollY = scrollY;
+		this.scrollX = scrollX;
+	}
+
+	create() {
+		//super();
+
+		this.elem.className = "uiScrollContainer";
+
+		if (this.scrollY)
+			this.elem.style.overflowY = "scroll";
+		if (this.scrollX)
+			this.elem.style.overflowX = "scroll";
 	}
 }
 
