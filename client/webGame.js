@@ -182,12 +182,14 @@ function test() {
 	testWindowLogSign.addObject(testSignButton);
 	testWindowLogSign.addObject(testGuestButton);
 	testWindowLogSign.addToPage();
+	testWindowLogSign.setOpacity(0.9);
 	
 	socket.on('addUser', (data) => {
 		testUserBox.clear();
 		testPassBox.clear();
 		if (data.success == true) 
 			testWindowLogSign.hide();
+			testLogActivateWindow.setOpacity(0.5);
 		alert(data.message);
 	});
 	
@@ -196,6 +198,7 @@ function test() {
 		testPassBox.clear();
 		if (data.success == true) {
 			testWindowLogSign.hide();
+			testLogActivateWindow.setOpacity(0.5);
 			userDetails.loginSuccess = true;
 		}
 		alert(data.message);
@@ -206,14 +209,17 @@ function test() {
 		testPassBox.clear();
 		if (data.success == true) 
 			testWindowLogSign.hide();
+			testLogActivateWindow.setOpacity(0.5);
 		alert(data.message);
 	});
 	
 	testLogActivateWindow = new UiWindow("activateLogWindow",20,20,"tl",100,40);
 	testLoginButton = new UiButton("activateLogWindowButton", 0, 0, "tl", 100, 40, "Login/Sign Up", "20px sans-serif", () => {
 		if (testWindowLogSign.hidden == true) {
+			testLogActivateWindow.setOpacity(0.9);
 			testWindowLogSign.show();
 		} else {
+			testLogActivateWindow.setOpacity(0.5);
 			testWindowLogSign.hide();
 		}
 	})
