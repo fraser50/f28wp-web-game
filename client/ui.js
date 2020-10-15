@@ -202,8 +202,9 @@ class UiTextInput extends UiElement {
 		this.w = w;
 		this.h = h;
 		this.placeholder = placeholder == null ? "" : placeholder;
+		this.placeholder = placeholder == undefined ? "" : placeholder;
 
-		this.type = type;
+		this.type = type == undefined ? "text" : type;
 	}
 
 	create() {
