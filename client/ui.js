@@ -39,6 +39,8 @@ class UiWindow {
 		this.w = w;
 		this.h = h;
 
+		this.opacity = 1;
+
 		this.objects = [];
 	}
 
@@ -113,6 +115,12 @@ class UiWindow {
 	show() {
 		this.win.style.display = "block";
 	}
+
+	setOpacity(newOpacity) {
+		var rgba = getBackgroundColorRGBA(this.win);
+		rgba[3] = newOpacity;
+		setBackgroundColorRGBA(this.win, rgba);
+	}
 }
 
 class UiLabel extends UiElement {
@@ -142,7 +150,7 @@ class UiButton extends UiElement {
 	constructor(id, x, y, align, w, h, text, font, callback) {
 		super("button", id, x, y, align);
 
-		this.w = w;
+		this.x = x;
 		this.y = y;
 		this.text = text;
 		this.font = font;
@@ -167,18 +175,22 @@ class UiButton extends UiElement {
 }
 
 class UiTextInput extends UiElement {
-	constructor(id, x, y, align, w, h, placeholder) {
+	constructor(id, x, y, align, w, h, placeholder, type) {
 		super("input", id, x, y, align);
 
 		this.w = w;
 		this.h = h;
-		this.placeholder = placeholder;
+		this.placeholder = placeholder == null ? "" : placeholder;
+
+		this.type = type;
 	}
 
 	create() {
 		this.elem.className = "uiTextInput";
 
 		this.elem.placeholder = this.placeholder;
+
+		this.elem.type = this.type;
 	}
 
 	getValue() {
