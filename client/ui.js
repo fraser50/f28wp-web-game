@@ -43,6 +43,8 @@ class UiWindow {
 		this.align = align;
 		this.w = w;
 		this.h = h;
+		
+		this.hidden = false;
 
 		this.opacity = 1;
 
@@ -131,10 +133,12 @@ class UiWindow {
 
 	hide() {
 		this.win.style.display = "none";
+		this.hidden = true;
 	}
 
 	show() {
 		this.win.style.display = "block";
+		this.hidden = false;
 	}
 
 	setOpacity(newOpacity) {
