@@ -103,11 +103,15 @@ function test() {
 
 	testWindow2 = new UiWindow("testwindow2", 20, 20, "tr", 400, 100);
 	testScrollContainer = new UiScrollContainer("testscrollcontainer", 5, 5, "tl", 390, 60, true);
-	testInput = new UiTextInput("testinput", 5, 5, "bl", 345, null, "thingy");
+	testInput = new UiTextInput("testinput", 5, 5, "bl", 345, null, "Type here");
+	var maxMessages = 6;
 	testButton2 = new UiButton("testbutton2", 5, 5, "br", 40, null, "Send", "15px sans-serif", () => {
 		var label = new UiLabel("", 0, 0, "s", testInput.getValue(), "14px sans-serif");
+		var elem = testScrollContainer.elem;
 		testScrollContainer.addObject(label); testInput.clear();
-		testScrollContainer.elem.scrollTo(0, testScrollContainer.elem.scrollHeight);
+		elem.scrollTo(0, elem.scrollHeight);
+		while (elem.childElementCount > maxMessages)
+			elem.removeChild(elem.childNodes[0]);
 	});
 
 	testWindow2.addObject(testInput);
