@@ -243,11 +243,12 @@ class UiScrollContainer extends UiContainer {
 }
 
 class UiLabel extends UiElement {
-	constructor(id, x, y, align, text, font) {
+	constructor(id, x, y, align, text, font, color) {
 		super("span", id, x, y, align);
 
 		this.text = text;
 		this.font = font;
+		this.color = color;
 	}
 
 	updateValue(newValue) {
@@ -257,11 +258,20 @@ class UiLabel extends UiElement {
 		this.elem.innerText = newValue.toString();
 	}
 
+	updateColor(newColor) {
+		this.color = newColor;
+
+		if (this.elem != undefined)
+			this.elem.style.color = newColor;
+	}
+
 	create() {
 		this.elem.className = "uiLabel";
 
 		this.elem.style.font = this.font;
 		this.elem.innerText = this.text.toString();
+		if (this.color != undefined)
+			this.elem.style.color = this.color;
 	}
 }
 

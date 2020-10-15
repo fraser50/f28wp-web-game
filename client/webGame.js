@@ -19,6 +19,7 @@ objects.id = "objects";
 
 var userDetails = {
 	name: null,
+	loginSuccess: false
 };
 
 
@@ -110,7 +111,32 @@ function test() {
 	testInput = new UiTextInput("testinput", 5, 5, "bl", 345, null, "Type here");
 	var maxMessages = 6;
 	testButton2 = new UiButton("testbutton2", 5, 5, "br", 40, null, "Send", "15px sans-serif", () => {
-		var label = new UiLabel("", 0, 0, "s", testInput.pop(), "14px sans-serif");
+		var message = testInput.pop().substr(0, 200); // Limit the message length to 200 characters
+		var label = new UiLabel("", 0, 0, "s", "<" + userDetails.name + "> " + message, "14px sans-serif");
+		if (!userDetails.loginSuccess) {
+			label.updateValue("Not logged in");
+			label.updateColor("red");
+		} else {
+			socket.emit('chatmessage', {'level':currentLevel.id, 'user':userDetails.name, 'message':message});
+		}
+		var elem = testScrollContainer.elem;
+		testScrollContainer.addObject(label);
+		elem.scrollTo(0, elem.scrollHeight);
+		while (elem.childElementCount > maxMessages)
+			elem.removeChild(elem.childNodes[0]);
+	});
+
+	socket.on('chatmessage', (data) => {
+		if (data.level != currentLevel.id) return;
+		var label = new UiLabel("", 0, 0, "s", "<" + data.user + "> " + data.message, "14px sans-serif");
+		var elem = testScrollContainer.elem;
+		testScrollContainer.addObject(label);
+		elem.scrollTo(0, elem.scrollHeight);
+		while (elem.childElementCount > maxMessages)
+			elem.removeChild(elem.childNodes[0]);
+	});
+	socket.on('chatmessagefail', (reason) => {
+		var label = new UiLabel("", 0, 0, "s", reason, "14px sans-serif", "yellow");
 		var elem = testScrollContainer.elem;
 		testScrollContainer.addObject(label);
 		elem.scrollTo(0, elem.scrollHeight);
@@ -133,6 +159,7 @@ function test() {
 			alert("Username and password cannot be empty");
 			return;
 		}
+		userDetails.name = testUserBox.getValue();
 		testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
 		socket.emit('login', testData)});
 	testSignButton = new UiButton("signButton", 0, 100, "bc", 260, 60, "Sign Up", "20px sans-serif", () => {
@@ -140,6 +167,7 @@ function test() {
 			alert("Username and password cannot be empty");
 			return;
 		}
+		userDetails.name = testUserBox.getValue();
 		testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
 		socket.emit('addUser', testData)});
 	testGuestButton = new UiButton("guestButton", 0, 20, "bc", 260, 60, "Guest", "20px sans-serif", () => {
@@ -166,8 +194,10 @@ function test() {
 	socket.on('login', (data) => {
 		testUserBox.clear();
 		testPassBox.clear();
-		if (data.success == true) 
+		if (data.success == true) {
 			testWindowLogSign.hide();
+			userDetails.loginSuccess = true;
+		}
 		alert(data.message);
 	});
 	

@@ -32,6 +32,9 @@ level0.addChunk(genChunkId(0, 0), new Array(16*16).fill({id:0,layer:0,isTransiti
 level0.addChunk(genChunkId(1, 0), new Array(16*16).fill({id:1,layer:0,isTransition:false}));
 level0.update();
 
+// Store all the logged in users to use for security
+var loggedInUsers = {};
+
 app.get('/',function(req, res) {
     res.sendFile(path.join(__dirname, '../client/WebDevGame.html'));
 });
@@ -44,10 +47,6 @@ io.on('connection', (socket) => {
 
 	socket.on('getchunk', (dataStr) => {
 		var data = JSON.parse(dataStr);
-
-		//var tempTiles = new Array(16*16).fill({id:0,layer:0,isTransition:false})
-
-		//socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':tempTiles}));
 
 		var tiles = level0.chunks[genChunkId(data.x, data.y)];
 
@@ -81,7 +80,11 @@ io.on('connection', (socket) => {
 			success: false
 		};
 		login(data.user, data.pass, returnPack);
-		setTimeout(() => {socket.emit('login', returnPack); printLog("login Id:"+returnPack.userId+returnPack.success);}, 50);
+		setTimeout(() => {
+			socket.emit('login', returnPack); 
+			printLog("login Id:"+returnPack.userId+returnPack.success);
+			loggedInUsers[socket.id] = data.user;
+		}, 50);
 	});
 	
 	socket.on('guest', () => {				//Listens for guest login requests
@@ -92,9 +95,25 @@ io.on('connection', (socket) => {
 		};
 		guest(returnPack);
 		setTimeout(() => {socket.emit('guest', returnPack); printLog("guest Id:"+returnPack.userId);}, 50);	
-	})
+	});
+
+
+	socket.on('chatmessage', (data) => {
+		if (loggedInUsers[socket.id] == undefined) {
+			socket.emit('chatmessagefail', "Failed to send message: Invalid session ID");
+			printLog(`chatmessage: from non logged in user: <${data.user}> ${data.message}`, "warning");
+			return;
+		}
+		printLog(`chatmessage: <${data.user}> ${data.message}`);
+		socket.broadcast.emit('chatmessage', data);
+	});
 
 	socket.on('disconnect', () => {
+		if (loggedInUsers[socket.id] != undefined) {
+			printLog(`Logged out user ${loggedInUsers[socket.id]}`);
+		}
+		delete loggedInUsers[socket.id];
+
 		printLog(`Connection closed (id: ${socket.id})`);
 	});
 });
