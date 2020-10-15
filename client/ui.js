@@ -171,8 +171,8 @@ class UiButton extends UiElement {
 	constructor(id, x, y, align, w, h, text, font, callback) {
 		super("button", id, x, y, align);
 
-		this.x = x;
-		this.y = y;
+		this.w = w;
+		this.h = h;
 		this.text = text;
 		this.font = font;
 
