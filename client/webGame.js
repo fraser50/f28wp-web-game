@@ -17,6 +17,10 @@ world.id = "world";
 var objects = document.createElement("div");
 objects.id = "objects";
 
+var userDetails = {
+	name: null,
+};
+
 
 // Add the elements to the page when it finishes loading
 window.addEventListener("load", () => {
@@ -106,9 +110,9 @@ function test() {
 	testInput = new UiTextInput("testinput", 5, 5, "bl", 345, null, "Type here");
 	var maxMessages = 6;
 	testButton2 = new UiButton("testbutton2", 5, 5, "br", 40, null, "Send", "15px sans-serif", () => {
-		var label = new UiLabel("", 0, 0, "s", testInput.getValue(), "14px sans-serif");
+		var label = new UiLabel("", 0, 0, "s", testInput.pop(), "14px sans-serif");
 		var elem = testScrollContainer.elem;
-		testScrollContainer.addObject(label); testInput.clear();
+		testScrollContainer.addObject(label);
 		elem.scrollTo(0, elem.scrollHeight);
 		while (elem.childElementCount > maxMessages)
 			elem.removeChild(elem.childNodes[0]);
@@ -125,13 +129,22 @@ function test() {
 	testPassLabel = new UiLabel("passlabel", 20, 95, "tl", "Please enter your password", "16px monospace");
 	testPassBox = new UiTextInput("passinput", 20, 120, "tl", 260, 40, "Password", "password");
 	testLoginButton = new UiButton("loginButton", 0, 180, "bc", 260, 60, "Login", "20px sans-serif", () => {
-				testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
-				socket.emit('login', testData)});
+		if (testUserBox.getValue() == "" || testPassBox.getValue() == "") {
+			alert("Username and password cannot be empty");
+			return;
+		}
+		testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
+		socket.emit('login', testData)});
 	testSignButton = new UiButton("signButton", 0, 100, "bc", 260, 60, "Sign Up", "20px sans-serif", () => {
-				testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
-				socket.emit('addUser', testData)});
+		if (testUserBox.getValue() == "" || testPassBox.getValue() == "") {
+			alert("Username and password cannot be empty");
+			return;
+		}
+		testData = {user: testUserBox.getValue(), pass: testPassBox.getValue()};
+		socket.emit('addUser', testData)});
 	testGuestButton = new UiButton("guestButton", 0, 20, "bc", 260, 60, "Guest", "20px sans-serif", () => {
-				socket.emit('guest')});
+		socket.emit('guest')
+	});
 	
 	testWindowLogSign.addObject(testUserBox);
 	testWindowLogSign.addObject(testUserLabel);

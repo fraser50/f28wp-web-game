@@ -1,29 +1,30 @@
 /*
-	Everything to to with the UI should be in this file
+Everything to to with the UI should be in this file
 
-	Some general stuff about UI objects:
-	  • The id parameter is not strictly necessary, but help when looking at the
-	    html code in a browser
-	  • The align parameter is a string with 1 or 2 characters:
-	      - If the string only has 1 character, the only possible value is "s", 
-	        which sets the object's position to static (therefore x and y have 
-	        no effect)
-	      - The first character is vertical alignment; the second is horizontal.
-	      - Possible vertical values are:
-	          ~ "t" - Top
-	          ~ "c" - Centre (only works if width and height are specified)
-	          ~ "b" - Bottom
-	      - Possible horizontal values are:
-	          ~ "l" - Left
-	          ~ "c" - Centre (only works if width and height are specified)
-	          ~ "r" - Right
-	  • The create() function is to set things specific to that type of element;
-	    it should always be overridden
+Some general stuff about UI objects:
+  • The id parameter is not strictly necessary, but help when looking at the
+    html code in a browser
+  • The align parameter is a string with 1 or 2 characters:
+      - If the string only has 1 character, the only possible value is "s", 
+        which sets the object's position to static (therefore x and y have 
+        no effect)
+      - The first character is vertical alignment; the second is horizontal.
+      - Possible vertical values are:
+          ~ "t" - Top
+          ~ "c" - Centre (only works if width and height are specified)
+          ~ "b" - Bottom
+      - Possible horizontal values are:
+          ~ "l" - Left
+          ~ "c" - Centre (only works if width and height are specified)
+          ~ "r" - Right
+  • The create() function is to set things specific to that type of element;
+    it should always be overridden
 */
 
 class UiElement {
 	constructor(elemType, id, x, y, align) {
-		if (new.target === UiElement) throw TypeError("Cannot instantiate UiElement class");
+		if (new.target === UiElement) 
+			throw TypeError("Cannot instantiate UiElement class");
 
 		this.elemType = elemType;
 		this.id = id;
@@ -40,7 +41,9 @@ class UiElement {
 
 class UiWindow {
 	constructor(id, x, y, align, w, h) {
-		if (id == undefined || id == null) throw "Tried to make UI window with invalid ID";
+		if (id == undefined || id == null) 
+			throw "Tried to make UI window with invalid ID";
+
 		this.id = id;
 
 		this.x = x;
