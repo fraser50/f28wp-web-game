@@ -52,6 +52,10 @@ class Position {
 
         return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2))
     }
+
+    clone() {
+        return new Position(this.x, this.y);
+    }
 }
 
 class Vector {
@@ -70,6 +74,10 @@ class Vector {
     add(pos) {
         pos.add(this.toPosition);
 
+    }
+
+    clone() {
+        return new Vector(this.magnitude, this.angle);
     }
 
     static fromXY(x, y) {
