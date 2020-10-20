@@ -35,7 +35,7 @@ window.addEventListener("load", () => {
 
 	// Login window
 
-	loginWindow = generateLoginWindow();
+	loginWindow = generateLoginWindow(socket);
 	
 	loginWindow.addToPage();
 	
