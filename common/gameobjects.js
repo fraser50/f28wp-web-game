@@ -22,3 +22,9 @@ class Player extends GameObject {
         this.velocity = velocity;
     }
 }
+
+class Point extends GameObject {
+    constructor(pos, rotation, level) {
+        this.velocity = velocity;
+    }
+}
