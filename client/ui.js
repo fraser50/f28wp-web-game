@@ -294,6 +294,12 @@ class UiButton extends UiElement {
 		this.elem.innerText = newValue.toString();
 	}
 
+	setCallback(newCallback) {
+		this.elem.removeEventListener(this.callback);
+		this.callback = newCallback;
+		this.elem.addEventListener(newCallback);
+	}
+
 	create() {
 		this.elem.className = "uiButton";
 
