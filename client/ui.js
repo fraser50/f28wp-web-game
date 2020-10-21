@@ -295,9 +295,9 @@ class UiButton extends UiElement {
 	}
 
 	setCallback(newCallback) {
-		this.elem.removeEventListener(this.callback);		// Error: needs two parameters
+		this.elem.removeEventListener("click", this.callback);
 		this.callback = newCallback;
-		this.elem.addEventListener(newCallback);
+		this.elem.addEventListener("click", newCallback);
 	}
 
 	create() {
