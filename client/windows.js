@@ -41,9 +41,12 @@ function generateLoginWindow(socket) {
     socket.on('addUser', (data) => {
 		loginUserBox.clear();
 		loginPassBox.clear();
-		if (data.success == true) 
+		if (data.success == true) {
 			loginWindow.hide();
+			logActivateWindow.hide();
 			userDetails.loginSuccess = true;
+			showSignedInButton();
+		}
 		alert(data.message);
 	});
 	
@@ -52,12 +55,14 @@ function generateLoginWindow(socket) {
 		loginPassBox.clear();
 		if (data.success == true) {
 			loginWindow.hide();
+			logActivateWindow.hide();
 			userDetails.loginSuccess = true;
+			showSignedInButton();
 		}
 		alert(data.message);
 	});
 	
-	socket.on('guest', (data) => {
+	socket.on('guest', (data) => {			//Havent implemented Stats and Log out to guest yet
 		loginUserBox.clear();
 		loginPassBox.clear();
 		if (data.success == true) {
@@ -70,4 +75,71 @@ function generateLoginWindow(socket) {
 	});
     
     return loginWindow;
+}
+
+function showSignedInButton() {
+	if (signedInWindow.hidden) {
+		signedInButton.updateValue("Signed in as: " + userDetails.name)
+		signedInWindow.show();
+	} else 
+		signedInWindow.hide();
+}
+
+function generateUserWindow() {
+
+	var userWindow = new UiWindow("userWindow", 0, 0, "cc", 300, 350);
+	
+	userWindowMessage = new UiLabel("userWindowMessage", 20, 20, "tl", "null", "16px sans-serif", "white");
+	userWindow.addObject(userWindowMessage);	
+	
+	userWindow.addObject(new UiLabel("userWinsLabel", 20, 60, "tl", "Total Wins", "16px sans-serif", "white"));
+	userWins = new UiLabel("userWins", 50, 80, "tl", "null", "16px sans-serif", "white");
+	userWindow.addObject(userWins);
+
+	userWindow.addObject(new UiLabel("userKills", 20, 60, "tr", "Total Kills", "16px sans-serif", "white"));
+	userKills = new UiLabel("userKills", 50, 80, "tr", "null", "16px sans-serif", "white");
+	userWindow.addObject(userKills);
+	
+	userWindow.addObject(new UiLabel("userTotalPoints", 110, 60, "tl", "Total Points", "16px sans-serif", "white"));
+	userTotalPoints = new UiLabel("userTotalPoints", 140, 80, "tl", "null", "16px sans-serif", "white");
+	userWindow.addObject(userTotalPoints);
+
+	userWindow.addObject(new UiButton("Sign Out", 20, 175, "tl", 125, 60, "Sign Out", "20px sans-serif", () => {
+		socket.emit('sign out');
+		console.log('sign out');
+		socket.on('sign out', () => {
+			alert("Signed Out");
+			userDetails.name = null;
+			userDetails.loginSuccess = false;
+			showSignedInButton();
+			userWindow.hide();
+			logActivateWindow.show();
+		});
+	}));
+	
+	userWindow.addObject(new UiButton("closeUserWindow", 20, 175, "tr", 125, 60, "Close", "20px sans-serif", () => {
+		userWindow.hide();
+	}));
+	
+	return userWindow;
+}
+
+
+function getUserStatVals() {
+	var stats = {
+		user : userDetails.name,
+		wins : "",
+		kills : "",
+		points : ""
+	}
+		
+	socket.emit('getStats', (stats));
+
+	socket.on('getStats', (data) => {
+		userWindowMessage.updateValue("You are currently signed in as " + userDetails.name);
+		userWins.updateValue(data.wins);
+		userKills.updateValue(data.kills);
+		userTotalPoints.updateValue(data.totalPoints);
+	});
+
 }

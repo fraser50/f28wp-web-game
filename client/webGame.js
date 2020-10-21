@@ -39,6 +39,8 @@ window.addEventListener("load", () => {
 	
 	loginWindow.addToPage();
 	
+	
+	
 	logActivateWindow = new UiWindow("activateLogWindow",20,20,"tl",100,40);
 	loginActivateButton = new UiButton("activateLogWindowButton", 0, 0, "tl", 100, 40, "Login/Sign Up", "", () => {
 		if (loginWindow.hidden == true) {
@@ -49,7 +51,27 @@ window.addEventListener("load", () => {
 	})
 	logActivateWindow.addObject(loginActivateButton);
 	logActivateWindow.addToPage();
-
+	
+	
+	signedInWindow = new UiWindow("signedInWindow", 20, 20, "tl", 100, 40);
+	signedInButton = new UiButton("signedInButton", 0, 0, "tl", 100, 40, "Signed in as: " + userDetails.name, "", () => {
+		if (userWindow.hidden == true) {
+			getUserStatVals();
+			userWindow.show();
+		} else {
+			userWindow.hide();
+		}
+	})
+	signedInWindow.addObject(signedInButton);
+	signedInWindow.addToPage();
+	signedInWindow.hide();
+	
+	// User details window, initially hidden
+	
+	userWindow = generateUserWindow(socket);
+	userWindow.addToPage();
+	userWindow.hide();
+	
 	// Chat window
 
 	var chatWindow = new UiWindow("chatWindow", 20, 20, "tr", 400, 150);
@@ -82,6 +104,8 @@ window.addEventListener("load", () => {
 
 	chatWindow.addToPage();
 
+
+	
 	socket.on('chatmessage', (data) => {
 		if (data.level != currentLevel.id) return;
 		var label = new UiLabel("", 0, 0, "s", "<" + data.user + "> " + data.message, "14px sans-serif");

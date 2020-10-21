@@ -69,6 +69,7 @@ io.on('connection', (socket) => {
 	socket.on('addUser', (data) => {			//Listens for addUser requests
 		var returnPack = {			//Create a package to return the users id and a message
 			userId : "",
+			username : "",
 			message : "",
 			success: false
 		};
@@ -82,6 +83,7 @@ io.on('connection', (socket) => {
 	socket.on('login', (data) => {				//Listens for login requests
 		var returnPack = {			//Create a package to return the users id and a message
 			userId : "",
+			username : "",
 			message : "",
 			success: false
 		};
@@ -108,7 +110,14 @@ io.on('connection', (socket) => {
 			// printLog("guest Id: "+returnPack.userId);
 		}, 50);	
 	});
-
+	
+	socket.on('sign out', () => {
+		signOut(socket);
+	})
+	
+	socket.on('getStats', (stats) => {
+		getUserStats(stats, socket);
+	});
 
 	socket.on('chatmessage', (data) => {
 		if (loggedInUsers[socket.id] == undefined) {
@@ -194,7 +203,8 @@ function addUser(data, returnPack, socket) {
 			if (err) {		//Error handling
 				printLog(err.message, returnPack);
 				returnPack.message = "Sorry, there was an error in creating your account, please try again.";
-				returnPack.userId = "";
+				returnPack.userId = "";			//This and username might not be necessary
+				returnPack.username = "";
 				socket.emit('addUser', returnPack);
 			} else {
 				printLog("Added " + data.user + " to database");	
@@ -204,6 +214,7 @@ function addUser(data, returnPack, socket) {
 						printLog(err.message, "error");
 					else {
 						returnPack.userId = rows[0].id;
+						returnPack.username = rows[0].user;
 						returnPack.success = true;
 						loggedInUsers[socket.id] = data.user;
 						socket.emit('addUser', returnPack);
@@ -215,7 +226,8 @@ function addUser(data, returnPack, socket) {
 		} else {
 			printLog("found match", "warning")		//If there is already an account in the db with the given username
 			returnPack.message = "Account name " + data.user + " is already taken, please choose another.";	//Modify the returnPack to tell the user so
-			returnPack.userId = "";
+			returnPack.userId = "";			//This and username might not be necessary
+			returnPack.username = "";
 
 			socket.emit('addUser', returnPack);
 		}
@@ -225,6 +237,7 @@ function addUser(data, returnPack, socket) {
 function login(data, returnPack, socket) {
 	returnPack.message = "The details you have entered were incorrect, please try again.";
 	returnPack.userId = "null";
+	returnPack.username = "null"
 
 	db.all('SELECT id, user FROM users WHERE user=? AND pass=?', [data.user, data.pass], (err, rows) => {
 		if (err) {
@@ -243,6 +256,7 @@ function login(data, returnPack, socket) {
 
 				returnPack.message = "Welcome, " + row.user + ".";
 				returnPack.userId = row.id;
+				returnPack.username = row.user;
 				returnPack.success = true;
 
 				socket.emit('login', returnPack);
@@ -290,6 +304,36 @@ function isLoggedIn() {
 
 }
 
+
+// Queries db for this sockets users statistics
+function getUserStats(stats, socket) {
+	db.all('SELECT wins, kills, totalPoints FROM users WHERE user=?', [stats.user], (err, rows) => {
+		if (err) {
+			printLog(err.message);
+			return;
+		}
+		var done = false;
+		rows.forEach((row) => {
+			if (row.user = stats.user) {
+				stats.wins = row.wins;
+				stats.kills = row.kills;
+				stats.totalPoints = row.totalPoints;
+				socket.emit('getStats', stats);
+				done = true;
+				return;
+			}
+		});
+		if (!done) {
+			socket.emit('getStats', stats);
+		}
+	})
+}
+
+function signOut(socket) {
+	printLog("sign out " + socket.id);		//Need to change this to account name rather than socket
+	delete loggedInUsers[socket.id];	//Might be a bit dodgy, don't fully know how loggedInUsers works
+	socket.emit('sign out');
+}
 
 // Write to the console in a standard format with different levels (valid levels: warning, error, info (default))
 function printLog(text, level) {
