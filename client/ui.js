@@ -252,6 +252,7 @@ class UiLabel extends UiElement {
 	}
 
 	updateValue(newValue) {
+		if (newValue == undefined) return;	// If the newValue is undefined, return to avoid errors
 		this.text = newValue.toString();
 
 		if (this.elem == undefined) return; // If the label has not been created as an HTML object then return now to avoid errors
