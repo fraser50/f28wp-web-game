@@ -93,17 +93,17 @@ function generateUserWindow() {
 	userWindow.addObject(userWindowMessage);	
 	
 	userWindow.addObject(new UiLabel("userWinsLabel", 20, 60, "tl", "Total Wins", "16px sans-serif", "white"));
-	userWins = new UiLabel("userWins", 50, 80, "tl", "null", "16px sans-serif", "white");
+	userWins = new UiLabel("userWins", 22, 80, "tl", "null", "16px sans-serif", "white");
 	userWindow.addObject(userWins);
-
-	userWindow.addObject(new UiLabel("userKills", 20, 60, "tr", "Total Kills", "16px sans-serif", "white"));
-	userKills = new UiLabel("userKills", 50, 80, "tr", "null", "16px sans-serif", "white");
-	userWindow.addObject(userKills);
 	
-	userWindow.addObject(new UiLabel("userTotalPoints", 110, 60, "tl", "Total Points", "16px sans-serif", "white"));
-	userTotalPoints = new UiLabel("userTotalPoints", 140, 80, "tl", "null", "16px sans-serif", "white");
+	userWindow.addObject(new UiLabel("userTotalPoints", 111.75, 60, "tl", "Total Points", "16px sans-serif", "white"));
+	userTotalPoints = new UiLabel("userTotalPoints", 113.75, 80, "tl", "null", "16px sans-serif", "white");
 	userWindow.addObject(userTotalPoints);
 
+	userWindow.addObject(new UiLabel("userKills", 212.42, 60, "tl", "Total Kills", "16px sans-serif", "white"));
+	userKills = new UiLabel("userKills", 214.42, 80, "tl", "null", "16px sans-serif", "white");
+	userWindow.addObject(userKills);
+	
 	userWindow.addObject(new UiButton("Sign Out", 20, 175, "tl", 125, 60, "Sign Out", "20px sans-serif", () => {
 		socket.emit('sign out');
 		console.log('sign out');
@@ -136,7 +136,7 @@ function getUserStatVals() {
 	socket.emit('getStats', (stats));
 
 	socket.on('getStats', (data) => {
-		userWindowMessage.updateValue("You are currently signed in as " + userDetails.name);
+		userWindowMessage.updateValue("Signed in as " + userDetails.name);
 		userWins.updateValue(data.wins);
 		userKills.updateValue(data.kills);
 		userTotalPoints.updateValue(data.totalPoints);
