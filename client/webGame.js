@@ -190,6 +190,10 @@ function test() {
 	testLabel.updateValue("yeetus"); // Try updating the value after it has been added to the page
 }
 
+function createPlayer(socket, user) {	//This relates to the gameobjects.js Player class rather than player_and_hitbox.js. Need to get a name assignment sorted out
+	socket.player = new Player(user, "green", 100, 100);
+	console.log(socket.player);
+};
 // Run the tests 200ms after the page loads
 // window.addEventListener("load", () => {
 // 	setTimeout(test, 200);
