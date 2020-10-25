@@ -46,6 +46,7 @@ function generateLoginWindow(socket) {
 			logActivateWindow.hide();
 			userDetails.loginSuccess = true;
 			showSignedInButton();
+			createPlayer(socket, userDetails.name);		//Just barely works
 		}
 		alert(data.message);
 	});
@@ -58,6 +59,7 @@ function generateLoginWindow(socket) {
 			logActivateWindow.hide();
 			userDetails.loginSuccess = true;
 			showSignedInButton();
+			createPlayer(socket, userDetails.name);		//Just barely works
 		}
 		alert(data.message);
 	});
@@ -70,6 +72,7 @@ function generateLoginWindow(socket) {
 			console.info(data);
 			userDetails.name = genGuestName(data.userId);
 			userDetails.loginSuccess = true;
+			createPlayer(socket, userDetails.name);		//Just barely works, should be adapted for guest specifically
 		}
 		alert(data.message);
 	});
