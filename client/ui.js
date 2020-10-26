@@ -286,6 +286,8 @@ class UiButton extends UiElement {
 		this.font = font;
 
 		this.callback = callback;
+
+		this.disabled = false;
 	}
 
 	updateValue(newValue) {
@@ -301,6 +303,17 @@ class UiButton extends UiElement {
 		this.elem.addEventListener("click", newCallback);
 	}
 
+	disable() {
+		this.disabled = true;
+		if (this.elem != undefined)
+			this.elem.disabled = true;
+	}
+	enable() {
+		this.disabled = false;
+		if (this.elem != undefined)
+			this.elem.disabled = false;
+	}
+
 	create() {
 		this.elem.className = "uiButton";
 
@@ -309,6 +322,8 @@ class UiButton extends UiElement {
 			this.elem.style.font = this.font;
 
 		this.elem.addEventListener("click", this.callback);
+
+		this.elem.disabled = this.disabled;
 	}
 }
 

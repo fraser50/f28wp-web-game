@@ -60,6 +60,8 @@ function generateLoginWindow(socket) {
 			userDetails.loginSuccess = true;
 			showSignedInButton();
 			createPlayer(socket, userDetails.name);		//Just barely works
+
+			chatSendButton.enable();
 		}
 		alert(data.message);
 	});
@@ -117,6 +119,8 @@ function generateUserWindow() {
 			showSignedInButton();
 			userWindow.hide();
 			logActivateWindow.show();
+
+			chatSendButton.disable();
 		});
 	}));
 	

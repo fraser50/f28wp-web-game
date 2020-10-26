@@ -26,6 +26,7 @@ var userDetails = {
 	loginSuccess: false
 };
 
+var chatSendButton;
 
 // Add the elements to the page when it finishes loading
 window.addEventListener("load", () => {
@@ -104,6 +105,7 @@ window.addEventListener("load", () => {
 		while (elem.childElementCount > maxMessages)
 			elem.removeChild(elem.childNodes[0]);
 	});
+	chatSendButton.disable();
 	chatWindow.addObject(chatSendButton);
 
 	chatWindow.addToPage();

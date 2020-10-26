@@ -59,6 +59,10 @@ div#ui .uiWindow .uiButton:hover {
 	/* box-shadow: 0 0 5px #fff8; */
 	background-color: #fff3;
 }
+div#ui .uiWindow .uiButton[disabled=""] {
+	cursor: not-allowed;
+	color: #aaa;
+}
 
 div#ui .uiWindow .uiTextInput {
 	padding: 4px 5px;
