@@ -70,3 +70,13 @@ div#ui .uiWindow .uiTextInput {
 	background-color: transparent;
 	color: white;
 }
+
+div#ui .uiWindow .uiGraph {
+	position: relative;
+}
+div#ui .uiWindow .uiGraph div.uiGraphBar {
+	display: inline-block;
+	position: relative;
+
+	max-height: 100%;
+}

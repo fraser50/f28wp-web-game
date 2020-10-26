@@ -27,6 +27,9 @@ var userDetails = {
 };
 
 var chatSendButton;
+var frametimeLabel;
+var frametimeGraph;
+var fpsLabel;
 
 // Add the elements to the page when it finishes loading
 window.addEventListener("load", () => {
@@ -109,6 +112,21 @@ window.addEventListener("load", () => {
 	chatWindow.addObject(chatSendButton);
 
 	chatWindow.addToPage();
+
+
+
+	var perfWindow = new UiWindow("perfWindow", 20, 20, "br", 400, 200);
+
+	frametimeLabel = new UiLabel("perfFrametime", 5, 5, "tl", "", "15px sans-serif", "white");
+	perfWindow.addObject(frametimeLabel);
+
+	frametimeGraph = new UiGraph("perfFrametimeGraph", 5, 40, "tl", 300, 100, 150, "red");
+	perfWindow.addObject(frametimeGraph);
+
+	fpsLabel = new UiLabel("perfFPS", 5, 20, "tl", "", "15px sans-serif", "white");
+	perfWindow.addObject(fpsLabel);
+
+	perfWindow.addToPage();
 
 
 	

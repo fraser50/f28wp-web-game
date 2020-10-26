@@ -75,6 +75,8 @@ function generateLoginWindow(socket) {
 			userDetails.name = genGuestName(data.userId);
 			userDetails.loginSuccess = true;
 			createPlayer(socket, userDetails.name);		//Just barely works, should be adapted for guest specifically
+
+			chatSendButton.enable();
 		}
 		alert(data.message);
 	});

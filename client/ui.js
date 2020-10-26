@@ -361,3 +361,46 @@ class UiTextInput extends UiElement {
 		return val;
 	}
 }
+
+class UiGraph extends UiElement {
+	constructor(id, x, y, align, w, h, numBars, barColor) {
+		super("div", id, x, y, align);
+
+		this.w = w;
+		this.h = h;
+
+		this.numBars = numBars;
+		this.barColor = barColor;
+
+		this.barWidth = Math.max(1, Math.floor(this.w/numBars));
+	}
+
+	create() {
+		this.elem.className = "uiGraph";
+
+		for (var i=0; i<this.numBars; i++) {
+			var barElem = document.createElement("div");
+			barElem.className = "uiGraphBar";
+
+			barElem.style.width = this.barWidth + "px";
+			barElem.style.height = 0 + "px";
+
+			this.elem.appendChild(barElem);
+		}
+	}
+
+	addBar(value) { // Takes a value between 0 and 1
+		var barElem = document.createElement("div");
+		barElem.className = "uiGraphBar";
+
+		barElem.style.width = this.barWidth + "px";
+		barElem.style.height = value * this.h + "px";
+
+		barElem.style.marginTop = `${this.h-(value*this.h)}px`;
+
+		barElem.style.backgroundColor = this.barColor;
+
+		this.elem.removeChild(this.elem.childNodes[0]);
+		this.elem.appendChild(barElem);
+	}
+}
