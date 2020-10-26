@@ -12,6 +12,10 @@ const io = require('socket.io')(server);
 const sqlite3 = require('sqlite3').verbose();
 const dbfilePath = './users.db';
 
+// Constants for shared files to know if they are running on the client or the server
+const SERVER = true;
+const CLIENT = !SERVER;
+
 
 // Use eval to import files from common
 var GameLevel = eval('(' + fs.readFileSync('../common/level.js') + ')');

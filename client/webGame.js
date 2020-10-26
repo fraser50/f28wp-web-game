@@ -1,6 +1,10 @@
 var socketPath = window.location.pathname + "socket.io";
 var socket = io({path: socketPath});
 
+// Constants for shared files to know if they are running on the client or the server
+const SERVER = false;
+const CLIENT = !SERVER;
+
 // JSON object that stores every type of tile as JSON objects (e.g. {src:"/assets/images/thingy.png"})
 var blockTypes = {}; // Do not edit this, edit it in the server instead
 

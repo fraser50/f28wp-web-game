@@ -10,6 +10,7 @@ class GameLevel {
 		Within each chunk, the tiles are also JSON objects, with the structure {id:0,layer:0,isTransition:false} */
 		this.newChunks = [];
 		this.chunks = {};
+		this.chunkElems = [];
 	}
 
 	update() {
@@ -57,5 +58,26 @@ class GameLevel {
 	clearChunks() {
 		this.newChunks = [];
 		this.chunks = {};
+	}
+
+	render(player) {
+		if (this.chunkElems == [] || SERVER) return;
+
+		var pos = player.pos;
+
+		for (var i=0; i<this.chunkElems.length; i++) {
+			var cPos = fromChunkId(this.chunkElems[i].id);
+
+			var wPos = {};
+			wPos.x = cPos[0]*chunkSize;
+			wPos.y = cPos[1]*chunkSize;
+
+			var sPos = {};
+			sPos.x = (wPos.x-pos[0]) * zoomLevel + world.clientWidth/2;
+			sPos.y = (wPos.y-pos[1]) * zoomLevel + world.clientHeight/2;
+
+			this.chunkElems[i].style.left = sPos.x + "px";
+			this.chunkElems[i].style.top = sPos.y + "px";
+		}
 	}
 }

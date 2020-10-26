@@ -129,5 +129,7 @@ function createWorld(level) {
 		}
 
 		world.appendChild(chunkElem);
+
+		level.chunkElems.push(chunkElem);
 	}
 };
