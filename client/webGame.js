@@ -127,8 +127,32 @@ window.addEventListener("load", () => {
 	perfWindow.addObject(fpsLabel);
 
 	perfWindow.addToPage();
+	
+	//This creates a timer that counts down from 60, should end up controlling the length of each match
+	//Need to make count down more robust so tampering is not an issue and all clients timers are in sync
+	//Need to create method to start timer on match start, end match when timer runs out
+	var timerWindow = new UiWindow("timerWindow", 0, 20, "tc", 44.5, 45);		//Need to work on formatting
+	var sec = 60;
+	var timer = new UiLabel("timer", 0, 0, "tc", sec, "40px sans-serif");
+	timerWindow.addObject(timer);
+	timerWindow.addToPage();
+	
+	var timerLoop = setInterval(function() {
+		console.log('tryna update')
+		socket.emit('updateTimer', sec);
+	}, 1000);
+	
+	socket.on('updateTimer', (data) => {
+		sec = data;
+		if (sec == 0) {
+			clearInterval(timerLoop);
+			timer.updateValue("Game Over");
+			console.log("Timer Done");
+		}
+		timer.updateValue(data);
+	});
 
-
+	
 	
 	socket.on('chatmessage', (data) => {
 		if (data.level != currentLevel.id) return;

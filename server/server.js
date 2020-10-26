@@ -132,6 +132,10 @@ io.on('connection', (socket) => {
 		printLog(`chatmessage: <${data.user}> ${data.message}`);
 		socket.broadcast.emit('chatmessage', data);
 	});
+	
+	socket.on('updateTimer', (data) => {
+		updateTimer(data, socket);
+	})
 
 	socket.on('disconnect', () => {
 		if (socket.isGuest)
@@ -337,6 +341,14 @@ function signOut(socket) {
 	printLog("sign out " + socket.id);		//Need to change this to account name rather than socket
 	delete loggedInUsers[socket.id];	//Might be a bit dodgy, don't fully know how loggedInUsers works
 	socket.emit('sign out');
+}
+
+function updateTimer(sec, socket) {
+		sec--
+		if (sec==0) {
+			printLog("Timer Done");
+		}
+		socket.emit('updateTimer', sec);
 }
 
 // Write to the console in a standard format with different levels (valid levels: warning, error, info (default))
