@@ -10,11 +10,15 @@ const path = require('path');
 const fs = require('fs');
 const io = require('socket.io')(server);
 const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcrypt');
+
 const dbfilePath = './users.db';
 
 // Constants for shared files to know if they are running on the client or the server
 const SERVER = true;
 const CLIENT = !SERVER;
+
+const BCRYPT_ROUNDS = 10; // Changing this will INVALIDATE everyone's passwords
 
 
 // Use eval to import files from common
@@ -188,7 +192,7 @@ var db = new sqlite3.Database(dbfilePath, function(err) {
 createDatabase();
 
 function createDatabase() {
-	db.run('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT UNIQUE, pass TEXT, wins INTEGER, kills INTEGER, totalPoints INTEGER);', function(err){
+	db.run('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT UNIQUE, passhash TEXT, wins INTEGER, kills INTEGER, totalPoints INTEGER);', function(err){
 		if (err)
 			return printLog(err.message);
 		printLog('Table created');
@@ -206,8 +210,10 @@ function addUser(data, returnPack, socket) {
 		});
 
 		// Where function addToDb started
-		if (!(found)) {			//If there isnt a match for the entered username in the database
-		db.run('INSERT INTO users(user, pass) VALUES(?, ?)', [data.user, data.pass], (err) => {		// add username and password to the database
+		if (!(found)) {		//If there isnt a match for the entered username in the database
+			var hashedPassword = bcrypt.hashSync(data.pass, BCRYPT_ROUNDS);
+
+		db.run('INSERT INTO users(user, passhash) VALUES(?, ?)', [data.user, hashedPassword], (err) => {		// add username and password to the database
 			if (err) {		//Error handling
 				printLog(err.message, returnPack);
 				returnPack.message = "Sorry, there was an error in creating your account, please try again.";
@@ -247,35 +253,42 @@ function login(data, returnPack, socket) {
 	returnPack.userId = "null";
 	returnPack.username = "null"
 
-	db.all('SELECT id, user FROM users WHERE user=? AND pass=?', [data.user, data.pass], (err, rows) => {
+	db.all('SELECT id, user, passhash FROM users WHERE user=?', [data.user], (err, rows) => {
 		if (err) {
 			printLog(err.message);
 			return;
 		}
+
 		var done = false;
 		rows.forEach((row) => {
-			if (row.user == data.user) {
-				for (var u in loggedInUsers) {
-					if (row.user == loggedInUsers[u]) {
-						returnPack.message = "That account is already logged in";
-						return;
-					}
-				}
 
-				returnPack.message = "Welcome, " + row.user + ".";
-				returnPack.userId = row.id;
-				returnPack.username = row.user;
-				returnPack.success = true;
-
-				socket.emit('login', returnPack);
-				loggedInUsers[socket.id] = data.user;
-				socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
-				printLog("login Id: "+returnPack.userId+", "+returnPack.success);
-
-				done = true;
-				return;
+			var provided_password = data.pass;
+			if (!bcrypt.compareSync(provided_password, row.passhash)) {
+				return; // If the password is incorrect, return
 			}
+
+
+			for (var u in loggedInUsers) {
+				if (row.user == loggedInUsers[u]) {
+					returnPack.message = "That account is already logged in";
+					return;
+				}
+			}
+
+			returnPack.message = "Welcome, " + row.user + ".";
+			returnPack.userId = row.id;
+			returnPack.username = row.user;
+			returnPack.success = true;
+
+			socket.emit('login', returnPack);
+			loggedInUsers[socket.id] = data.user;
+			socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
+			printLog("login Id: "+returnPack.userId+", "+returnPack.success);
+
+			done = true;
+			return;
 		});
+
 		if (!done)
 			socket.emit('login', returnPack);
 	});
