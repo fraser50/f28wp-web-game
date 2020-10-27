@@ -131,11 +131,13 @@ window.addEventListener("load", () => {
 	//This creates a timer that counts down from 60, should end up controlling the length of each match
 	//Need to make count down more robust so tampering is not an issue and all clients timers are in sync
 	//Need to create method to start timer on match start, end match when timer runs out
-	var timerWindow = new UiWindow("timerWindow", 0, 20, "tc", 44.5, 45);		//Need to work on formatting
+	var timerWindow = new UiWindow("timerWindow", 0, 20, "tc", 44.5, 45);
 	var sec = 60;
-	var timer = new UiLabel("timer", 0, 0, "tc", sec, "40px sans-serif");
+	var timer = new UiLabel("timer", 0, 0, "tl", sec, "40px sans-serif");
 	timerWindow.addObject(timer);
 	timerWindow.addToPage();
+	timerWindow.setOpacity(0);
+
 	
 	var timerLoop = setInterval(function() {
 		console.log('tryna update')
@@ -203,6 +205,7 @@ socket.on('getchunk', (dataStr) => {
 	currentLevel.addChunk(genChunkId(data.x, data.y), data.tiles);
 });
 
+test();
 
 // Test variables (global to allow modification from the console)
 var testWindow;

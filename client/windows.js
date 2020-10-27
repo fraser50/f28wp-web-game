@@ -94,7 +94,7 @@ function showSignedInButton() {
 
 function generateUserWindow() {
 
-	var userWindow = new UiWindow("userWindow", 0, 0, "cc", 300, 350);
+	var userWindow = new UiWindow("userWindow", 0, 0, "cc", 300, 200);
 	
 	userWindowMessage = new UiLabel("userWindowMessage", 20, 20, "tl", "null", "16px sans-serif", "white");
 	userWindow.addObject(userWindowMessage);	
@@ -111,7 +111,7 @@ function generateUserWindow() {
 	userKills = new UiLabel("userKills", 214.42, 80, "tl", "null", "16px sans-serif", "white");
 	userWindow.addObject(userKills);
 	
-	userWindow.addObject(new UiButton("Sign Out", 20, 175, "tl", 125, 60, "Sign Out", "20px sans-serif", () => {
+	userWindow.addObject(new UiButton("Sign Out", 20, 120, "tl", 125, 60, "Sign Out", "20px sans-serif", () => {
 		socket.emit('sign out');
 		console.log('sign out');
 		socket.on('sign out', () => {
@@ -126,7 +126,7 @@ function generateUserWindow() {
 		});
 	}));
 	
-	userWindow.addObject(new UiButton("closeUserWindow", 20, 175, "tr", 125, 60, "Close", "20px sans-serif", () => {
+	userWindow.addObject(new UiButton("closeUserWindow", 20, 120, "tr", 125, 60, "Close", "20px sans-serif", () => {
 		userWindow.hide();
 	}));
 	
