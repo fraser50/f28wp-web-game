@@ -132,7 +132,7 @@ window.addEventListener("load", () => {
 	//Need to make count down more robust so tampering is not an issue and all clients timers are in sync
 	//Need to create method to start timer on match start, end match when timer runs out
 	var timerWindow = new UiWindow("timerWindow", 0, 20, "tc", 44.5, 45);
-	var sec = 10;
+	var sec = 60;
 	var timer = new UiLabel("timer", 0, 0, "tl", sec, "40px sans-serif");
 	timerWindow.addObject(timer);
 	timerWindow.addToPage();
