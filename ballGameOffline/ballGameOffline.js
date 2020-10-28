@@ -1,9 +1,29 @@
-class Player {
+class GameObject {
+    constructor(xPos, yPos) {
+        this.xPos = xPos;
+        this.yPos = yPos;
+
+        this.removed = false; //If set to true, object will be removed in next game loop
+    }
+
+    update() {
+        // Override this method for logic that should run every cycle
+    }
+
+    getXPos() {
+        return this.xPos;
+    }
+
+    getYPos() {
+        return this.yPos;
+    }
+}
+
+class Player extends GameObject{
     constructor(playerName, playerColor, playerXPos, playerYPos) {
+        super(playerXPos, playerYPos);
         this.playerName = playerName;
         this.playerColor = playerColor;
-        this.playerXPos = playerXPos;
-        this.playerYPos = playerYPos;
 
         this.playerXVel = 0;
         this.playerYVel = 0;
@@ -96,8 +116,6 @@ class Player {
         playerDiv.style.top = playerYPos + "px";
     }
 
-
-
     getPlayerName() {
         return this.playerName;
     }
@@ -105,15 +123,6 @@ class Player {
     getPlayerState() {
         return this.state;
     }
-
-    getPlayerXPos() {
-        return this.playerXPos;
-    }
-
-    getPlayerYPos() {
-        return this.playerYPos;
-    }
-
 
     //End of Player class
 }
