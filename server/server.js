@@ -161,17 +161,14 @@ printLog("Server started".green); //Send a log to console to confirm connection
 
 //game loop for server
 const FPS = 60;
-var gameObjectsList = {};
+var level = new GameLevel(0);
 
-function urGameObjects() {
-	for (let i in gameObjectsList) {
-		var tempObject = gameObjectsList[i];
-		tempObject.update();
-		tempObject.render();
-	}
+function updateGameState() {
+	level.update();
+
 }
 
-setInterval(urGameObjects, 1000/FPS);
+setInterval(updateGameState, 1000/FPS);
 
 //Create db to store player info
 
