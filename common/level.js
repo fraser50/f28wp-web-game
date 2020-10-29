@@ -133,4 +133,20 @@ class GameLevel {
 			this.chunkElems[i].style.top = sPos.y + "px";
 		}
 	}
+
+	loadFromFile(JSONFile) {
+		if (CLIENT) return;
+
+		var data = JSON.parse(fs.readFileSync(JSONFile));
+
+		this.spawnpos = data.spawnpos;
+
+		for (var c in data.chunks)
+			this.addChunk(c, data.chunks[c]);
+	}
+
+	setInfo(data) {
+		this.spawnpos = data.spawnpos;
+		// There will probably be a lot more here
+	}
 }

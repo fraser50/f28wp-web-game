@@ -5,8 +5,10 @@ var socket = io({path: socketPath});
 const SERVER = false;
 const CLIENT = !SERVER;
 
+
 // JSON object that stores every type of tile as JSON objects (e.g. {src:"/assets/images/thingy.png"})
 var blockTypes = {}; // Do not edit this, edit it in the server instead
+var tilesFolder = "client/assets/images/tiles/";
 
 var gamearea = document.createElement("div");
 gamearea.id = "gamearea";
@@ -34,6 +36,7 @@ var fpsLabel;
 // Add the elements to the page when it finishes loading
 window.addEventListener("load", () => {
 	socket.emit('getblocktypes');
+	socket.emit('getleveldata', {"id": currentLevel.id});
 
 	document.body.appendChild(gamearea);
 
@@ -196,6 +199,12 @@ socket.on('getblocktypes', (dataStr) => {
 	blockTypes = data;
 });
 
+socket.on('getleveldata', (data) => {
+	if (data.id == currentLevel.id) {
+		currentLevel.setInfo(data);
+	}
+});
+
 // Temporary variable to store the current level. Definitly change the way this works
 var currentLevel = new GameLevel(0);
 
@@ -208,6 +217,15 @@ socket.on('getchunk', (dataStr) => {
 	var data = JSON.parse(dataStr);
 	currentLevel.addChunk(genChunkId(data.x, data.y), data.tiles);
 });
+
+function createPlayer(socket, user) {	//This relates to the gameobjects.js Player class rather than player_and_hitbox.js. Need to get a name assignment sorted out
+	socket.player = new Player(currentLevel.spawnpos == undefined ? [0, 0] : currentLevel.spawnpos, 0, 0, [0, 0]);
+	console.log(socket.player);
+};
+
+function initWorld() {
+
+}
 
 // test();
 
@@ -245,10 +263,6 @@ function test() {
 	testLabel.updateValue("yeetus"); // Try updating the value after it has been added to the page
 }
 
-function createPlayer(socket, user) {	//This relates to the gameobjects.js Player class rather than player_and_hitbox.js. Need to get a name assignment sorted out
-	socket.player = new Player(user, "green", 100, 100);
-	console.log(socket.player);
-};
 // Run the tests 200ms after the page loads
 // window.addEventListener("load", () => {
 // 	setTimeout(test, 200);

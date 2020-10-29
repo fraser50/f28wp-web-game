@@ -1,8 +1,8 @@
 class GameObject {
-    constructor(pos, rotation, level) {
+    constructor(pos, rotation) {
         this.pos = pos;
         this.rotation = rotation;
-        this.level = level;
+        // this.level = level;
 
         this.removed = false;
     }

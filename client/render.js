@@ -120,7 +120,7 @@ function createWorld(level) {
 			var tileElem = document.createElement("img");
 			tileElem.id = genTileImageId(t);
 
-			tileElem.src = blockTypes[tile.id].src;
+			tileElem.src = tilesFolder + blockTypes[tile.id].src;
 
 			tileElem.width = zoomLevel;
 			tileElem.height = zoomLevel;

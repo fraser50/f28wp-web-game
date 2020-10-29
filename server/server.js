@@ -26,19 +26,20 @@ var GameLevel = eval('(' + fs.readFileSync('../common/level.js') + ')');
 eval(fs.readFileSync('../common/util.js') + '');
 eval(fs.readFileSync('../common/gameobjects.js') + ''); // Probably broken
 
-var tilesFolder = "client/assets/images/tiles/";
-var blockTypes = {
-	0: {'src':tilesFolder+"dev_grey.png"},
-	1: {'src':tilesFolder+"dev_orange.png"}
-}
+// Import the block types from JSON file
+var blockTypes = JSON.parse(fs.readFileSync("blocktypes.json"));
+
+// Store all levels in here
+var levels = {};
 
 // Create level for testing
-var level0 = new GameLevel(0);
+levels[0] = new GameLevel(0);
 
 // Add an empty chunk to the level
-level0.addChunk(genChunkId(0, 0), new Array(16*16).fill({id:0,layer:0,isTransition:false}));
-level0.addChunk(genChunkId(1, 0), new Array(16*16).fill({id:1,layer:0,isTransition:false}));
-level0.update();
+// level0.addChunk(genChunkId(0, 0), new Array(16*16).fill({id:0}));
+// level0.addChunk(genChunkId(1, 0), new Array(16*16).fill({id:1}));
+levels[0].loadFromFile("testworld.json");
+levels[0].update();
 
 // Store all the logged in users to use for security
 var loggedInUsers = {};
@@ -56,10 +57,22 @@ app.use('/common',express.static(path.join(__dirname, '/../common')));
 io.on('connection', (socket) => {
 	printLog(`Connection opened (id: ${socket.id})`);
 
+	socket.on('getleveldata', (data) => {
+		// var data = JSON.parse(dataStr);
+
+		var ret = {
+			"id": data.id,
+			"spawnpos": levels[data.id].spawnpos
+		}
+
+		socket.emit('getleveldata', ret);
+		printLog("getleveldata");
+	});
+
 	socket.on('getchunk', (dataStr) => {
 		var data = JSON.parse(dataStr);
 
-		var tiles = level0.chunks[genChunkId(data.x, data.y)];
+		var tiles = levels[data.level].chunks[genChunkId(data.x, data.y)];
 
 		if (tiles != undefined) {
 			socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':tiles}));
