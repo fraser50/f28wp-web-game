@@ -47,6 +47,8 @@ function generateLoginWindow(socket) {
 			userDetails.loginSuccess = true;
 			showSignedInButton();
 			createPlayer(socket, userDetails.name);		//Just barely works
+
+			chatSendButton.enable();
 		}
 		alert(data.message);
 	});
