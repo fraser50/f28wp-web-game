@@ -208,6 +208,15 @@ socket.on('getleveldata', (data) => {
 // Temporary variable to store the current level. Definitly change the way this works
 var currentLevel = new GameLevel(0);
 
+function initWorld() {
+	currentLevel.loadChunksAround(socket.player, 3);
+	setInterval(() => {
+		currentLevel.update();
+		createWorld(currentLevel);
+		currentLevel.render(socket.player);
+	}, 200);
+}
+
 // Load a chunk from the server and add it to the current level
 function loadChunk(cx, cy) {
 	if (cx == undefined || cy == undefined) return;
@@ -222,10 +231,6 @@ function createPlayer(socket, user) {	//This relates to the gameobjects.js Playe
 	socket.player = new Player(currentLevel.spawnpos == undefined ? [0, 0] : currentLevel.spawnpos, 0, 0, [0, 0]);
 	console.log(socket.player);
 };
-
-function initWorld() {
-
-}
 
 // test();
 

@@ -57,6 +57,8 @@ function generateLoginWindow(socket) {
 			createPlayer(socket, userDetails.name);		//Just barely works
 
 			chatSendButton.enable();
+
+			initWorld();
 		}
 		alert(data.message);
 	});
@@ -72,6 +74,8 @@ function generateLoginWindow(socket) {
 			createPlayer(socket, userDetails.name);		//Just barely works
 
 			chatSendButton.enable();
+
+			initWorld();
 		}
 		alert(data.message);
 	});
@@ -87,6 +91,8 @@ function generateLoginWindow(socket) {
 			createPlayer(socket, userDetails.name);		//Just barely works, should be adapted for guest specifically
 
 			chatSendButton.enable();
+
+			initWorld();
 		}
 		alert(data.message);
 	});
