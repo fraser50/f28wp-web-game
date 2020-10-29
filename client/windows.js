@@ -26,6 +26,14 @@ function generateLoginWindow(socket) {
 			alert("Username and password cannot be empty");
 			return;
 		}
+		if (!isValidUsername(loginUserBox.getValue())) {
+			alert("Invalid username");
+			return;
+		}
+		if (!isValidPassword(loginPassBox.getValue())) {
+			alert("Invalid password");
+			return;
+		}
 		userDetails.name = loginUserBox.getValue();
 		var data = {user: loginUserBox.getValue(), pass: loginPassBox.getValue()};
 		socket.emit('addUser', data);

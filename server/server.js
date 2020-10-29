@@ -210,6 +210,16 @@ function createDatabase() {
 }
 
 function addUser(data, returnPack, socket) {
+	if (!isValidUsername(data.user)) {
+		returnPack.message = "Invalid username";
+		socket.emit('addUser', returnPack);
+		return;
+	}
+	if (!isValidPassword(data.pass)) {
+		returnPack.message = "Invalid password";
+		socket.emit('addUser', returnPack);
+		return;
+	}
 	db.all('SELECT user FROM users WHERE user=?', [data.user], (err, rows) => {		// Loops through each entry in the table, looking for an account that already has the entered name
 		if (err)
 			printLog(err.message);

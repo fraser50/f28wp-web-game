@@ -121,3 +121,29 @@ function setBackgroundColorRGBA(element, newRGBA) {
 function genGuestName(gId) {
     return "Guest " + gId.toString();
 }
+
+// Check if a username is valid (maybe change the lengths later)
+function isValidUsername(username) {
+    var length = username.length >= 2 && username.length <= 16;
+
+    var invalidChars = !username.includes(" "); // Maybe change to allow spaces?
+
+    return length && invalidChars;
+}
+
+// Check if a password is valid
+function isValidPassword(password) {
+    var length = password.length >= 6 && password.length <= 30;
+
+    var invalidChars = !password.includes(" ");
+
+    var normChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    var hasNotNorm = false;
+    for (var i in password) {
+        hasNotNorm = !normChars.includes(password[i]);
+        console.debug(password[i], hasNotNorm);
+        if (hasNotNorm) break;
+    }
+
+    return length && invalidChars && hasNotNorm;
+}
