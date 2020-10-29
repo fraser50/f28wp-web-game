@@ -92,7 +92,7 @@ var zoomLevel = 4*texSize;
 var chunkSize = 16;
 
 // Image size is currently hard coded as 16x16, TODO: make the images scale properly
-function createWorld(level) {
+function createWorld(level, replace) {
 	var keys = Object.keys(level.chunks);
 	for (var i=0; i<keys.length; i++) {
 		var chunk = level.chunks[keys[i]];
@@ -101,8 +101,12 @@ function createWorld(level) {
 			continue;
 		}
 
+		// If chunk is already rendered (return if replace = false)
 		if (world.querySelector("#"+keys[i]) != undefined)
-			world.removeChild(world.querySelector("#"+keys[i]));
+			if (replace)
+				world.removeChild(world.querySelector("#"+keys[i]));
+			else
+				return;
 
 		var chunkElem = document.createElement("div");
 		chunkElem.id = keys[i];

@@ -213,7 +213,9 @@ function initWorld() {
 	setInterval(() => {
 		currentLevel.update();
 		createWorld(currentLevel);
-		currentLevel.render(socket.player);
+		setTimeout(() => {
+			currentLevel.render(socket.player);
+		}, 100);
 	}, 200);
 }
 

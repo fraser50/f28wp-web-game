@@ -17,6 +17,7 @@ function loop(level) {
 
 	level.update();
 	render(level);
+	currentLevel.render(socket.player);
 
 	// Add other stuff here
 
