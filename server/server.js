@@ -78,6 +78,7 @@ io.on('connection', (socket) => {
 			socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':tiles}));
 			printLog("getchunk: " + dataStr);
 		} else {
+			socket.emit('getchunkundef', {'id':genChunkId(data.x, data.y)});
 			printLog(("getchunk: " + dataStr + ` chunk ${data.x},${data.y} is undefined`).yellow, "debug");
 		}
 	});

@@ -55,6 +55,9 @@ class GameLevel {
 	addChunk(id, chunk) {
 		this.newChunks.push({'id':id,'chunk':chunk});
 	}
+	addChunkUndef(id) {
+		this.chunks[id] = "null";
+	}
 	clearChunks() {
 		this.newChunks = [];
 		this.chunks = {};
@@ -69,15 +72,15 @@ class GameLevel {
 		var ty = y - chunkRadius*chunkSize;
 		var by = y + chunkRadius*chunkSize;
 
-		console.info(lx, rx, ty, by);
+		//console.info(lx, rx, ty, by);
 
 		for (var y=ty; y<by; y+=chunkSize) {
 			for (var x=lx; x<rx; x+=chunkSize) {
 				var cx = Math.floor(x/chunkSize);
 				var cy = Math.floor(y/chunkSize);
 
-				if (this.chunks[genChunkId(cx, cy)] == undefined) {
-					console.info("cload", cx, cy);
+				if (this.chunks[genChunkId(cx, cy)] == undefined || this.chunks[genChunkId(cx, cy)] == null) {
+					//console.info("cload", cx, cy);
 					loadChunk(cx, cy);
 				}
 			}
@@ -93,20 +96,15 @@ class GameLevel {
 		var ty = y - notInRadius*chunkSize;
 		var by = y + notInRadius*chunkSize;
 
-		console.info(lx, rx, ty, by);
-
 		var notInRange = (n, lb, ub) => {
 			return lb > n || ub < n;
 		};
 
 		for (var i in this.chunks) {
-			console.info(i);
 			var cPos = fromChunkId(i);
 			if (notInRange(cPos[0], lx, rx) || notInRange(cPos[1], ty, by)) {
-				console.info("not in range");
 				delete this.chunks[i];
 				for (var j in this.chunkElems) {
-					console.info("chunkElem", j);
 					if (this.chunkElems[j].id == i)
 						this.chunkElems[j].parentNode.removeChild(this.chunkElems[j]);
 				}

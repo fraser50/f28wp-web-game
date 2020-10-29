@@ -224,6 +224,8 @@ var currentLevel = new GameLevel(0);
 function initWorld() {
 	currentLevel.loadChunksAround(socket.player, 3);
 	setInterval(() => {
+		currentLevel.unloadChunks(socket.player, 5);
+		currentLevel.loadChunksAround(socket.player, 3);
 		currentLevel.update();
 		createWorld(currentLevel);
 		setTimeout(() => {
@@ -240,6 +242,9 @@ function loadChunk(cx, cy) {
 socket.on('getchunk', (dataStr) => {
 	var data = JSON.parse(dataStr);
 	currentLevel.addChunk(genChunkId(data.x, data.y), data.tiles);
+});
+socket.on('getchunkundef', (data) => {
+	currentLevel.addChunkUndef(data.id);
 });
 
 function createPlayer(socket, user) {	//This relates to the gameobjects.js Player class rather than player_and_hitbox.js. Need to get a name assignment sorted out

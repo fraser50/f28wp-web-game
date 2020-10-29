@@ -97,9 +97,10 @@ function createWorld(level, replace) {
 	for (var i=0; i<keys.length; i++) {
 		var chunk = level.chunks[keys[i]];
 		if (chunk == undefined) {
-			console.log("Tried to render undefined chunk");
+			console.log("Tried to render undefined chunk " + keys[i], chunk);
 			continue;
 		}
+		if (chunk == "null") continue;
 
 		// If chunk is already rendered (return if replace = false)
 		if (world.querySelector("#"+keys[i]) != undefined)
