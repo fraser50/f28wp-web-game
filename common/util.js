@@ -65,8 +65,8 @@ class Vector {
     }
 
     toPosition() {
-        x = Math.sin(toRadians(this.angle)) * this.magnitude;
-        y = Math.cos(toRadians(this.angle)) * this.magnitude;
+        var x = Math.sin(toRadians(this.angle)) * this.magnitude;
+        var y = Math.cos(toRadians(this.angle)) * this.magnitude;
 
         return new Position(x, y);
     }

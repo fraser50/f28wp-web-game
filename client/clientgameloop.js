@@ -15,6 +15,8 @@ function loop(level) {
 	fpsLabel.updateValue(fps);
 	frametimeGraph.addBar(frametime/100);
 
+	doMovement(socket.player, frametime);
+
 	level.update();
 	render(level);
 	currentLevel.render(socket.player);

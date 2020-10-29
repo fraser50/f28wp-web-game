@@ -123,11 +123,24 @@ window.addEventListener("load", () => {
 	frametimeLabel = new UiLabel("perfFrametime", 5, 5, "tl", "", "15px sans-serif", "white");
 	perfWindow.addObject(frametimeLabel);
 
-	frametimeGraph = new UiGraph("perfFrametimeGraph", 5, 40, "tl", 300, 100, 150, "red");
+	frametimeGraph = new UiGraph("perfFrametimeGraph", 5, 40, "tl", 390, 100, 195, "red");
 	perfWindow.addObject(frametimeGraph);
 
 	fpsLabel = new UiLabel("perfFPS", 5, 20, "tl", "", "15px sans-serif", "white");
 	perfWindow.addObject(fpsLabel);
+
+	loopStartButton = new UiButton("loopStartButton", 5, 5, "tr", null, null, "Start loop", null, () => {
+		if (loopStartButton.loopRunning) {
+			loopStartButton.loopRunning = false;
+			stopLoop();
+			loopStartButton.updateValue("Start loop");
+		} else {
+			loopStartButton.loopRunning = true;
+			startLoop(currentLevel);
+			loopStartButton.updateValue("Stop loop");
+		}
+	});
+	perfWindow.addObject(loopStartButton);
 
 	perfWindow.addToPage();
 	
