@@ -113,7 +113,7 @@ window.addEventListener("load", () => {
 
 	chatWindow.addToPage();
 
-
+	// Performance stats window
 
 	var perfWindow = new UiWindow("perfWindow", 20, 20, "br", 400, 200);
 
@@ -209,7 +209,7 @@ socket.on('getchunk', (dataStr) => {
 	currentLevel.addChunk(genChunkId(data.x, data.y), data.tiles);
 });
 
-test();
+// test();
 
 // Test variables (global to allow modification from the console)
 var testWindow;

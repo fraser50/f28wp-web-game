@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
 			socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':tiles}));
 			printLog("getchunk: " + dataStr);
 		} else {
-			printLog("getchunk: " + dataStr + ` chunk ${data.x},${data.y} is undefined`, "warning");
+			printLog(("getchunk: " + dataStr + ` chunk ${data.x},${data.y} is undefined`).yellow, "debug");
 		}
 	});
 
@@ -391,6 +391,9 @@ function printLog(text, level) {
 	//var out = ((new Date(new Date() + new Date().getTimezoneOffset())).toISOString()).magenta + " [".grey;
 	var out = getTimeString().magenta + " [".grey;
 	switch(level) {
+		case "debug":
+			out += "DEBG".cyan + "] ".gray + text;
+			break;
 		case "error":
 			out += "!ERR".red + "] ".gray + text.red;
 			break;

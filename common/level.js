@@ -60,6 +60,59 @@ class GameLevel {
 		this.chunks = {};
 	}
 
+	loadChunksAround(player, chunkRadius) {
+		var x = player.pos[0];
+		var y = player.pos[1];
+
+		var lx = x - chunkRadius*chunkSize;
+		var rx = x + chunkRadius*chunkSize;
+		var ty = y - chunkRadius*chunkSize;
+		var by = y + chunkRadius*chunkSize;
+
+		console.info(lx, rx, ty, by);
+
+		for (var y=ty; y<by; y+=chunkSize) {
+			for (var x=lx; x<rx; x+=chunkSize) {
+				var cx = Math.floor(x/chunkSize);
+				var cy = Math.floor(y/chunkSize);
+
+				console.info("cload", cx, cy);
+
+				loadChunk(cx, cy);
+			}
+		}
+	}
+
+	unloadChunks(player, notInRadius) {
+		var x = player.pos[0];
+		var y = player.pos[1];
+
+		var lx = x - notInRadius*chunkSize;
+		var rx = x + notInRadius*chunkSize;
+		var ty = y - notInRadius*chunkSize;
+		var by = y + notInRadius*chunkSize;
+
+		console.info(lx, rx, ty, by);
+
+		var notInRange = (n, lb, ub) => {
+			return lb > n || ub < n;
+		};
+
+		for (var i in this.chunks) {
+			console.info(i);
+			var cPos = fromChunkId(i);
+			if (notInRange(cPos[0], lx, rx) || notInRange(cPos[1], ty, by)) {
+				console.info("not in range");
+				delete this.chunks[i];
+				for (var j in this.chunkElems) {
+					console.info("chunkElem", j);
+					if (this.chunkElems[j].id == i)
+						this.chunkElems[j].parentNode.removeChild(this.chunkElems[j]);
+				}
+			}
+		}
+	}
+
 	render(player) {
 		if (this.chunkElems == [] || SERVER) return;
 
