@@ -32,7 +32,7 @@ div#gamearea div#world div {
 	position: absolute;
 }
 div#gamearea div#world img {
-	display: inline-block;
+	/*display: inline-block;*/
 }
 
 /* Static CSS for UI elements */
@@ -79,4 +79,16 @@ div#ui .uiWindow .uiGraph div.uiGraphBar {
 	position: relative;
 
 	max-height: 100%;
+}
+
+/* CSS for some tiles */
+
+img.tileImg {
+	z-index: 1;
+	position: absolute;
+}
+
+img.tileShadow {
+	position: absolute;
+	z-index: 2;
 }

@@ -76,9 +76,10 @@ class GameLevel {
 				var cx = Math.floor(x/chunkSize);
 				var cy = Math.floor(y/chunkSize);
 
-				console.info("cload", cx, cy);
-
-				loadChunk(cx, cy);
+				if (this.chunks[genChunkId(cx, cy)] == undefined) {
+					console.info("cload", cx, cy);
+					loadChunk(cx, cy);
+				}
 			}
 		}
 	}
@@ -113,6 +114,7 @@ class GameLevel {
 		}
 	}
 
+	// Position the world relative to the player
 	render(player) {
 		if (this.chunkElems == [] || SERVER) return;
 
@@ -134,6 +136,7 @@ class GameLevel {
 		}
 	}
 
+	// Load a world from a JSON file (server only)
 	loadFromFile(JSONFile) {
 		if (CLIENT) return;
 
@@ -145,6 +148,7 @@ class GameLevel {
 			this.addChunk(c, data.chunks[c]);
 	}
 
+	// Random extra thing only used by server
 	setInfo(data) {
 		this.spawnpos = data.spawnpos;
 		// There will probably be a lot more here

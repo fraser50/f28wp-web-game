@@ -119,13 +119,32 @@ function createWorld(level) {
 
 			var tileElem = document.createElement("img");
 			tileElem.id = genTileImageId(t);
+			tileElem.className = "tileImg";
 
 			tileElem.src = tilesFolder + blockTypes[tile.id].src;
 
 			tileElem.width = zoomLevel;
 			tileElem.height = zoomLevel;
 
+			var x = (t % chunkSize)*zoomLevel;
+			var y = Math.floor(t/chunkSize)*zoomLevel;
+
+			tileElem.style.left = x + "px";
+			tileElem.style.top = y + "px";
+
 			chunkElem.appendChild(tileElem);
+
+			if (tile.isWall) {
+				tileElem.style.zIndex = 3;
+				var shadowElem = document.createElement("img");
+				shadowElem.className = "tileShadow";
+				shadowElem.src = tilesFolder + "tile_shadow_4x.png";
+
+				shadowElem.style.left = (x-4) + "px";
+				shadowElem.style.top = (y-4) + "px";
+
+				chunkElem.appendChild(shadowElem);
+			}
 		}
 
 		world.appendChild(chunkElem);
