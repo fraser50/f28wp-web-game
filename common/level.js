@@ -101,6 +101,8 @@ class GameLevel {
 		};
 
 		for (var i in this.chunks) {
+			if (this.chunks[i] == "null") continue;
+
 			var cPos = fromChunkId(i);
 			if (notInRange(cPos[0], lx, rx) || notInRange(cPos[1], ty, by)) {
 				delete this.chunks[i];

@@ -213,16 +213,16 @@ socket.on('getblocktypes', (dataStr) => {
 });
 
 socket.on('getleveldata', (data) => {
-	if (data.id == currentLevel.id) {
-		currentLevel.setInfo(data);
-	}
+	if (data)
+		if (data.id == currentLevel.id) {
+			currentLevel.setInfo(data);
+		}
 });
 
 // Temporary variable to store the current level. Definitly change the way this works
 var currentLevel = new GameLevel(0);
 
 function initWorld() {
-	currentLevel.loadChunksAround(socket.player, 3);
 	setInterval(() => {
 		currentLevel.unloadChunks(socket.player, 5);
 		currentLevel.loadChunksAround(socket.player, 3);

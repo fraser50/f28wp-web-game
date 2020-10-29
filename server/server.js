@@ -59,11 +59,13 @@ io.on('connection', (socket) => {
 
 	socket.on('getleveldata', (data) => {
 		// var data = JSON.parse(dataStr);
+		var ret = null;
 
-		var ret = {
-			"id": data.id,
-			"spawnpos": levels[data.id].spawnpos
-		}
+		if (levels[data.id])
+			ret = {
+				"id": data.id,
+				"spawnpos": levels[data.id].spawnpos
+			}
 
 		socket.emit('getleveldata', ret);
 		printLog("getleveldata");
@@ -72,13 +74,19 @@ io.on('connection', (socket) => {
 	socket.on('getchunk', (dataStr) => {
 		var data = JSON.parse(dataStr);
 
+		if (!levels[data.level]) {
+			socket.emit('getchunkundef', {'id':genChunkId(data.x, data.y), 'level':data.level});
+			printLog(("getchunk: " + dataStr + ` chunk ${data.x},${data.y} is undefined`).yellow, "debug");
+			return;
+		}
+
 		var tiles = levels[data.level].chunks[genChunkId(data.x, data.y)];
 
 		if (tiles != undefined) {
 			socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':tiles}));
 			printLog("getchunk: " + dataStr);
 		} else {
-			socket.emit('getchunkundef', {'id':genChunkId(data.x, data.y)});
+			socket.emit('getchunkundef', {'id':genChunkId(data.x, data.y), 'level':data.level});
 			printLog(("getchunk: " + dataStr + ` chunk ${data.x},${data.y} is undefined`).yellow, "debug");
 		}
 	});
