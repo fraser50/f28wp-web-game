@@ -137,7 +137,7 @@ function createWorld(level) {
 			if (tile.isWall) {
 				tileElem.style.zIndex = 3;
 				var shadowElem = document.createElement("img");
-				shadowElem.className = "tileShadow";
+				shadowElem.className = "tileImg tileShadow";
 				shadowElem.src = tilesFolder + "tile_shadow_4x.png";
 
 				shadowElem.style.left = (x-4) + "px";

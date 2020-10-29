@@ -89,6 +89,5 @@ img.tileImg {
 }
 
 img.tileShadow {
-	position: absolute;
 	z-index: 2;
 }
