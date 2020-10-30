@@ -140,7 +140,7 @@ class GameLevel {
 	loadFromFile(JSONFile) {
 		if (CLIENT) return;
 
-		var data = JSON.parse(fs.readFileSync(JSONFile));
+		var data = JSON.parse(removeCommentsFromJSON(fs.readFileSync(JSONFile)));
 
 		this.spawnpos = data.spawnpos;
 

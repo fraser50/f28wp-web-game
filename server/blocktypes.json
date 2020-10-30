@@ -1,4 +1,8 @@
+// Add new tile textures to this file, starting at "0"
 {
+	// Add new textures here
+
+	// Dev textures
 	"100": {"src": "dev_grey.png"},
 	"101": {"src": "dev_orange.png"}
 }

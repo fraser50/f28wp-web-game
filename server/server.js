@@ -27,7 +27,7 @@ eval(fs.readFileSync('../common/util.js') + '');
 eval(fs.readFileSync('../common/gameobjects.js') + ''); // Probably broken
 
 // Import the block types from JSON file
-var blockTypes = JSON.parse(fs.readFileSync("blocktypes.json"));
+var blockTypes = JSON.parse(removeCommentsFromJSON(fs.readFileSync("blocktypes.json")));
 
 // Store all levels in here
 var levels = {};

@@ -109,7 +109,6 @@ function getBackgroundColorRGBA(element) {
     colstr = colstr.substr(0, colstr.length-1); // Remove ")"
 
     jsonstr = "[" + colstr + "]";
-    console.log(jsonstr);
 
     return JSON.parse(jsonstr);
 }
@@ -146,4 +145,26 @@ function isValidPassword(password) {
     }
 
     return length && invalidChars && hasNotNorm;
+}
+
+// As JSON does not natively support comments, they have to be removed before parsing
+function removeCommentsFromJSON(jsonstr) {
+    jsonstr = jsonstr.toString();
+    var lines = jsonstr.split("\n");
+    var out = "";
+
+    for (var i in lines) {
+        var line = lines[i];
+        if (line.includes("//")) {
+            out += line.substr(0, line.indexOf("//")) + "\n";
+        } else {
+            out += line + "\n";
+        }
+    }
+
+    return out;
+}
+
+function roundNumber(n, dp) {
+	return Math.round(n*(10**dp)) / (10**dp);
 }

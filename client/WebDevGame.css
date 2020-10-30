@@ -41,7 +41,7 @@ div#ui {
 	z-index: 10000;
 }
 div#ui .uiWindow {
-	background-color: #0008;
+	background-color: #000a;
 	color: white;
 }
 div#ui .uiWindow * {

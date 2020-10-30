@@ -10,15 +10,11 @@ let playerPos = new Position(0, 0);
 // Vector object to store player velocity and direction
 let playerVel = new Vector(0, 0);
 
-// Constants for how the player should move
-let playerVelMax = 0.01;
+// Constants for how the player should move TODO: Make these have a more reasonable range
+let playerVelMax = 0.004;
+let playerMinVel = 1e-8;
 let playerAcceleration = 0.00005;
-let playerVelDecay = 0.99;
-
-//this update function should run within main gameloop update function
-function update(lastFrametime) {
-	doMovement(lastFrametime);
-}
+let playerVelDecay = 0.99; // This is a multiplier (lower values = faster decay)
 
 // JSON object to store the key bindings and their states (pressed == undefined assumed to be false)
 let keyStates = {
@@ -44,9 +40,9 @@ function keyEvent(code, isDown) {
 window.addEventListener("keydown", function(e) { keyEvent(e.keyCode, 1) });
 window.addEventListener("keyup", function(e) { keyEvent(e.keyCode, 0) });
 
+// Store the player's velocity (currently as X and Y, maybe switch to vectors)
 var playerVelXY = {x:0, y:0};
 
-// TODO: NOT WORKING YET
 function doMovement(player, lastFrametime) {
 
 	// Add/subtract velocity for key presses
@@ -66,16 +62,22 @@ function doMovement(player, lastFrametime) {
 	// Make the velocity decay over time
 	playerVelXY.x *= playerVelDecay ** lastFrametime;
 	playerVelXY.y *= playerVelDecay ** lastFrametime;
-	
 
 	// Limit the velocity
 	var total = Math.sqrt(playerVelXY.x**2 + playerVelXY.y**2);
-	var scale = playerVelMax / total;
-	if (scale < 1) {
-		playerVelXY.x *= scale
-		playerVelXY.y *= scale
+	if (total > playerVelMax) {
+		var scale = playerVelMax / total;
+		playerVelXY.x *= scale;
+		playerVelXY.y *= scale;
 	}
 
-	socket.player.pos[0] += playerVelXY.x * lastFrametime;
-	socket.player.pos[1] += playerVelXY.y * lastFrametime;
+	// If the velocity is very small, set it to 0
+	if (total < playerMinVel) {
+		playerVelXY.x = 0;
+		playerVelXY.y = 0;
+	}
+
+	// Apply the velocity to the player's position
+	player.pos[0] += playerVelXY.x * lastFrametime;
+	player.pos[1] += playerVelXY.y * lastFrametime;
 }

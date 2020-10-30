@@ -1,6 +1,7 @@
+// A simple world with only a few chunks for testing
 {
 	"id": 0,
-	"spawnpos": [8, 8],
+	"spawnpos": [8, 8], // Will be replaced by a GameObject at some point
 	"chunks": {
 		"c0_0": [
 			{"id":100, "isWall": true},

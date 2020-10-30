@@ -32,6 +32,8 @@ var chatSendButton;
 var frametimeLabel;
 var frametimeGraph;
 var fpsLabel;
+var posLabel;
+var velLabel;
 
 // Add the elements to the page when it finishes loading
 window.addEventListener("load", () => {
@@ -118,16 +120,22 @@ window.addEventListener("load", () => {
 
 	// Performance stats window
 
-	var perfWindow = new UiWindow("perfWindow", 20, 20, "br", 400, 200);
+	var perfWindow = new UiWindow("perfWindow", 20, 20, "br", 400, 185);
 
-	frametimeLabel = new UiLabel("perfFrametime", 5, 5, "tl", "", "15px sans-serif", "white");
+	frametimeLabel = new UiLabel("perfFrametime", 5, 5, "tl", "", "15px monospace", "white");
 	perfWindow.addObject(frametimeLabel);
 
 	frametimeGraph = new UiGraph("perfFrametimeGraph", 5, 40, "tl", 390, 100, 195, "red");
 	perfWindow.addObject(frametimeGraph);
 
-	fpsLabel = new UiLabel("perfFPS", 5, 20, "tl", "", "15px sans-serif", "white");
+	fpsLabel = new UiLabel("perfFPS", 5, 20, "tl", "", "15px monospace", "white");
 	perfWindow.addObject(fpsLabel);
+
+	posLabel = new UiLabel("perfPos", 5, 145, "tl", "", "15px monospace", "white");
+	perfWindow.addObject(posLabel);
+
+	velLabel = new UiLabel("perfVel", 5, 165, "tl", "", "15px monospace", "white");
+	perfWindow.addObject(velLabel);
 
 	loopStartButton = new UiButton("loopStartButton", 5, 5, "tr", null, null, "Start loop", null, () => {
 		if (loopStartButton.loopRunning) {
