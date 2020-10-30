@@ -1,5 +1,5 @@
 function generateLoginWindow(socket) {
-    var loginWindow = new UiWindow("logsignform", 0, 0, "cc", 300, 355);
+	var loginWindow = new UiWindow("logsignform", 0, 0, "cc", 300, 355);
 
 	loginWindow.addObject(new UiLabel("", 20, 20, "tl", "Please enter your username", "16px sans-serif"));
 	var loginUserBox = new UiTextInput("loguserinput", 20, 45, "tl", 260, 40, "Username");
@@ -17,8 +17,8 @@ function generateLoginWindow(socket) {
 		userDetails.name = loginUserBox.getValue();
 		var data = {user: loginUserBox.getValue(), pass: loginPassBox.getValue()};
 		socket.emit('login', data);
-    });
-    
+	});
+	
 	loginWindow.addObject(loginButton);
 
 	var signupButton = new UiButton("signButton", 20, 275, "tl", 125, 60, "Sign Up", "20px sans-serif", () => {
@@ -37,16 +37,16 @@ function generateLoginWindow(socket) {
 		userDetails.name = loginUserBox.getValue();
 		var data = {user: loginUserBox.getValue(), pass: loginPassBox.getValue()};
 		socket.emit('addUser', data);
-    });
-    
-    loginWindow.addObject(signupButton);
+	});
+	
+	loginWindow.addObject(signupButton);
 
-    var guestButton = new UiButton("guestButton", 20, 275, "tr", 125, 60, "Login as guest", "20px sans-serif", () => {
+	var guestButton = new UiButton("guestButton", 20, 275, "tr", 125, 60, "Login as guest", "20px sans-serif", () => {
 		socket.emit('guest');
 	});
-    loginWindow.addObject(guestButton);
-    
-    socket.on('addUser', (data) => {
+	loginWindow.addObject(guestButton);
+	
+	socket.on('addUser', (data) => {
 		loginUserBox.clear();
 		loginPassBox.clear();
 		if (data.success == true) {
@@ -96,8 +96,8 @@ function generateLoginWindow(socket) {
 		}
 		alert(data.message);
 	});
-    
-    return loginWindow;
+	
+	return loginWindow;
 }
 
 function showSignedInButton() {
