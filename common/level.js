@@ -72,15 +72,12 @@ class GameLevel {
 		var ty = y - chunkRadius*chunkSize;
 		var by = y + chunkRadius*chunkSize;
 
-		//console.info(lx, rx, ty, by);
-
 		for (var y=ty; y<by; y+=chunkSize) {
 			for (var x=lx; x<rx; x+=chunkSize) {
 				var cx = Math.floor(x/chunkSize);
 				var cy = Math.floor(y/chunkSize);
 
 				if (this.chunks[genChunkId(cx, cy)] == undefined || this.chunks[genChunkId(cx, cy)] == null) {
-					//console.info("cload", cx, cy);
 					loadChunk(cx, cy);
 				}
 			}

@@ -1,8 +1,8 @@
 class GameObject {
-	constructor(pos, rotation) {
+	constructor(pos, rotation, velocity) {
 		this.pos = pos;
 		this.rotation = rotation;
-		// this.level = level;
+		this.velocity = velocity;
 
 		this.removed = false;
 	}
@@ -19,7 +19,6 @@ class GameObject {
 class Player extends GameObject {
 	constructor(pos, rotation, level, velocity) {
 		super(pos, rotation, level);
-		this.velocity = velocity;
 		this.wins = 0;
 		this.kills = 0;
 		this.points = 0;

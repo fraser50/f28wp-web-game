@@ -35,9 +35,7 @@ var levels = {};
 // Create level for testing
 levels[0] = new GameLevel(0);
 
-// Add an empty chunk to the level
-// level0.addChunk(genChunkId(0, 0), new Array(16*16).fill({id:0}));
-// level0.addChunk(genChunkId(1, 0), new Array(16*16).fill({id:1}));
+// Load a test world
 levels[0].loadFromFile("testworld.json");
 levels[0].update();
 
