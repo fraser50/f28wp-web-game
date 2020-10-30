@@ -142,10 +142,12 @@ window.addEventListener("load", () => {
 			loopStartButton.loopRunning = false;
 			stopLoop();
 			loopStartButton.updateValue("Start loop");
+			stopTimer();
 		} else {
 			loopStartButton.loopRunning = true;
 			startLoop(currentLevel);
 			loopStartButton.updateValue("Stop loop");
+			startTimer();
 		}
 	});
 	perfWindow.addObject(loopStartButton);
@@ -156,15 +158,24 @@ window.addEventListener("load", () => {
 	//Need to make count down more robust so tampering is not an issue and all clients timers are in sync
 	//Need to create method to start timer on match start, end match when timer runs out
 	var timerWindow = new UiWindow("timerWindow", 0, 20, "tc", 44.5, 45);
-	var sec = 60;
-	var timer = new UiLabel("timer", 0, 0, "tl", sec, "40px sans-serif");
+	var timer = new UiLabel("timer", 0, 0, "tl", 60, "40px sans-serif");
 	timerWindow.addObject(timer);
 	timerWindow.addToPage();
 	timerWindow.setOpacity(0);
-	start();		//This should be called when the server decided to start a match
 
-	function start() {
-		var timerLoop = setInterval(function() {
+	function stopTimer() {
+		var sec = 60;
+		console.log("yo");
+		clearInterval(timerLoop);
+		timer.updateValue(sec);
+	}
+	
+	var timerLoop
+	
+	function startTimer() {
+		var sec = 60;
+		timer.updateValue(sec);
+		timerLoop = setInterval(function() {
 			console.log('tryna update')
 			socket.emit('updateTimer', sec);
 		}, 1000);
