@@ -131,6 +131,9 @@ function createWorld(level, replace) {
 			tileElem.width = zoomLevel;
 			tileElem.height = zoomLevel;
 
+			var wx = chunkPos[0]*chunkSize + (t % chunkSize);
+			var wy = chunkPos[1]*chunkSize + Math.floor(t/chunkSize);
+
 			var x = (t % chunkSize)*zoomLevel;
 			var y = Math.floor(t/chunkSize)*zoomLevel;
 
@@ -139,6 +142,7 @@ function createWorld(level, replace) {
 
 			chunkElem.appendChild(tileElem);
 
+			/* Old shadow code
 			if (tile.isWall) {
 				tileElem.style.zIndex = 3;
 				var shadowElem = document.createElement("img");
@@ -149,6 +153,50 @@ function createWorld(level, replace) {
 				shadowElem.style.top = (y-4) + "px";
 
 				chunkElem.appendChild(shadowElem);
+			} */
+
+			if (tile.isWall) {
+				tileElem.style.zIndex = 3;
+
+				var imgPrefix = tilesFolder + "tile_shadow_";
+
+				var sx = (x-zoomLevel) + "px";
+				var sy = (y-zoomLevel) + "px";
+
+				var addShadow = (side) => {
+					var shadowElem = document.createElement("img");
+					shadowElem.className = "tileImg tileShadow";
+					shadowElem.src = imgPrefix + side + ".png";
+
+					shadowElem.style.left = sx;
+					shadowElem.style.top = sy;
+
+					chunkElem.appendChild(shadowElem);
+				};
+
+				// If there is no wall to the left
+				// if (chunk[t-1] && !chunk[t-1].isWall)
+				var lt = getTileAt(level, wx-1, wy);
+				if (lt && !lt.isWall)
+					addShadow("left");
+
+				// If there is no wall to the right
+				// if (chunk[t+1] && !chunk[t+1].isWall)
+				var rt = getTileAt(level, wx+1, wy);
+				if (rt && !rt.isWall)
+					addShadow("right");
+
+				// If there is no wall above
+				// if (chunk[t-chunkSize] && !chunk[t-chunkSize].isWall)
+				var ut = getTileAt(level, wx, wy-1);
+				if (ut && !ut.isWall)
+					addShadow("up");
+
+				// If there is no wall below
+				// if (chunk[t+chunkSize] && !chunk[t+chunkSize].isWall)
+				var bt = getTileAt(level, wx, wy+1);
+				if (bt && !bt.isWall)
+					addShadow("down");
 			}
 		}
 

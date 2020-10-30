@@ -168,3 +168,16 @@ function removeCommentsFromJSON(jsonstr) {
 function roundNumber(n, dp) {
 	return Math.round(n*(10**dp)) / (10**dp);
 }
+
+function getTileAt(level, x, y) {
+	var cx = Math.floor(x/chunkSize);
+	var cy = Math.floor(y/chunkSize);
+	var cId = genChunkId(cx, cy);
+
+	var rx = x - cx*chunkSize;
+	var ry = y - cy*chunkSize;
+
+	if (level.chunks[cId])
+		return level.chunks[cId][ry*chunkSize + rx];
+	// If the chunk does not exist, the function will return undefined
+}
