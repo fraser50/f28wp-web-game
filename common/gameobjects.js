@@ -35,5 +35,6 @@ class Player extends GameObject {
 class Point extends GameObject {
 	constructor(pos, rotation, level) {
 		this.velocity = velocity;
+		this.zPos = 4; //z index of points are one below player so player can run over points if already carrying ball
 	}
 }
