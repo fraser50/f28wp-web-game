@@ -1,15 +1,3 @@
-
-//identify player and position from html doc
-var player = document.getElementById("playerdiv");
-console.log(player);
-
-
-// Position object to store player position
-let playerPos = new Position(0, 0);
-
-// Vector object to store player velocity and direction
-let playerVel = new Vector(0, 0);
-
 // Constants for how the player should move TODO: Make these have a more reasonable range
 let playerVelMax = 0.004;
 let playerMinVel = 1e-8;
@@ -85,28 +73,6 @@ function doMovement(player, lastFrametime) {
 }
 
 function direction(player) {
-	var player = document.getElementById("playerdiv");
-
-	if (keyStates.up.pressed)
-		player.style.transform = "rotate(0deg)";
-
-	if (keyStates.down.pressed)
-		player.style.transform = "rotate(180deg)";
-	
-	if (keyStates.right.pressed)
-		player.style.transform = "rotate(90deg)";
-	
-	if (keyStates.left.pressed)
-		player.style.transform = "rotate(270deg)";
-	
-	
-	if ((keyStates.up.pressed) && (keyStates.right.pressed)) 
-		player.style.transform = "rotate(45deg)";
-	if ((keyStates.up.pressed) && (keyStates.left.pressed))
-		player.style.transform = "rotate(315deg)";
-	
-	if (keyStates.down.pressed && keyStates.right.pressed)
-		player.style.transform = "rotate(135deg)";
-	if (keyStates.down.pressed && keyStates.left.pressed)
-		player.style.transform = "rotate(225deg)";
+	var playerAngle = Math.atan(playerVelXY.y/playerVelXY.x);
+	player.div.style.transform = `rotate(${playerAngle + Math.sign(playerVelXY.x)*Math.PI/2}rad)`;
 }

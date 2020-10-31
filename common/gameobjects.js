@@ -48,11 +48,13 @@ class Player extends GameObject {
 
 		//set player position
 		playerDiv.style.position = "absolute";	//Top and Left won't affect it if we use static
-		playerDiv.style.top = `calc(50% - ${playerImg.h == undefined ? 0 : playerImg.h/2}px + ${playerImg.y}px)`;
-		playerDiv.style.left = `calc(50% - ${playerImg.w == undefined ? 0 : playerImg.w/2}px + ${playerImg.x}px)`;
+		playerDiv.style.top = `calc(50% - 32px + ${playerImg.y}px)`;
+		playerDiv.style.left = `calc(50% - 32px + ${playerImg.x}px)`;
 
 		playerDiv.appendChild(playerImg);
 		objects.appendChild(playerDiv);
+
+		this.div = playerDiv;
 	}
 	
 	updateStats(wins, kills, points){
