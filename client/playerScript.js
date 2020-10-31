@@ -1,7 +1,7 @@
 
 //identify player and position from html doc
-var player = document.getElementById("player");
-
+var player = document.getElementById("playerdiv");
+console.log(player);
 
 
 // Position object to store player position
@@ -44,18 +44,20 @@ window.addEventListener("keyup", function(e) { keyEvent(e.keyCode, 0) });
 var playerVelXY = {x:0, y:0};
 
 function doMovement(player, lastFrametime) {
-
 	// Add/subtract velocity for key presses
-	if (keyStates.up.pressed)
+	if (keyStates.up.pressed) {
 		playerVelXY.y -= playerAcceleration * lastFrametime;
+	}
 	if (keyStates.down.pressed)
 		playerVelXY.y += playerAcceleration * lastFrametime;
-
+		
 	if (keyStates.left.pressed)
 		playerVelXY.x -= playerAcceleration * lastFrametime;
+		
 	if (keyStates.right.pressed)
 		playerVelXY.x += playerAcceleration * lastFrametime;
 
+	
 	// Frametime can be NaN somehow
 	lastFrametime = isNaN(lastFrametime) ? 0 : lastFrametime;
 
@@ -80,4 +82,31 @@ function doMovement(player, lastFrametime) {
 	// Apply the velocity to the player's position
 	player.pos[0] += playerVelXY.x * lastFrametime;
 	player.pos[1] += playerVelXY.y * lastFrametime;
+}
+
+function direction(player) {
+	var player = document.getElementById("playerdiv");
+
+	if (keyStates.up.pressed)
+		player.style.transform = "rotate(0deg)";
+
+	if (keyStates.down.pressed)
+		player.style.transform = "rotate(180deg)";
+	
+	if (keyStates.right.pressed)
+		player.style.transform = "rotate(90deg)";
+	
+	if (keyStates.left.pressed)
+		player.style.transform = "rotate(270deg)";
+	
+	
+	if ((keyStates.up.pressed) && (keyStates.right.pressed)) 
+		player.style.transform = "rotate(45deg)";
+	if ((keyStates.up.pressed) && (keyStates.left.pressed))
+		player.style.transform = "rotate(315deg)";
+	
+	if (keyStates.down.pressed && keyStates.right.pressed)
+		player.style.transform = "rotate(135deg)";
+	if (keyStates.down.pressed && keyStates.left.pressed)
+		player.style.transform = "rotate(225deg)";
 }

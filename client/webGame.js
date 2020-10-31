@@ -165,7 +165,6 @@ window.addEventListener("load", () => {
 
 	function stopTimer() {
 		var sec = 60;
-		console.log("yo");
 		clearInterval(timerLoop);
 		timer.updateValue(sec);
 	}

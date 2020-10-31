@@ -21,7 +21,8 @@ function loop(level) {
 
 	// Do player movement calcuations (maybe change this)
 	doMovement(socket.player, frametime);
-
+	direction(socket.player);
+	
 	// Update and render the current level
 	level.update();
 	render(level);
