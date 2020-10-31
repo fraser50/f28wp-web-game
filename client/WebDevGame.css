@@ -36,11 +36,12 @@ div#gamearea div#world img {
 }
 
 /* Static CSS for UI elements */
-
 div#ui {
-	z-index: 10000;
+	z-index: 9999;
 }
 div#ui .uiWindow {
+	z-index: 10000;
+
 	background-color: #000a;
 	color: white;
 }

@@ -20,12 +20,16 @@ var typeReader = new FileReader();
 
 typeReader.onload = (e) => {
 	blockTypes = JSON.parse(removeCommentsFromJSON(e.target.result));
+
+	blockTypes[0] = {"src": null, "name": "Null"};
+
 	typeInput.disabled = true;
 	fileWindow.hide();
 
 	var addType = (i) => {
 		var container = new UiContainer("", null, null, "tl", 200, 64);
-		container.addObject(new UiImage("", 0, 0, "tl", null, 64, tilesFolder + blockTypes[i].src));
+		if (blockTypes[i].src)
+			container.addObject(new UiImage("", 0, 0, "tl", null, 64, tilesFolder + blockTypes[i].src));
 
 		var name = blockTypes[i].name ? blockTypes[i].name : blockTypes[i].src;
 		container.addObject(new UiLabel("", 75, 12, "tl", name, "13px sans-serif", null));
@@ -33,7 +37,10 @@ typeReader.onload = (e) => {
 			if (selectedType.id != i) {
 				selectedType.type = "tile";
 				selectedType.id = i;
-				selectedImg.setSrc(tilesFolder + blockTypes[i].src);
+				if (blockTypes[i].src)
+					selectedImg.setSrc(tilesFolder + blockTypes[i].src);
+				else
+					selectedImg.setSrc(null);
 				selectedLabel.updateValue("Selected (tile): " + name);
 				console.info("Selected (tile): ", name, `(${i})`);
 			}
@@ -72,8 +79,8 @@ levelReader.onload = (e) => {
 	else
 		throw new TypeError("Tried to load invalid world");
 
-	if (data.name)
-		worldProperties.name = data.name;
+	if (data.id)
+		worldProperties.name = data.id;
 	else
 		worldProperties.name = "No name";
 
@@ -100,6 +107,10 @@ var fileWindow;
 var menuWindow;
 var worldPropertiesWindow;
 
+var posWindow;
+var posLabel;
+var posChunk;
+
 var tileWindow;
 var tileContainer;
 
@@ -107,6 +118,7 @@ var selectedImg;
 var selectedLabel;
 
 var worldPropertiesButton;
+var worldSaveButton;
 
 window.addEventListener("load", () => {
 	document.body.appendChild(ui);
@@ -124,6 +136,11 @@ window.addEventListener("load", () => {
 		menuWindow.hide();
 		worldPropertiesButton.enable();
 	}));
+
+	worldSaveButton = new UiButton("worldSaveButton", 10, 135, "tl", null, null, "Save world", "14px sans-serif", () => {
+		saveWorld();
+	});
+	menuWindow.addObject(worldSaveButton);
 
 	worldPropertiesButton = new UiButton("worldPropertiesButton", 10, 10, "tr", null, null, "World properties", "14px sans-serif", () => {
 		menuWindow.hide();
@@ -189,8 +206,38 @@ window.addEventListener("load", () => {
 	tileWindow.addObject(selectedLabel);
 	tileWindow.addToPage();
 
+	posWindow = new UiWindow("posWindow", 94, 37, "cc", 160, 50);
+	posLabel = new UiLabel("pos", 5, 5, "tl", "", "14px monospace");
+	posChunk = new UiLabel("chunk", 5, 22, "tl", "", "14px monospace");
+	posWindow.addObject(posLabel);
+	posWindow.addObject(posChunk);
+	posWindow.addToPage();
+	posWindow.setOpacity(0.45);
+	posWindow.win.style.zIndex = 9997;
+
+	var crosshair = document.createElement("img");
+	crosshair.src = "crosshair.png";
+	crosshair.style.zIndex = 9998;
+	crosshair.style.position = "absolute";
+	crosshair.style.left = "calc(50% - 64px)";
+	crosshair.style.top = "calc(50% - 64px)";
+	ui.appendChild(crosshair);
+
 	window.requestAnimationFrame(loop);
 });
+
+function saveWorld() {
+	var data = {id:worldProperties.name, spawnpos:worldProperties.spawnpos, chunks:chunks};
+
+	var file = new Blob([JSON.stringify(data)], {type: "application/json"});
+
+	var a = document.createElement("a");
+	a.href = URL.createObjectURL(file);
+	a.download = "world.json";
+	a.click();
+
+	URL.revokeObjectURL(a.href);
+}
 
 function initNewWorld() {
 	worldProperties = {name: "", spawnpos: [0, 0]};
@@ -223,11 +270,15 @@ function renderWorld() {
 			tileElem.width = texSize;
 			tileElem.height = texSize;
 
+			if (chunk[t].isWall)
+				tileElem.className = "tileWall";
+
 			chunkElem.appendChild(tileElem);
 		}
 
 		world.appendChild(chunkElem);
 	}
+	updateWorld();
 }
 
 var frametime = 0;
@@ -242,6 +293,12 @@ function loop() {
 
 	updateGrid();
 	updateWorld();
+	updateUI();
+
+	if (keyStates.place.pressed && selectedType.type == "tile") {
+		setTileAt(-cameraPos[0]/(texSize/zoomLevel), -cameraPos[1]/(texSize/zoomLevel), selectedType.id, keyStates.shift.pressed);
+		renderWorld();
+	}
 
 	lastLoop = thisLoop;
 	window.requestAnimationFrame(loop);
@@ -289,11 +346,46 @@ function updateWorld() {
 	}
 }
 
+function updateUI() {
+	posLabel.updateValue(`X: ${roundNumber(-cameraPos[0]/(texSize/zoomLevel), 1)}, Y: ${roundNumber(-cameraPos[1]/(texSize/zoomLevel), 1)}`);
+	posChunk.updateValue(`X: ${Math.floor((-cameraPos[0]/(texSize/zoomLevel))/16)}, Y: ${Math.floor((-cameraPos[1]/(texSize/zoomLevel))/16)}`)
+}
+
+function setTileAt(x, y, tileId, isWall) {
+	var cx = Math.floor((-cameraPos[0]/(texSize/zoomLevel))/16);
+	var cy = Math.floor((-cameraPos[1]/(texSize/zoomLevel))/16);
+
+	var chunk = initNewChunk(cx, cy);
+
+	var t = (Math.floor(y) % chunkSize)*chunkSize + (Math.floor(x) % chunkSize);
+
+	chunk[t] = {id:tileId};
+	if (isWall)
+		chunk[t].isWall = true;
+}
+
+function initNewChunk(cx, cy) {
+	var cId = genChunkId(cx, cy);
+
+	if (chunks[cId]) return chunks[cId];
+
+	chunks[cId] = [];
+
+	for (var t=0; t<chunkSize**2; t++) {
+		chunks[cId].push({id:0});
+	}
+
+	return chunks[cId];
+}
+
 var keyStates = {
 	up: {code: 87},
 	down: {code: 83},
 	left: {code: 65},
-	right: {code: 68}
+	right: {code: 68},
+
+	place: {code: 32},
+	shift: {code: 16}
 }
 
 window.addEventListener("keydown", (e) => {

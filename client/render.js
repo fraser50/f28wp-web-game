@@ -122,6 +122,8 @@ function createWorld(level, replace) {
 		for (var t=0; t<chunkSize**2; t++) {
 			var tile = chunk[t];
 
+			if (tile.id == 0) continue;
+
 			var tileElem = document.createElement("img");
 			tileElem.id = genTileImageId(t);
 			tileElem.className = "tileImg";

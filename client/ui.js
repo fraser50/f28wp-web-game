@@ -449,6 +449,9 @@ class UiImage extends UiElement {
 	}
 
 	setSrc(newSrc) {
-		this.elem.src = newSrc;
+		if (newSrc)
+			this.elem.src = newSrc;
+		else
+			this.elem.src = "";
 	}
 }
