@@ -1,0 +1,312 @@
+var ui = document.createElement("div");
+ui.id = "ui";
+
+var world = document.createElement("div");
+world.id = "world";
+
+var blockTypes = null;
+var tilesFolder = "../client/assets/images/tiles/";
+
+var selectedType = {};
+
+var worldProperties = {};
+var chunks = {};
+
+var cameraPos = [0, 0];
+var cameraVel = [0, 0];
+var cameraVelMax = 0.12;
+
+var typeReader = new FileReader();
+
+typeReader.onload = (e) => {
+	blockTypes = JSON.parse(removeCommentsFromJSON(e.target.result));
+	typeInput.disabled = true;
+	fileWindow.hide();
+
+	var addType = (i) => {
+		var container = new UiContainer("", null, null, "tl", 200, 64);
+		container.addObject(new UiImage("", 0, 0, "tl", null, 64, tilesFolder + blockTypes[i].src));
+
+		var name = blockTypes[i].name ? blockTypes[i].name : blockTypes[i].src;
+		container.addObject(new UiLabel("", 75, 12, "tl", name, "13px sans-serif", null));
+		container.addObject(new UiButton("", 75, 35, "tl", null, null, "Select", "13px sans-serif", () => {
+			if (selectedType.id != i) {
+				selectedType.type = "tile";
+				selectedType.id = i;
+				selectedImg.setSrc(tilesFolder + blockTypes[i].src);
+				selectedLabel.updateValue("Selected (tile): " + name);
+				console.info("Selected (tile): ", name, `(${i})`);
+			}
+		}));
+
+		tileContainer.addObject(container);
+
+		container.elem.className = "typeContainer";
+		container.elem.style.position = "relative";
+	};
+
+	for (var i in blockTypes) {
+		addType(i);
+	}
+
+	menuWindow.show();
+};
+
+var typeInput = document.createElement("input");
+typeInput.type = "file";
+typeInput.accept = "application/json";
+
+typeInput.addEventListener("change", (e) => {
+	typeReader.readAsText(typeInput.files[0], "UTF-8");
+});
+
+var levelReader = new FileReader();
+
+levelReader.onload = (e) => {
+	var data = JSON.parse(removeCommentsFromJSON(e.target.result));
+
+	initNewWorld();
+
+	if (data.chunks)
+		chunks = data.chunks;
+	else
+		throw new TypeError("Tried to load invalid world");
+
+	if (data.name)
+		worldProperties.name = data.name;
+	else
+		worldProperties.name = "No name";
+
+	if (data.spawnpos)
+		worldProperties.spawnpos = data.spawnpos;
+	else
+		console.warn("Opened world has no spawn point set (if spawn points use GameObjects, ignore this)");
+
+	worldPropertiesButton.enable();
+	console.info(`Loaded world "${data.name}" successfully`);
+
+	renderWorld();
+};
+
+var levelInput = document.createElement("input")
+levelInput.type = "file";
+levelInput.accept = "application/json";
+
+levelInput.addEventListener("change", (e) => {
+	levelReader.readAsText(levelInput.files[0], "UTF-8");
+});
+
+var fileWindow;
+var menuWindow;
+var worldPropertiesWindow;
+
+var tileWindow;
+var tileContainer;
+
+var selectedImg;
+var selectedLabel;
+
+var worldPropertiesButton;
+
+window.addEventListener("load", () => {
+	document.body.appendChild(ui);
+	document.body.appendChild(world);
+
+	menuWindow = new UiWindow("menuWindow", 0, 0, "cc", 400, 500);
+	menuWindow.addObject(new UiLabel("", 10, 10, "tl", "Menu", "16px sans-serif"));
+
+	menuWindow.addObject(new UiLabel("", 10, 38, "tl", "Open world", "14px sans-serif"));
+	var levelContainer = new UiContainer("levelContainer", 10, 55, "tl", 380, 30);
+	menuWindow.addObject(levelContainer);
+
+	menuWindow.addObject(new UiButton("newWorldButton", 10, 95, "tl", null, null, "New world", "14px sans-serif", () => {
+		initNewWorld();
+		menuWindow.hide();
+		worldPropertiesButton.enable();
+	}));
+
+	worldPropertiesButton = new UiButton("worldPropertiesButton", 10, 10, "tr", null, null, "World properties", "14px sans-serif", () => {
+		menuWindow.hide();
+		worldPropertiesWindow.show();
+
+		worldPropertiesNameInput.updateValue(worldProperties.name);
+		worldPropertiesSpawnInput.updateValue(worldProperties.spawnpos[0] + ", " + worldProperties.spawnpos[1]);
+	});
+	worldPropertiesButton.disable();
+	menuWindow.addObject(worldPropertiesButton);
+
+	menuWindow.hide();
+	menuWindow.addToPage();
+	levelContainer.elem.appendChild(levelInput);
+
+	var openMenuWindow = new UiWindow("openMenuWindow", 20, 20, "tr", 64, 48);
+	openMenuWindow.addObject(new UiButton("openMenuButton", 0, 0, "tl", 64, 48, "Menu", "14px sans-serif", () => {
+		if (!blockTypes) return;
+		menuWindow.toggleVisibility();
+	}));
+	openMenuWindow.addToPage();
+
+	worldPropertiesWindow = new UiWindow("worldPropertiesWindow", 0, 0, "cc", 400, 500);
+	worldPropertiesWindow.addObject(new UiLabel("", 10, 10, "tl", "World Properties", "16px sans-serif"));
+
+	worldPropertiesWindow.addObject(new UiButton("", 10, 10, "tr", null, null, "Back to menu", "14px sans-serif", () => {
+		worldPropertiesWindow.hide();
+		menuWindow.show();
+	}));
+
+	var worldPropertiesNameInput = new UiTextInput("worldPropertiesNameInput", 10, 45, "tl", 380, null, "World name");
+	worldPropertiesWindow.addObject(worldPropertiesNameInput);
+
+	var worldPropertiesSpawnInput = new UiTextInput("worldPropertiesSpawnInput", 10, 90, "tl", 380, null, "Spawn Position (e.g. 5,6)");
+	worldPropertiesWindow.addObject(worldPropertiesSpawnInput);
+
+	worldPropertiesWindow.hide();
+	worldPropertiesWindow.addToPage();
+
+	worldPropertiesNameInput.addEventListener("change", (e) => {
+		worldProperties.name = worldPropertiesNameInput.getValue();
+	});
+
+	worldPropertiesSpawnInput.addEventListener("change", (e) => {
+		var arr = worldPropertiesSpawnInput.getValue().split(",");
+
+		worldProperties.spawnpos = [parseFloat(arr[0]), parseFloat(arr[1])];
+	});
+
+	fileWindow = new UiWindow("fileWindow", 0, 0, "cc", 250, 58);
+	fileWindow.addObject(new UiLabel("", 10, 7, "tl", "Select blocktypes.json", "14px sans-serif"));
+	var typeContainer = new UiContainer("typeContainer", 10, 25, "tl", 240, 30);
+	fileWindow.addObject(typeContainer);
+	fileWindow.addToPage();
+	typeContainer.elem.appendChild(typeInput);
+
+	tileWindow = new UiWindow("tileWindow", 20, 0, "cl", 250, 500);
+	tileContainer = new UiScrollContainer("tileContainer", 5, 5, "tl", 240, 421, true, false);
+	tileWindow.addObject(tileContainer);
+	selectedImg = new UiImage("selectedImg", 5, 5, "bl", null, 64, null);
+	tileWindow.addObject(selectedImg);
+	selectedLabel = new UiLabel("selectedLabel", 75, 456, "tl", "Selected: none", "13px sans-serif");
+	tileWindow.addObject(selectedLabel);
+	tileWindow.addToPage();
+
+	window.requestAnimationFrame(loop);
+});
+
+function initNewWorld() {
+	worldProperties = {name: "", spawnpos: [0, 0]};
+	chunks = {};
+}
+
+var chunkSize = 16;
+
+var zoomLevel = 4;
+var texSize = zoomLevel*16; // Different from texSize on client
+
+function renderWorld() {
+	for (var cId in chunks) {
+		if (world.querySelector("#" + cId))
+			world.removeChild(world.querySelector("#" + cId));
+
+		var chunkElem = document.createElement("div");
+		chunkElem.id = cId;
+
+		chunkElem.style.width = chunkSize * texSize + "px";
+		chunkElem.style.height = chunkSize * texSize + "px";
+
+		var chunk = chunks[cId];
+
+		for (var t=0; t<chunkSize**2; t++) {
+			var tileElem = document.createElement("img");
+
+			tileElem.src = tilesFolder + blockTypes[chunk[t].id].src;
+
+			tileElem.width = texSize;
+			tileElem.height = texSize;
+
+			chunkElem.appendChild(tileElem);
+		}
+
+		world.appendChild(chunkElem);
+	}
+}
+
+var frametime = 0;
+var thisLoop;
+var lastLoop;
+
+function loop() {
+	thisLoop = new Date();
+	frametime = thisLoop - lastLoop;
+
+	doMovement();
+
+	updateGrid();
+	updateWorld();
+
+	lastLoop = thisLoop;
+	window.requestAnimationFrame(loop);
+}
+
+function doMovement() {
+	if (keyStates.up.pressed)
+		cameraVel[1] += cameraVelMax;
+	if (keyStates.down.pressed)
+		cameraVel[1] -= cameraVelMax;
+
+	if (keyStates.left.pressed)
+		cameraVel[0] += cameraVelMax;
+	if (keyStates.right.pressed)
+		cameraVel[0] -= cameraVelMax;
+
+	if (!keyStates.up.pressed && !keyStates.down.pressed)
+		cameraVel[1] = 0;
+	if (!keyStates.left.pressed && !keyStates.right.pressed)
+		cameraVel[0] = 0;
+
+	frametime = isNaN(frametime) ? 0 : frametime;
+
+	var limit = (v, min, max) => {return Math.min(max, Math.max(min, v))};
+
+	cameraVel[0] = limit(cameraVel[0], -cameraVelMax, cameraVelMax);
+	cameraVel[1] = limit(cameraVel[1], -cameraVelMax, cameraVelMax);
+
+	cameraPos[0] += cameraVel[0] * frametime;
+	cameraPos[1] += cameraVel[1] * frametime;
+}
+
+function updateGrid() {
+	ui.style.backgroundPositionX = (world.clientWidth/2 + cameraPos[0]*zoomLevel) + "px";
+	ui.style.backgroundPositionY = (world.clientHeight/2 + cameraPos[1]*zoomLevel) + "px";
+}
+
+function updateWorld() {
+	for (var i=0; i<world.childNodes.length; i++) {
+		var chunk = world.childNodes[i];
+		var cPos = fromChunkId(chunk.id);
+
+		chunk.style.left = world.clientWidth/2 + cPos[0]*texSize*chunkSize + cameraPos[0]*zoomLevel + "px";
+		chunk.style.top = world.clientHeight/2 + cPos[1]*texSize*chunkSize + cameraPos[1]*zoomLevel + "px";
+	}
+}
+
+var keyStates = {
+	up: {code: 87},
+	down: {code: 83},
+	left: {code: 65},
+	right: {code: 68}
+}
+
+window.addEventListener("keydown", (e) => {
+	// console.debug(e.keyCode);
+	for (var k in keyStates) {
+		if (keyStates[k].code == e.keyCode)
+			keyStates[k].pressed = true;
+	}
+});
+window.addEventListener("keyup", (e) => {
+	// console.debug(e.keyCode);
+	for (var k in keyStates) {
+		if (keyStates[k].code == e.keyCode)
+			keyStates[k].pressed = false;
+	}
+});

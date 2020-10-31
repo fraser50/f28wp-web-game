@@ -36,6 +36,11 @@ class UiElement {
 	create() {
 		throw "UI element tried to run unimplemented create function";
 	}
+
+	addEventListener(name, callback) {
+		if (this.elem)
+			this.elem.addEventListener(name, callback);
+	}
 }
 
 
@@ -137,19 +142,32 @@ class UiWindow {
 			win.appendChild(o.elem);
 		}
 
+		if (this.hidden)
+			win.style.display = "none";
+
 		ui.appendChild(win);
 
 		this.win = win;
 	}
 
 	hide() {
-		this.win.style.display = "none";
+		if (this.win)
+			this.win.style.display = "none";
 		this.hidden = true;
 	}
 
 	show() {
-		this.win.style.display = "block";
+		if (this.win)
+			this.win.style.display = "block";
 		this.hidden = false;
+	}
+
+	toggleVisibility() {
+		this.hidden = !this.hidden;
+		if (this.hidden)
+			this.hide();
+		else
+			this.show();
 	}
 
 	setOpacity(newOpacity) {
@@ -351,6 +369,11 @@ class UiTextInput extends UiElement {
 		return this.elem.value;
 	}
 
+	updateValue(newValue) {
+		if (this.elem)
+			this.elem.value = newValue;
+	}
+
 	clear() {
 		this.elem.value = "";
 	}
@@ -402,5 +425,30 @@ class UiGraph extends UiElement {
 
 		this.elem.removeChild(this.elem.childNodes[0]);
 		this.elem.appendChild(barElem);
+	}
+}
+
+class UiImage extends UiElement {
+	constructor(id, x, y, align, w, h, src) {
+		super("img", id, x, y, align);
+
+		this.w = w;
+		this.h = h;
+
+		this.src = src;
+	}
+
+	create() {
+		this.elem.className = "uiImg";
+
+		if (this.src)
+			this.elem.src = this.src;
+
+		this.elem.style.width = this.w + "px";
+		this.elem.style.height = this.h + "px";
+	}
+
+	setSrc(newSrc) {
+		this.elem.src = newSrc;
 	}
 }

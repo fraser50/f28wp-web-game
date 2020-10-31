@@ -1,8 +1,16 @@
 // Add new tile textures to this file, starting at "0"
+// The "src" property is required and should be the path relative to the tiles folder
+// The "name" property is not required but sets the display name in the level editor
 {
 	// Add new textures here
 
 	// Dev textures
-	"100": {"src": "dev_grey.png"},
-	"101": {"src": "dev_orange.png"}
+	"100": {
+		"src": "dev_grey.png", 
+		"name": "Dev Grey"
+	},
+	"101": {
+		"src": "dev_orange.png", 
+		"name": "Dev Orange"
+	}
 }
