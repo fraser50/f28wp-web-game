@@ -79,8 +79,8 @@ levelReader.onload = (e) => {
 	else
 		throw new TypeError("Tried to load invalid world");
 
-	if (data.id)
-		worldProperties.name = data.id;
+	if (data.name)
+		worldProperties.name = data.name;
 	else
 		worldProperties.name = "No name";
 
@@ -227,7 +227,7 @@ window.addEventListener("load", () => {
 });
 
 function saveWorld() {
-	var data = {id:worldProperties.name, spawnpos:worldProperties.spawnpos, chunks:chunks};
+	var data = {name:worldProperties.name, spawnpos:worldProperties.spawnpos, chunks:chunks};
 
 	var file = new Blob([JSON.stringify(data)], {type: "application/json"});
 
@@ -357,7 +357,7 @@ function setTileAt(x, y, tileId, isWall) {
 
 	var chunk = initNewChunk(cx, cy);
 
-	var t = (Math.floor(y) % chunkSize)*chunkSize + (Math.floor(x) % chunkSize);
+	var t = (Math.floor(y - cy*chunkSize))*chunkSize + (Math.floor(x - cx*chunkSize));
 
 	chunk[t] = {id:tileId};
 	if (isWall)
