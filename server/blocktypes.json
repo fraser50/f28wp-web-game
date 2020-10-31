@@ -1,7 +1,11 @@
-// Add new tile textures to this file, starting at "0"
+// Add new tile textures to this file, starting at "1"
 // The "src" property is required and should be the path relative to the tiles folder
 // The "name" property is not required but sets the display name in the level editor
 {
+	"1": {
+		"src": "floor_wood_dark.png",
+		"name": "Dark Woof Floor"
+	},
 	// Add new textures here
 
 	// Dev textures
