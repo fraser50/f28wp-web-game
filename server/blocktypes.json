@@ -2,6 +2,11 @@
 // The "src" property is required and should be the path relative to the tiles folder
 // The "name" property is not required but sets the display name in the level editor
 {
+	"0": {
+		"src": null,
+		"name": "Null"
+	},
+
 	"1": {
 		"src": "floor_wood_dark.png",
 		"name": "Dark Wood Floor"

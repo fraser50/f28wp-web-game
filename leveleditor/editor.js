@@ -21,7 +21,7 @@ var typeReader = new FileReader();
 typeReader.onload = (e) => {
 	blockTypes = JSON.parse(removeCommentsFromJSON(e.target.result));
 
-	blockTypes[0] = {"src": null, "name": "Null"};
+	// blockTypes[0] = {"src": null, "name": "Null"};
 
 	typeInput.disabled = true;
 	fileWindow.hide();
@@ -30,6 +30,8 @@ typeReader.onload = (e) => {
 		var container = new UiContainer("", null, null, "tl", 200, 64);
 		if (blockTypes[i].src)
 			container.addObject(new UiImage("", 0, 0, "tl", null, 64, tilesFolder + blockTypes[i].src));
+		else
+			container.addObject(new UiImage("", 0, 0, "tl", null, 64, "null_inv.png"));
 
 		var name = blockTypes[i].name ? blockTypes[i].name : blockTypes[i].src;
 		container.addObject(new UiLabel("", 75, 12, "tl", name, "13px sans-serif", null));
@@ -265,7 +267,10 @@ function renderWorld() {
 		for (var t=0; t<chunkSize**2; t++) {
 			var tileElem = document.createElement("img");
 
-			tileElem.src = tilesFolder + blockTypes[chunk[t].id].src;
+			if (blockTypes[chunk[t].id].src)
+				tileElem.src = tilesFolder + blockTypes[chunk[t].id].src;
+			else
+				tileElem.src = "null.png";
 
 			tileElem.width = texSize;
 			tileElem.height = texSize;
