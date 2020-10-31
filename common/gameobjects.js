@@ -35,7 +35,7 @@ class Player extends GameObject {
 		//get player spritesheet
 		const playerImg = document.createElement("img");
 		playerImg.setAttribute("id", "playerimg");
-		playerImg.setAttribute("src", "client/assets/images/temp_player.png");
+		playerImg.setAttribute("src", "client/assets/images/player_up.png");
 		
 		//set player size
 		playerDiv.style.width = "64px";
