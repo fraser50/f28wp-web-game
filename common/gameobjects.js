@@ -22,6 +22,7 @@ class Player extends GameObject {
 		this.wins = 0;
 		this.kills = 0;
 		this.points = 0;
+		this.zPos = 5;
 	}
 	
 	updateStats(wins, kills, points){
