@@ -84,7 +84,7 @@ class Vector {
 		var vec = new Vector(0, 0);
 		vec.magnitude = Math.sqrt(x**2 + y**2);
 
-		vec.angle = toDegrees(Math.tan(y/x));
+		vec.angle = toDegrees(Math.atan(y/x));
 
 		return vec;
 	}

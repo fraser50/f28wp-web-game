@@ -49,9 +49,11 @@ function doMovement(player, lastFrametime) {
 	// Frametime can be NaN somehow
 	lastFrametime = isNaN(lastFrametime) ? 0 : lastFrametime;
 
-	// Make the velocity decay over time
-	playerVelXY.x *= playerVelDecay ** lastFrametime;
-	playerVelXY.y *= playerVelDecay ** lastFrametime;
+	// Make the velocity decay over time (only if no keys are pressed)
+	if (!(keyStates.up.pressed || keyStates.down.pressed || keyStates.left.pressed || keyStates.right.pressed)) {
+		playerVelXY.x *= playerVelDecay ** lastFrametime;
+		playerVelXY.y *= playerVelDecay ** lastFrametime;
+	}
 
 	// Limit the velocity
 	var total = Math.sqrt(playerVelXY.x**2 + playerVelXY.y**2);

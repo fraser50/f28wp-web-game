@@ -76,9 +76,11 @@ levelReader.onload = (e) => {
 
 	initNewWorld();
 
-	if (data.chunks)
+	if (data.chunks) {
 		chunks = data.chunks;
-	else
+		for (var cId in data.chunks)
+			addChunkToList(cId);
+	} else
 		throw new TypeError("Tried to load invalid world");
 
 	if (data.name)
@@ -115,6 +117,9 @@ var posChunk;
 
 var tileWindow;
 var tileContainer;
+
+var chunkListWindow;
+var chunkListContainer;
 
 var selectedImg;
 var selectedLabel;
@@ -207,6 +212,12 @@ window.addEventListener("load", () => {
 	selectedLabel = new UiLabel("selectedLabel", 75, 456, "tl", "Selected: none", "13px sans-serif");
 	tileWindow.addObject(selectedLabel);
 	tileWindow.addToPage();
+
+	chunkListWindow = new UiWindow("chunkListWindow", 20, 0, "cr", 250, 500);
+	chunkListWindow.addObject(new UiLabel("", 5, 5, "tl", "Chunks", "16px sans-serif"));
+	chunkListContainer = new UiScrollContainer("chunkListContainer", 5, 25, "tl", 240, 470, true, false);
+	chunkListWindow.addObject(chunkListContainer);
+	chunkListWindow.addToPage();
 
 	posWindow = new UiWindow("posWindow", 94, 37, "cc", 160, 50);
 	posLabel = new UiLabel("pos", 5, 5, "tl", "", "14px monospace");
@@ -353,7 +364,7 @@ function updateWorld() {
 
 function updateUI() {
 	posLabel.updateValue(`X: ${roundNumber(-cameraPos[0]/(texSize/zoomLevel), 1)}, Y: ${roundNumber(-cameraPos[1]/(texSize/zoomLevel), 1)}`);
-	posChunk.updateValue(`X: ${Math.floor((-cameraPos[0]/(texSize/zoomLevel))/16)}, Y: ${Math.floor((-cameraPos[1]/(texSize/zoomLevel))/16)}`)
+	posChunk.updateValue(`CX: ${Math.floor((-cameraPos[0]/(texSize/zoomLevel))/16)}, CY: ${Math.floor((-cameraPos[1]/(texSize/zoomLevel))/16)}`)
 }
 
 function setTileAt(x, y, tileId, isWall) {
@@ -380,7 +391,34 @@ function initNewChunk(cx, cy) {
 		chunks[cId].push({id:0});
 	}
 
+	addChunkToList(cId);
+
 	return chunks[cId];
+}
+
+function addChunkToList(cId) {
+	var cPos = fromChunkId(cId);
+	var chunkListElem = new UiContainer(cId, null, null, "tl", 200, 32);
+	chunkListElem.addObject(new UiLabel("", 12, 5, "tl", `${cPos[0]}, ${cPos[1]}`, "14px monospace"));
+	chunkListElem.addObject(new UiButton("", 0, 0, "tr", null, null, "Delete", "14px sans-serif", () => {
+		deleteChunk(fromChunkId(cId)[0], fromChunkId(cId)[1]);
+		console.info("Deleted chunk", cId);
+	}));
+
+	chunkListContainer.addObject(chunkListElem);
+
+	chunkListElem.elem.style.position = "relative";
+}
+
+function deleteChunk(cx, cy) {
+	var cId = genChunkId(cx, cy);
+
+	if (!chunks[cId]) return;
+
+	delete chunks[cId];
+	world.removeChild(world.querySelector("#" + cId));
+
+	chunkListContainer.elem.removeChild(chunkListContainer.elem.querySelector("#" + cId));
 }
 
 var keyStates = {
