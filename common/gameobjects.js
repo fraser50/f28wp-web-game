@@ -25,6 +25,36 @@ class Player extends GameObject {
 		this.zPos = 5;
 	}
 	
+	addToPage() {
+		if (objects.querySelector("#"+this.id) != undefined)
+			objects.removeChild(ui.querySelector("#"+this.id))
+			
+		var playerDiv = document.createElement("div");
+		playerDiv.setAttribute("id", "playerdiv");
+
+		//get player spritesheet
+		const playerImg = document.createElement("img");
+		playerImg.setAttribute("id", "playerimg");
+		playerImg.setAttribute("src", "../client/assets/images/temp_player.png");
+		
+		//set player size
+		playerDiv.style.width = "64px";
+		playerDiv.style.height = "64px";
+		playerDiv.style.zIndex = this.zPos;
+		
+		playerImg.style.width = "100%";
+		playerImg.style.height = "100%";
+
+
+		//set player position
+		playerDiv.style.position = "absolute";	//Top and Left won't affect it if we use static
+		playerDiv.style.top = `calc(50% - ${playerImg.h == undefined ? 0 : playerImg.h/2}px + ${playerImg.y}px)`;
+		playerDiv.style.left = `calc(50% - ${playerImg.w == undefined ? 0 : playerImg.w/2}px + ${playerImg.x}px)`;
+
+		playerDiv.appendChild(playerImg);
+		objects.appendChild(playerDiv);
+	}
+	
 	updateStats(wins, kills, points){
 		this.wins += wins;
 		this.kills += kills;

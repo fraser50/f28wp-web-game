@@ -268,7 +268,7 @@ socket.on('getchunkundef', (data) => {
 
 function createPlayer(socket, user) {	//This relates to the gameobjects.js Player class rather than player_and_hitbox.js. Need to get a name assignment sorted out
 	socket.player = new Player(currentLevel.spawnpos == undefined ? [0, 0] : currentLevel.spawnpos, 0, 0, [0, 0]);
-	console.log(socket.player);
+	socket.player.addToPage();
 };
 
 // test();
