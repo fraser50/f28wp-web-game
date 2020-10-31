@@ -74,5 +74,10 @@ function doMovement(player, lastFrametime) {
 
 function direction(player) {
 	var playerAngle = Math.atan(playerVelXY.y/playerVelXY.x);
-	player.div.style.transform = `rotate(${playerAngle + Math.sign(playerVelXY.x)*Math.PI/2}rad)`;
+	var final = 0;
+	if (playerVelXY.x == 0)
+		final = playerAngle + Math.PI/2;
+	else
+		final = playerAngle + Math.sign(playerVelXY.x)*Math.PI/2;
+	player.div.style.transform = `rotate(${final}rad)`;
 }
