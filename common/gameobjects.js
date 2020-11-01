@@ -14,6 +14,13 @@ class GameObject {
 	remove() {
 		this.level.removeObject(this);
 	}
+
+	toJSON() {
+		return {
+			"x" : this.pos.x,
+			"y" : this.pos.y
+		}
+	}
 }
 
 class Player extends GameObject {
