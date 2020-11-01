@@ -51,10 +51,11 @@ function generateLoginWindow(socket) {
 		loginPassBox.clear();
 		if (data.success == true) {
 			loginWindow.hide();
-			logActivateWindow.hide();
 			userDetails.loginSuccess = true;
-			showSignedInButton();
 			createPlayer(socket, userDetails.name);		//Just barely works
+			loginActivateButton.updateValue("Signed in as: " + userDetails.name);
+			loginActivateButton.setCallback(() => {loginCallbackToLoggedIn()});
+			getUserStatVals();
 
 			chatSendButton.enable();
 
@@ -68,11 +69,12 @@ function generateLoginWindow(socket) {
 		loginPassBox.clear();
 		if (data.success == true) {
 			loginWindow.hide();
-			logActivateWindow.hide();
 			userDetails.loginSuccess = true;
-			showSignedInButton();
 			createPlayer(socket, userDetails.name);		//Just barely works
-
+			loginActivateButton.updateValue("Signed in as: " + userDetails.name);
+			loginActivateButton.setCallback(() => {loginCallbackToLoggedIn()});
+			getUserStatVals();
+			
 			chatSendButton.enable();
 
 			initWorld();
@@ -85,11 +87,13 @@ function generateLoginWindow(socket) {
 		loginPassBox.clear();
 		if (data.success == true) {
 			loginWindow.hide();
-			console.info(data);
 			userDetails.name = genGuestName(data.userId);
 			userDetails.loginSuccess = true;
 			createPlayer(socket, userDetails.name);		//Just barely works, should be adapted for guest specifically
-
+			loginActivateButton.updateValue("Signed in as: " + userDetails.name);
+			loginActivateButton.setCallback(() => {loginCallbackToLoggedIn()});
+			getUserStatVals();
+			
 			chatSendButton.enable();
 
 			initWorld();
@@ -100,13 +104,13 @@ function generateLoginWindow(socket) {
 	return loginWindow;
 }
 
-function showSignedInButton() {
-	if (signedInWindow.hidden) {
-		signedInButton.updateValue("Signed in as: " + userDetails.name)
-		signedInWindow.show();
-	} else 
-		signedInWindow.hide();
-}
+//function showSignedInButton() {
+//	if (signedInWindow.hidden) {
+//		signedInButton.updateValue("Signed in as: " + userDetails.name)
+//		signedInWindow.show();
+//	} else 
+//		signedInWindow.hide();
+//}
 
 function generateUserWindow() {
 
@@ -134,10 +138,12 @@ function generateUserWindow() {
 			alert("Signed Out");
 			userDetails.name = null;
 			userDetails.loginSuccess = false;
-			showSignedInButton();
+			removePlayer(socket);
+			loginActivateButton.updateValue("Login/Sign Up");
+			loginActivateButton.setCallback(() => {loginCallbackToLogIn()});
 			userWindow.hide();
-			logActivateWindow.show();
-
+			
+			
 			chatSendButton.disable();
 		});
 	}));
@@ -149,6 +155,20 @@ function generateUserWindow() {
 	return userWindow;
 }
 
+function loginCallbackToLoggedIn() {
+	if (userWindow.hidden) {
+		userWindow.show();
+	} else 
+		userWindow.hide();
+}
+
+function loginCallbackToLogIn() {
+	if (loginWindow.hidden == true) {
+		loginWindow.show();
+	} else 
+		loginWindow.hide();
+	
+}
 
 function getUserStatVals() {
 	var stats = {

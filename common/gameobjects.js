@@ -17,8 +17,9 @@ class GameObject {
 }
 
 class Player extends GameObject {
-	constructor(pos, rotation, level, velocity) {
+	constructor(pos, rotation, level, velocity, id) {
 		super(pos, rotation, level);
+		this.id = socket.id;
 		this.wins = 0;
 		this.kills = 0;
 		this.points = 0;
@@ -30,7 +31,7 @@ class Player extends GameObject {
 			objects.removeChild(ui.querySelector("#"+this.id))
 			
 		var playerDiv = document.createElement("div");
-		playerDiv.setAttribute("id", "playerdiv");
+		playerDiv.setAttribute("id", this.id);
 
 		//get player spritesheet
 		const playerImg = document.createElement("img");
@@ -55,6 +56,15 @@ class Player extends GameObject {
 		objects.appendChild(playerDiv);
 
 		this.div = playerDiv;
+	}
+	
+	remove() {
+		var player = document.getElementById(this.id);
+		objects.removeChild(player);
+		loopStartButton.loopRunning = false;
+		stopLoop();
+		loopStartButton.updateValue("Start loop");
+		loginWindow.show();
 	}
 	
 	updateStats(wins, kills, points){

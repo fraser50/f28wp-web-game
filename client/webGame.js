@@ -64,21 +64,7 @@ window.addEventListener("load", () => {
 	})
 	logActivateWindow.addObject(loginActivateButton);
 	logActivateWindow.addToPage();
-	
-	
-	signedInWindow = new UiWindow("signedInWindow", 20, 20, "tl", 100, 40);
-	signedInButton = new UiButton("signedInButton", 0, 0, "tl", 100, 40, "Signed in as: " + userDetails.name, "", () => {
-		if (userWindow.hidden == true) {
-			getUserStatVals();
-			userWindow.show();
-		} else {
-			userWindow.hide();
-		}
-	})
-	signedInWindow.addObject(signedInButton);
-	signedInWindow.addToPage();
-	signedInWindow.hide();
-	
+		
 	// User details window, initially hidden
 	
 	userWindow = generateUserWindow(socket);
@@ -268,7 +254,12 @@ socket.on('getchunkundef', (data) => {
 function createPlayer(socket, user) {	//This relates to the gameobjects.js Player class rather than player_and_hitbox.js. Need to get a name assignment sorted out
 	socket.player = new Player(currentLevel.spawnpos == undefined ? [0, 0] : currentLevel.spawnpos, 0, 0, [0, 0]);
 	socket.player.addToPage();
+	console.log(user);
 };
+
+function removePlayer(socket, user) {
+	socket.player.remove();
+}
 
 // test();
 
