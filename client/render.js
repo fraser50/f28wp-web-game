@@ -86,12 +86,11 @@ function render(level) {
 }
 
 var texSize = 16;
-// TODO: move this somewhere else
-var zoomLevel = 4*texSize;
+
+var zoomLevel = 6*texSize; // Change to scale the world
 
 var chunkSize = 16;
 
-// Image size is currently hard coded as 16x16, TODO: make the images scale properly
 function createWorld(level, replace) {
 	var keys = Object.keys(level.chunks);
 	for (var i=0; i<keys.length; i++) {
@@ -172,6 +171,9 @@ function createWorld(level, replace) {
 
 					shadowElem.style.left = sx;
 					shadowElem.style.top = sy;
+
+					shadowElem.width = zoomLevel*3;
+					shadowElem.height = zoomLevel*3;
 
 					chunkElem.appendChild(shadowElem);
 				};

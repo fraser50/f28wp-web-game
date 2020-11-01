@@ -69,9 +69,25 @@ function doMovement(player, lastFrametime) {
 		playerVelXY.y = 0;
 	}
 
-	// Apply the velocity to the player's position
-	player.pos[0] += playerVelXY.x * lastFrametime;
-	player.pos[1] += playerVelXY.y * lastFrametime;
+	//If player has wall directly above or below
+	if(this.checkVerticalCollision) {
+		//player can only move right and left
+		player.pos[0] += playerVelXY.x * lastFrametime;
+		player.pos[1] += 0;
+	}
+	
+	//If player has wall directly to left or right
+	else if(this.checkHorizontalCollision) {
+		//player can only move up and down
+		player.pos[0] += 0;
+		player.pos[1] += playerVelXY.y * lastFrametime;
+	}
+
+	else {
+		// Apply the velocity to the player's position
+		player.pos[0] += playerVelXY.x * lastFrametime;
+		player.pos[1] += playerVelXY.y * lastFrametime;
+	}
 }
 
 function direction(player) {
@@ -82,4 +98,47 @@ function direction(player) {
 	else
 		final = playerAngle + Math.sign(playerVelXY.x)*Math.PI/2;
 	player.div.style.transform = `rotate(${final}rad)`;
+}
+
+//Functions for collision detection below
+//Will need some more implementation to get pos of gameobjects
+function checkVerticalCollision() {
+	//Checks for collisions on top and bottom edges of player
+	//check x coords
+	//Check if player is on the left of object
+	if(player.pos[0] < object.pos[0]) {
+		if((player.pos[0] + 64) > object.pos[0]) {
+			return true; //collision has occurred
+		}
+	}
+	//Check if player is on the right of object
+	else if(player.pos[0] > object.pos[0]) {
+		if(player.pos[0] < (object.pos[0] + 64)) {
+			return true; //collision has occurred
+		}
+	}
+	else {
+		return false; //no collision has occurred
+	}
+}
+
+//Will need some more implementation to get pos of gameobjects
+function checkHorizontalCollision() {
+	//Checks for collisions on left and right edges of player
+	//check y coords
+	//Check if player is above object
+	if(player.pos[1] < object.pos[1]) {
+		if((player.pos[1] + 64) > object.pos[1]) {
+			return true; //collision has occurred
+		}
+	}
+	//Check if player is below object
+	else if(player.pos[1] > object.pos[1]) {
+		if(player.pos[1] < (object.pos[1] + 64)) {
+			return true; //collision has occurred
+		}
+	}
+	else {
+		return false; //no collision has occurred
+	}
 }

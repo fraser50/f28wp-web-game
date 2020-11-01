@@ -38,8 +38,8 @@ class Player extends GameObject {
 		playerImg.setAttribute("src", "client/assets/images/player_up.png");
 		
 		//set player size
-		playerDiv.style.width = "64px";
-		playerDiv.style.height = "64px";
+		playerDiv.style.width = zoomLevel + "px";
+		playerDiv.style.height = zoomLevel + "px";
 		playerDiv.style.zIndex = this.zPos;
 		
 		playerImg.style.width = "100%";
@@ -48,8 +48,8 @@ class Player extends GameObject {
 
 		//set player position
 		playerDiv.style.position = "absolute";	//Top and Left won't affect it if we use static
-		playerDiv.style.top = `calc(50% - 32px + ${playerImg.y}px)`;
-		playerDiv.style.left = `calc(50% - 32px + ${playerImg.x}px)`;
+		playerDiv.style.top = `calc(50% - ${zoomLevel/2}px + ${playerImg.y}px)`;
+		playerDiv.style.left = `calc(50% - ${zoomLevel/2}px + ${playerImg.x}px)`;
 
 		playerDiv.appendChild(playerImg);
 		objects.appendChild(playerDiv);
