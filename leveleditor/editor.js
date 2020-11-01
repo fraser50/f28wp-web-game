@@ -254,7 +254,9 @@ function saveWorld() {
 
 function initNewWorld() {
 	worldProperties = {name: "", spawnpos: [0, 0]};
-	chunks = {};
+	
+	for (var cId in chunks)
+		deleteChunk(fromChunkId(cId)[0], fromChunkId(cId)[1]);
 }
 
 var chunkSize = 16;
