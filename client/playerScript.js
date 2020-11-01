@@ -69,18 +69,20 @@ function doMovement(player, lastFrametime) {
 		playerVelXY.y = 0;
 	}
 
-	//If player has wall directly above or below
-	if(this.checkVerticalCollision) {
-		//player can only move right and left
-		player.pos[0] += playerVelXY.x * lastFrametime;
-		player.pos[1] += 0;
-	}
-	
-	//If player has wall directly to left or right
-	else if(this.checkHorizontalCollision) {
-		//player can only move up and down
-		player.pos[0] += 0;
-		player.pos[1] += playerVelXY.y * lastFrametime;
+	//if there is a collision
+	if(this.checkVerticalCollision || this.checkHorizontalCollision) {
+		//check that player is not moving against a wall
+		if(this.checkVerticalCollision) {
+			//player can only move right and left
+			player.pos[0] += playerVelXY.x * lastFrametime;
+			player.pos[1] += 0;
+		}
+
+		if(this.checkHorizontalCollision) {
+			//player can only move up and down
+			player.pos[0] += 0;
+			player.pos[1] += playerVelXY.y * lastFrametime;
+		}
 	}
 
 	else {
