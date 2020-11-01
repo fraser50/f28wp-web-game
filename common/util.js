@@ -125,26 +125,16 @@ function genGuestName(gId) {
 function isValidUsername(username) {
 	var length = username.length >= 2 && username.length <= 16;
 
-	var invalidChars = !username.includes(" "); // Maybe change to allow spaces?
+	var invalidChars = username.includes(" "); // Maybe change to allow spaces?
 
-	return length && invalidChars;
+	return length && !invalidChars;
 }
 
 // Check if a password is valid
 function isValidPassword(password) {
 	var length = password.length >= 6 && password.length <= 30;
 
-	var invalidChars = !password.includes(" ");
-
-	var normChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	var hasNotNorm = false;
-	for (var i in password) {
-		hasNotNorm = !normChars.includes(password[i]);
-		console.debug(password[i], hasNotNorm);
-		if (hasNotNorm) break;
-	}
-
-	return length && invalidChars && hasNotNorm;
+	return length;
 }
 
 // As JSON does not natively support comments, they have to be removed before parsing
