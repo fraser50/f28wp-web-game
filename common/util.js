@@ -130,11 +130,28 @@ function isValidUsername(username) {
 	return length && !invalidChars;
 }
 
-// Check if a password is valid
+/* 
+Check if a password is valid:
+  • Must be between 6 and 30 characters in lenght (inclusive)
+  • Cannot contain spaces
+  • Must contain at least 1 letter/number
+  • Must contain at leas 1 symbol
+*/
 function isValidPassword(password) {
 	var length = password.length >= 6 && password.length <= 30;
 
-	return length;
+	var invalidChars = !password.includes(" ");
+
+	var normChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	var hasNotNorm = false;
+	var hasNorm = false;
+	for (var i in password) {
+		hasNotNorm = hasNotNorm || !normChars.includes(password[i]);
+		hasNorm = hasNorm || normChars.includes(password[i]);
+		if (hasNotNorm && hasNorm) break;
+	}
+
+	return length && invalidChars && hasNorm && hasNotNorm;
 }
 
 // As JSON does not natively support comments, they have to be removed before parsing
