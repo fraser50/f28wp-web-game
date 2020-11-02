@@ -36,28 +36,32 @@ function doMovement(player, lastFrametime) {
 	lastPos.push(player.pos[0]);
 	lastPos.push(player.pos[1]);
 
-	// Add/subtract velocity for key presses
-	if (keyStates.up.pressed) {
-		playerVelXY.y -= playerAcceleration * lastFrametime;
-	}
-	if (keyStates.down.pressed)
-		playerVelXY.y += playerAcceleration * lastFrametime;
-		
-	if (keyStates.left.pressed)
-		playerVelXY.x -= playerAcceleration * lastFrametime;
-		
-	if (keyStates.right.pressed)
-		playerVelXY.x += playerAcceleration * lastFrametime;
-
-	
 	// Frametime can be NaN somehow
 	lastFrametime = isNaN(lastFrametime) ? 0 : lastFrametime;
 
-	// Make the velocity decay over time (only if no keys are pressed in that axis)
-	if ((keyStates.up.pressed ^ keyStates.down.pressed) == 0)
+	// Add/subtract velocity for key presses
+	if (!player.disableMovement) {
+		if (keyStates.up.pressed) {
+			playerVelXY.y -= playerAcceleration * lastFrametime;
+		}
+		if (keyStates.down.pressed)
+			playerVelXY.y += playerAcceleration * lastFrametime;
+			
+		if (keyStates.left.pressed)
+			playerVelXY.x -= playerAcceleration * lastFrametime;
+			
+		if (keyStates.right.pressed)
+			playerVelXY.x += playerAcceleration * lastFrametime;
+
+		// Make the velocity decay over time (only if no keys are pressed in that axis)
+		if ((keyStates.up.pressed ^ keyStates.down.pressed) == 0)
+			playerVelXY.y *= playerVelDecay ** lastFrametime;
+		if ((keyStates.left.pressed ^ keyStates.right.pressed) == 0)
+			playerVelXY.x *= playerVelDecay ** lastFrametime;
+	} else {
 		playerVelXY.y *= playerVelDecay ** lastFrametime;
-	if ((keyStates.left.pressed ^ keyStates.right.pressed) == 0)
 		playerVelXY.x *= playerVelDecay ** lastFrametime;
+	}
 
 	// If there is a wall where the player would end up in the x axis, stop the player in that axis
 	if (getTileAt(currentLevel, Math.floor(player.pos[0] + playerVelXY.x * lastFrametime), Math.floor(player.pos[1])).isWall)

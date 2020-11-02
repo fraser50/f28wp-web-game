@@ -29,6 +29,7 @@ var userDetails = {
 };
 
 var chatSendButton;
+var chatInput;
 var frametimeLabel;
 var frametimeGraph;
 var fpsLabel;
@@ -79,7 +80,7 @@ window.addEventListener("load", () => {
 	var chatScrollContainer = new UiScrollContainer("chatScrollContainer", 5, 5, "tl", 390, 110, true);
 	chatWindow.addObject(chatScrollContainer);
 
-	var chatInput = new UiTextInput("chatInput", 5, 5, "bl", 345, null, "Chat");
+	chatInput = new UiTextInput("chatInput", 5, 5, "bl", 345, null, "Chat");
 	chatWindow.addObject(chatInput);
 
 	var maxMessages = 10;

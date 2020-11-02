@@ -58,6 +58,7 @@ function generateLoginWindow(socket) {
 			getUserStatVals();
 
 			chatSendButton.enable();
+			chatInput.setMovementDisable(socket.player);
 
 			initWorld();
 		}
@@ -76,6 +77,7 @@ function generateLoginWindow(socket) {
 			getUserStatVals();
 			
 			chatSendButton.enable();
+			chatInput.setMovementDisable(socket.player);
 
 			initWorld();
 		}
@@ -95,6 +97,7 @@ function generateLoginWindow(socket) {
 			getUserStatVals();
 			
 			chatSendButton.enable();
+			chatInput.setMovementDisable(socket.player);
 
 			initWorld();
 		}
@@ -145,6 +148,7 @@ function generateUserWindow() {
 			
 			
 			chatSendButton.disable();
+			chatInput.removeMovementDisable();
 		});
 	}));
 	

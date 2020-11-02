@@ -383,6 +383,22 @@ class UiTextInput extends UiElement {
 		this.clear();
 		return val;
 	}
+
+	setMovementDisable(player) {
+		this.focusinf = () => {
+			player.disableMovement = true;
+		};
+		this.elem.addEventListener("focusin", this.focusinf);
+
+		this.focusoutf = () => {
+			player.disableMovement = false;
+		};
+		this.elem.addEventListener("focusout", this.focusoutf);
+	}
+	removeMovementDisable() {
+		this.elem.removeEventListener("focusin", this.focusinf);
+		this.elem.removeEventListener("focusout", this.focusoutf);
+	}
 }
 
 class UiGraph extends UiElement {
