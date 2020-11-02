@@ -32,6 +32,10 @@ window.addEventListener("keyup", function(e) { keyEvent(e.keyCode, 0) });
 var playerVelXY = {x:0, y:0};
 
 function doMovement(player, lastFrametime) {
+	var lastPos = [];
+	lastPos.push(player.pos[0]);
+	lastPos.push(player.pos[1]);
+
 	// Add/subtract velocity for key presses
 	if (keyStates.up.pressed) {
 		playerVelXY.y -= playerAcceleration * lastFrametime;
@@ -89,6 +93,10 @@ function doMovement(player, lastFrametime) {
 		// Apply the velocity to the player's position
 		player.pos[0] += playerVelXY.x * lastFrametime;
 		player.pos[1] += playerVelXY.y * lastFrametime;
+	}
+
+	if (getTileAt(currentLevel, Math.floor(player.pos[0]), Math.floor(player.pos[1])).isWall) {
+		player.pos = lastPos;
 	}
 }
 
