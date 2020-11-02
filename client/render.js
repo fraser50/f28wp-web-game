@@ -181,25 +181,25 @@ function createWorld(level, replace) {
 				// If there is no wall to the left
 				// if (chunk[t-1] && !chunk[t-1].isWall)
 				var lt = getTileAt(level, wx-1, wy);
-				if (lt && !lt.isWall)
+				if (!lt || !lt.isWall)
 					addShadow("left");
 
 				// If there is no wall to the right
 				// if (chunk[t+1] && !chunk[t+1].isWall)
 				var rt = getTileAt(level, wx+1, wy);
-				if (rt && !rt.isWall)
+				if (!rt || !rt.isWall)
 					addShadow("right");
 
 				// If there is no wall above
 				// if (chunk[t-chunkSize] && !chunk[t-chunkSize].isWall)
 				var ut = getTileAt(level, wx, wy-1);
-				if (ut && !ut.isWall)
+				if (!ut || !ut.isWall)
 					addShadow("up");
 
 				// If there is no wall below
 				// if (chunk[t+chunkSize] && !chunk[t+chunkSize].isWall)
 				var bt = getTileAt(level, wx, wy+1);
-				if (bt && !bt.isWall)
+				if (!bt || !bt.isWall)
 					addShadow("down");
 			}
 		}
