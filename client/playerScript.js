@@ -69,6 +69,11 @@ function doMovement(player, lastFrametime) {
 	// If there is a wall where the player would end up in the y axis, stop the player in that axis
 	if (getTileAt(currentLevel, Math.floor(player.pos[0]), Math.floor(player.pos[1] + playerVelXY.y * lastFrametime)).isWall)
 		playerVelXY.y = 0;
+	// If there is a wall directly in front of the player, stop them completely (fixes the rare occurence of getting stuck on the corner of a wall)
+	if (getTileAt(currentLevel, Math.floor(player.pos[0] + playerVelXY.x * lastFrametime), Math.floor(player.pos[1] + playerVelXY.y * lastFrametime)).isWall) {
+		playerVelXY.x = 0;
+		playerVelXY.y = 0;
+	}
 
 	// Limit the velocity
 	var total = Math.sqrt(playerVelXY.x**2 + playerVelXY.y**2);
