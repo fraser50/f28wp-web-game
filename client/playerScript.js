@@ -59,6 +59,13 @@ function doMovement(player, lastFrametime) {
 	if ((keyStates.left.pressed ^ keyStates.right.pressed) == 0)
 		playerVelXY.x *= playerVelDecay ** lastFrametime;
 
+	// If there is a wall where the player would end up in the x axis, stop the player in that axis
+	if (getTileAt(currentLevel, Math.floor(player.pos[0] + playerVelXY.x * lastFrametime), Math.floor(player.pos[1])).isWall)
+		playerVelXY.x = 0;
+	// If there is a wall where the player would end up in the y axis, stop the player in that axis
+	if (getTileAt(currentLevel, Math.floor(player.pos[0]), Math.floor(player.pos[1] + playerVelXY.y * lastFrametime)).isWall)
+		playerVelXY.y = 0;
+
 	// Limit the velocity
 	var total = Math.sqrt(playerVelXY.x**2 + playerVelXY.y**2);
 	if (total > playerVelMax) {
@@ -93,10 +100,6 @@ function doMovement(player, lastFrametime) {
 		// Apply the velocity to the player's position
 		player.pos[0] += playerVelXY.x * lastFrametime;
 		player.pos[1] += playerVelXY.y * lastFrametime;
-	}
-
-	if (getTileAt(currentLevel, Math.floor(player.pos[0]), Math.floor(player.pos[1])).isWall) {
-		player.pos = lastPos;
 	}
 }
 
