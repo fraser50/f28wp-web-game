@@ -34,6 +34,7 @@ var frametimeGraph;
 var fpsLabel;
 var posLabel;
 var velLabel;
+var pingLabel;
 
 // Add the elements to the page when it finishes loading
 window.addEventListener("load", () => {
@@ -138,6 +139,9 @@ window.addEventListener("load", () => {
 	});
 	perfWindow.addObject(loopStartButton);
 
+	pingLabel = new UiLabel("perfPing", 200, 12, "tl", "", "15px monospace");
+	perfWindow.addObject(pingLabel);
+
 	perfWindow.addToPage();
 	
 	//This creates a timer that counts down from 60, should end up controlling the length of each match
@@ -221,6 +225,12 @@ socket.on('getleveldata', (data) => {
 		if (data.id == currentLevel.id) {
 			currentLevel.setInfo(data);
 		}
+});
+
+var ping = 0;
+
+socket.on("pong", (time) => {
+	ping = time;
 });
 
 // Temporary variable to store the current level. Definitly change the way this works

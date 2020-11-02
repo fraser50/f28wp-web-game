@@ -8,7 +8,7 @@ const app = express();
 const server = require('http').Server(app);
 const path = require('path');
 const fs = require('fs');
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {pingInterval: 1000});
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 
