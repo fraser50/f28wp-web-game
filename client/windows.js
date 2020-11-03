@@ -92,6 +92,7 @@ function generateLoginWindow(socket) {
 			userDetails.name = genGuestName(data.userId);
 			userDetails.loginSuccess = true;
 			createPlayer(socket, userDetails.name);		//Just barely works, should be adapted for guest specifically
+			socket.player.isGuest = data.isGuest;
 			loginActivateButton.updateValue("Signed in as: " + userDetails.name);
 			loginActivateButton.setCallback(() => {loginCallbackToLoggedIn()});
 			getUserStatVals();
@@ -191,20 +192,36 @@ function generateLeaderboard() {
 
 	
 function getUserStatVals() {
-	var stats = {
-		user : userDetails.name,
-		wins : "",
-		kills : "",
-		points : ""
+	userWindowMessage.updateValue("Signed in as " + userDetails.name);
+
+	if (!(socket.player.isGuest)) {
+		var stats = {
+				user : userDetails.name,
+				wins : "",
+				kills : "",
+				points : ""
+			}
+				
+			socket.emit('getStats', (stats));
+
+			socket.on('getStats', (data) => {
+				userWins.updateValue(data.wins + socket.player.wins);
+				userKills.updateValue(data.kills + socket.player.kills);
+				userTotalPoints.updateValue(data.points + socket.player.points);
+			});
+	} else {
+		userWins.updateValue(socket.player.wins);
+		userKills.updateValue(socket.player.kills);
+		userTotalPoints.updateValue(socket.player.points);
 	}
-		
-	socket.emit('getStats', (stats));
+	
+	socket.player.startingWins = userWins.getValue();
+	socket.player.startingKills = userKills.getValue();
+	socket.player.startingPoints = userTotalPoints.getValue();
+}
 
-	socket.on('getStats', (data) => {
-		userWindowMessage.updateValue("Signed in as " + userDetails.name);
-		userWins.updateValue(data.wins);
-		userKills.updateValue(data.kills);
-		userTotalPoints.updateValue(data.totalPoints);
-	});
-
+function updateUserStatVals() {
+	userWins.updateValue(socket.player.startingWins + socket.player.wins);
+	userKills.updateValue(socket.player.startingKills + socket.player.kills);
+	userTotalPoints.updateValue(socket.player.startingPoints + socket.player.points);
 }

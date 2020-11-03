@@ -144,7 +144,8 @@ io.on('connection', (socket) => {
 		var returnPack = {			//Create a package to return the users id and a message
 			userId : "",
 			message : "",
-			success : false
+			success : false,
+			isGuest : "true"
 		};
 		guest(returnPack, sockettoclient[socket]);
 	});
@@ -383,6 +384,7 @@ function guest(returnPack, client) {
 	/*var createId = () => {return Math.floor(Math.random() * (10000 - 1000) + 1000)};
 	var rand = createId();
 	while (guests[rand] != undefined)
+<<<<<<< HEAD
 		rand = createId();*/
 
 	returnPack.message = "Welcome, ";
@@ -395,7 +397,7 @@ function guest(returnPack, client) {
 	client.name = "guest_" + returnPack.userId; // Change to use random id again
 
 	client.socket.emit('guest', returnPack);
-	printLog("guest Id: "+returnPack.userId);
+
 }
 
 function isLoggedIn() {
