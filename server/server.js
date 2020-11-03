@@ -178,23 +178,22 @@ io.on('connection', (socket) => {
 	});
 	
 	socket.on('updateTimer', (data) => {
-		//updateTimer(data, sockettoclient[socket]);
+		updateTimer(data, sockettoclient[socket]);
 	});
 
 	socket.on('playerstate', (data) => {
-		if (!loggedInUsers[socket.id]) return;
-		loggedInUsers[socket.id].pos = data.pos;
-		loggedInUsers[socket.id].rot = data.rot;
-	})
+		var c = sockettoclient[socket];
+
+		if (c.loggedin) {
+			c.pos = data.pos;
+			c.rot = data.rot;
+
+			}
+
+		}
+	});
 
 	socket.on('disconnect', () => {
-		/*if (socket.isGuest)
-			delete guests[socket.guestId];
-		if (loggedInUsers[socket.id] != undefined) {
-			printLog(`Logged out user ${loggedInUsers[socket.id]}`);
-		}
-		delete loggedInUsers[socket.id];*/
-
 		var c = sockettoclient[socket];
 
 		delete sockettoclient[socket];
@@ -230,11 +229,11 @@ setInterval(loop, 1000/FPS);
 
 function getPlayerStates() {
 	var out = {};
-	for (var sId in loggedInUsers) {
-		if (!loggedInUsers[sId].pos) continue;
+	for (var sId in clientlist) {
+		if (!clientlist[sId].pos) continue;
 		out[sId] = {};
-		out[sId].pos = loggedInUsers[sId].pos;
-		out[sId].rot = loggedInUsers[sId].rot;
+		out[sId].pos = clientlist[sId].pos;
+		out[sId].rot = clientlist[sId].rot;
 	}
 
 	return out;
@@ -324,7 +323,7 @@ function addUser(data, returnPack, client) {
 			returnPack.userId = "";			//This and username might not be necessary
 			returnPack.username = "";
 
-			clientsocket.emit('addUser', returnPack);
+			client.socket.emit('addUser', returnPack);
 		}
 	});
 }
@@ -444,12 +443,12 @@ function signOut(client) {
 	client.socket.emit('sign out');
 }
 
-function updateTimer(sec, socket) {
+function updateTimer(sec, client) {
 		sec--
 		if (sec==0) {
 			printLog("Timer Done");
 		}
-		socket.emit('updateTimer', sec);
+		client.socket.emit('updateTimer', sec);
 }
 
 // Write to the console in a standard format with different levels (valid levels: warning, error, info (default))
