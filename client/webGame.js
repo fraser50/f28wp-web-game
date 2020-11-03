@@ -73,6 +73,12 @@ window.addEventListener("load", () => {
 	userWindow.addToPage();
 	userWindow.hide();
 	
+	// Leaderboard window, initially hidden
+	
+	var leaderboard = generateLeaderboard();
+	leaderboard.addToPage();
+	leaderboard.hide();
+	
 	// Chat window
 
 	var chatWindow = new UiWindow("chatWindow", 20, 20, "tr", 400, 150);

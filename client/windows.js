@@ -174,6 +174,22 @@ function loginCallbackToLogIn() {
 	
 }
 
+function generateLeaderboard() {	
+	var leaderboardWindow = new UiWindow("leaderboardWindow", 0, 0, "cc", 600, 500);
+	var leaderboardTitle = new UiLabel("leaderboardTitle", -85, 20, "tc", "Leaderboard", "30px sans-serif");
+	leaderboardWindow.addObject(leaderboardTitle);
+	
+	
+	var leaderboard = new UiScrollContainer("leaderboard", 20, 60, "tl", 360, 420, true); //For scalability
+	leaderboardWindow.addObject(leaderboard);
+	leaderboard.hideScrollbar();		
+
+	//var team1Title = new UiLabel("team1Title", 20, 60) //Need to continue with this, I've been distracted
+
+	return leaderboardWindow;
+}
+
+	
 function getUserStatVals() {
 	var stats = {
 		user : userDetails.name,

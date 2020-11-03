@@ -9,8 +9,20 @@ let keyStates = {
 	up: {codes: [38, 87]},   // Up arrow or W
 	down: {codes: [40, 83]}, // Down arrow or S
 	left: {codes: [37, 65]}, // Left arrow or A
-	right: {codes: [39, 68]} // Roght arrow or D
+	right: {codes: [39, 68]}, // Right arrow or D
+	shift: {codes: [16]}
 }
+
+function checkLeaderboard() {		//Would've used tab, but would change focus to other objs. Might want to change how this works for better performance.
+//Need to add in blocks like if user is focused on chat or there is login/stats window up
+	if (keyStates.shift.pressed) {
+		document.getElementById("leaderboardWindow").style.display = "block";
+	} else {
+		document.getElementById("leaderboardWindow").style.display = "none";
+	}
+}
+
+
 
 // Set the pressed attribute of the key based on the type of event (down = true, up = false)
 function keyEvent(code, isDown) {

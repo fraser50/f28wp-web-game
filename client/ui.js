@@ -258,6 +258,10 @@ class UiScrollContainer extends UiContainer {
 		if (this.scrollX)
 			this.elem.style.overflowX = "scroll";
 	}
+	
+	hideScrollbar() {
+		this.elem.style.overflowY = "hidden";
+	}
 }
 
 class UiLabel extends UiElement {
