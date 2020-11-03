@@ -2,16 +2,93 @@
 // The "src" property is required and should be the path relative to the tiles folder
 // The "name" property is not required but sets the display name in the level editor
 {
+	// "air" tile
 	"0": {
 		"src": null,
 		"name": "Null"
 	},
 
+	// FLOORS
+
+	// Wooden
 	"1": {
 		"src": "floor_wood_dark.png",
 		"name": "Dark Wood Floor"
 	},
-	// Add new textures here
+	"2": {
+		"src": "floor_wood_light.png",
+		"name": "Light Wood Floor"
+	},
+
+	// WALLS
+
+	// Narrow
+	"50": {
+		"src": "walls/wall_single.png",
+		"name": "Narrow Wall (Single)"
+	},
+	"51": {
+		"src": "walls/wall_narrow_middle_horizontal.png",
+		"name": "Narrow Wall (Horizontal Middle)"
+	},
+	"52": {
+		"src": "walls/wall_narrow_middle_vertical.png",
+		"name": "Narrow Wall (Vertical Middle)"
+	},
+	"53": {
+		"src": "walls/wall_narrow_corner_topleft.png",
+		"name": "Narrow Wall (Top Left Corner)"
+	},
+	"54": {
+		"src": "walls/wall_narrow_corner_bottomleft.png",
+		"name": "Narrow Wall (Bottom Left Corner)"
+	},
+	"55": {
+		"src": "walls/wall_narrow_corner_topright.png",
+		"name": "Narrow Wall (Top Right Corner)"
+	},
+	"56": {
+		"src": "walls/wall_narrow_corner_bottomright.png",
+		"name": "Narrow Wall (Bottom Right Corner)"
+	},
+
+	// Big
+	"57": {
+		"src": "walls/wall_big_centre.png",
+		"name": "Big Wall (Centre)"
+	},
+	"58": {
+		"src": "walls/wall_big_edge_top.png",
+		"name": "Big Wall (Top Edge)"
+	},
+	"59": {
+		"src": "walls/wall_big_edge_bottom.png",
+		"name": "Big Wall (Bottom Edge)"
+	},
+	"60": {
+		"src": "walls/wall_big_corner_topleft.png",
+		"name": "Big Wall (Top Left Corner)"
+	},
+	"61": {
+		"src": "walls/wall_big_edge_left.png",
+		"name": "Big Wall (Left Edge)"
+	},
+	"62": {
+		"src": "walls/wall_big_corner_bottomleft.png",
+		"name": "Big Wall (Bottom Left Corner)"
+	},
+	"63": {
+		"src": "walls/wall_big_corner_topright.png",
+		"name": "Big Wall (Top Right Corner)"
+	},
+	"64": {
+		"src": "walls/wall_big_edge_right.png",
+		"name": "Big Wall (Right Edge)"
+	},
+	"65": {
+		"src": "walls/wall_big_corner_bottomright.png",
+		"name": "Big Wall (Bottom Right Corner)"
+	},
 
 	// Dev textures
 	"100": {
