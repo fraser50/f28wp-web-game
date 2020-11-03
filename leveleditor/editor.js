@@ -34,7 +34,7 @@ typeReader.onload = (e) => {
 			container.addObject(new UiImage("", 0, 0, "tl", null, 64, "null_inv.png"));
 
 		var name = blockTypes[i].name ? blockTypes[i].name : blockTypes[i].src;
-		container.addObject(new UiLabel("", 75, 12, "tl", name, "13px sans-serif", null));
+		container.addObject(new UiLabel("", 75, 1, "tl", name, "13px sans-serif", null));
 		container.addObject(new UiButton("", 75, 35, "tl", null, null, "Select", "13px sans-serif", () => {
 			if (selectedType.id != i) {
 				selectedType.type = "tile";
