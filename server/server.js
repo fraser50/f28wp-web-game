@@ -51,6 +51,25 @@ app.get('/',function(req, res) {
 app.use('/client',express.static(path.join(__dirname, '/../client')));
 app.use('/common',express.static(path.join(__dirname, '/../common')));
 
+class Client { // This class along with the password/username validation code (located in util.js) should be put in a server-specific util class
+	constructor(sock, loggedin) {
+		this.sock = sock;
+		this.name = null;
+		this.id = null; // The user is a guest if id is null and this.loggedin is true
+		this.loggedin = false; // When a client first connects to the server, it isn't logged in
+
+	}
+
+	get guest() {
+		return (this.id == null && this.loggedin);
+	}
+
+	login(name, id) {
+		this.name = name;
+		this.id = null;
+	}
+}
+
 // Stuff for handling socket connections
 io.on('connection', (socket) => {
 	printLog(`Connection opened (id: ${socket.id})`);
