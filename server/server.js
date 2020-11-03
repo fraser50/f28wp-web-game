@@ -71,6 +71,14 @@ class Client { // This class along with the password/username validation code (l
 		this.name = name;
 		this.id = null;
 	}
+
+	// This utility function will sign the client out
+	signout() {
+		this.name = null;
+		this.id = null;
+		this.loggedin = false;
+		
+	}
 }
 
 // Stuff for handling socket connections
@@ -397,7 +405,7 @@ function guest(returnPack, client) {
 	client.name = "guest_" + returnPack.userId; // Change to use random id again
 
 	client.socket.emit('guest', returnPack);
-	
+
 	printLog("guest Id: "+returnPack.userId);
 }
 
@@ -430,10 +438,10 @@ function getUserStats(stats, socket) {
 	})
 }
 
-function signOut(socket) {
-	printLog("sign out " + socket.id);		//Need to change this to account name rather than socket
-	delete loggedInUsers[socket.id];	//Might be a bit dodgy, don't fully know how loggedInUsers works
-	socket.emit('sign out');
+function signOut(client) {
+	printLog("sign out " + client.name);
+	client.signout();
+	client.socket.emit('sign out');
 }
 
 function updateTimer(sec, socket) {
