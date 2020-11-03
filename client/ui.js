@@ -287,6 +287,11 @@ class UiLabel extends UiElement {
 		if (this.elem != undefined)
 			this.elem.style.color = newColor;
 	}
+	
+	getValue() {
+		if (this.text == undefined) return;
+		return this.text;
+	}
 
 	create() {
 		this.elem.className = "uiLabel";

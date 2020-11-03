@@ -137,7 +137,8 @@ io.on('connection', (socket) => {
 		var returnPack = {			//Create a package to return the users id and a message
 			userId : "",
 			message : "",
-			success : false
+			success : false,
+			isGuest : "true"
 		};
 		guest(returnPack, socket);
 	});
@@ -362,23 +363,24 @@ function guest(returnPack, socket) {
 	var rand = createId();
 	while (guests[rand] != undefined)
 		rand = createId();
+//	removed this the main code from this as guest data doesn't need to be stored in db
+//	db.run('INSERT INTO users(id) VALUES(?)', [rand], function(err) {
+//		if (err)
+//			printLog(err.message, "error");
+//
+//	});
+	returnPack.message = "Welcome, " + genGuestName(rand);
+	returnPack.userId = rand;
+	returnPack.success = true;
 
-	db.run('INSERT INTO users(id) VALUES(?)', [rand], function(err) {
-		if (err)
-			printLog(err.message, "error");
-		returnPack.message = "Welcome, " + genGuestName(rand);
-		returnPack.userId = rand;
-		returnPack.success = true;
+	guests[rand] = {sid:socket.id};
 
-		guests[rand] = {sid:socket.id};
+	socket.isGuest = true;
+	socket.guestId = rand;
 
-		socket.isGuest = true;
-		socket.guestId = rand;
-
-		socket.emit('guest', returnPack);
-		loggedInUsers[socket.id] = genGuestName(returnPack.userId);
-		printLog("guest Id: "+returnPack.userId);
-	});
+	socket.emit('guest', returnPack);
+	loggedInUsers[socket.id] = genGuestName(returnPack.userId);
+	printLog("guest Id: "+returnPack.userId);
 }
 
 function isLoggedIn() {
