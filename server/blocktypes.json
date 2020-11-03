@@ -28,64 +28,80 @@
 		"name": "Narrow Wall (Single)"
 	},
 	"51": {
+		"src": "walls/wall_narrow_end_left.png",
+		"name": "Narrow Wall (Left End)"
+	},
+	"52": {
+		"src": "walls/wall_narrow_end_right.png",
+		"name": "Narrow Wall (Right End)"
+	},
+	"53": {
+		"src": "walls/wall_narrow_end_top.png",
+		"name": "Narrow Wall (Top End)"
+	},
+	"54": {
+		"src": "walls/wall_narrow_end_bottom.png",
+		"name": "Narrow Wall (Bottom End)"
+	},
+	"55": {
 		"src": "walls/wall_narrow_middle_horizontal.png",
 		"name": "Narrow Wall (Horizontal Middle)"
 	},
-	"52": {
+	"56": {
 		"src": "walls/wall_narrow_middle_vertical.png",
 		"name": "Narrow Wall (Vertical Middle)"
 	},
-	"53": {
+	"57": {
 		"src": "walls/wall_narrow_corner_topleft.png",
 		"name": "Narrow Wall (Top Left Corner)"
 	},
-	"54": {
+	"58": {
 		"src": "walls/wall_narrow_corner_bottomleft.png",
 		"name": "Narrow Wall (Bottom Left Corner)"
 	},
-	"55": {
+	"59": {
 		"src": "walls/wall_narrow_corner_topright.png",
 		"name": "Narrow Wall (Top Right Corner)"
 	},
-	"56": {
+	"60": {
 		"src": "walls/wall_narrow_corner_bottomright.png",
 		"name": "Narrow Wall (Bottom Right Corner)"
 	},
 
 	// Big
-	"57": {
+	"61": {
 		"src": "walls/wall_big_centre.png",
 		"name": "Big Wall (Centre)"
 	},
-	"58": {
+	"62": {
 		"src": "walls/wall_big_edge_top.png",
 		"name": "Big Wall (Top Edge)"
 	},
-	"59": {
+	"63": {
 		"src": "walls/wall_big_edge_bottom.png",
 		"name": "Big Wall (Bottom Edge)"
 	},
-	"60": {
+	"64": {
 		"src": "walls/wall_big_corner_topleft.png",
 		"name": "Big Wall (Top Left Corner)"
 	},
-	"61": {
+	"65": {
 		"src": "walls/wall_big_edge_left.png",
 		"name": "Big Wall (Left Edge)"
 	},
-	"62": {
+	"66": {
 		"src": "walls/wall_big_corner_bottomleft.png",
 		"name": "Big Wall (Bottom Left Corner)"
 	},
-	"63": {
+	"67": {
 		"src": "walls/wall_big_corner_topright.png",
 		"name": "Big Wall (Top Right Corner)"
 	},
-	"64": {
+	"68": {
 		"src": "walls/wall_big_edge_right.png",
 		"name": "Big Wall (Right Edge)"
 	},
-	"65": {
+	"69": {
 		"src": "walls/wall_big_corner_bottomright.png",
 		"name": "Big Wall (Bottom Right Corner)"
 	},
