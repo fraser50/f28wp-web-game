@@ -397,7 +397,8 @@ function guest(returnPack, client) {
 	client.name = "guest_" + returnPack.userId; // Change to use random id again
 
 	client.socket.emit('guest', returnPack);
-
+	
+	printLog("guest Id: "+returnPack.userId);
 }
 
 function isLoggedIn() {
