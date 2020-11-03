@@ -1,3 +1,5 @@
+DISABLE_VALIDATION = true; // This disables all username and password policies, useful for easy testing
+
 function toRadians(angle) {
 	return angle * (Math.PI / 180);
 }
@@ -123,6 +125,8 @@ function genGuestName(gId) {
 
 // Check if a username is valid (maybe change the lengths later)
 function isValidUsername(username) {
+	if (DISABLE_VALIDATION) return true;
+	
 	var length = username.length >= 2 && username.length <= 16;
 
 	var invalidChars = username.includes(" "); // Maybe change to allow spaces?
@@ -138,6 +142,8 @@ Check if a password is valid:
   • Must contain at leas 1 symbol
 */
 function isValidPassword(password) {
+	if (DISABLE_VALIDATION) return true;
+
 	var length = password.length >= 6 && password.length <= 30;
 
 	var invalidChars = !password.includes(" ");
