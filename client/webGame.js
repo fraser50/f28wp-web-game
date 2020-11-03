@@ -135,11 +135,13 @@ window.addEventListener("load", () => {
 		if (loopStartButton.loopRunning) {
 			loopStartButton.loopRunning = false;
 			stopLoop();
+			stopServerLoop(currentLevel);
 			loopStartButton.updateValue("Start loop");
 			stopTimer();
 		} else {
 			loopStartButton.loopRunning = true;
 			startLoop(currentLevel);
+			startServerLoop(currentLevel);
 			loopStartButton.updateValue("Stop loop");
 			startTimer();
 		}
