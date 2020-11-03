@@ -45,6 +45,9 @@ var loggedInUsers = {};
 // Store all currently used guest IDs
 var guests = {};
 
+var clientlist = [];
+var sockettoclient = {};
+
 app.get('/',function(req, res) {
     res.sendFile(path.join(__dirname, '../client/WebDevGame.html'));
 });
@@ -53,7 +56,7 @@ app.use('/common',express.static(path.join(__dirname, '/../common')));
 
 class Client { // This class along with the password/username validation code (located in util.js) should be put in a server-specific util class
 	constructor(sock, loggedin) {
-		this.sock = sock;
+		this.socket = sock;
 		this.name = null;
 		this.id = null; // The user is a guest if id is null and this.loggedin is true
 		this.loggedin = false; // When a client first connects to the server, it isn't logged in
@@ -73,6 +76,10 @@ class Client { // This class along with the password/username validation code (l
 // Stuff for handling socket connections
 io.on('connection', (socket) => {
 	printLog(`Connection opened (id: ${socket.id})`);
+
+	var c = new Client(socket, false);
+	clientlist.push[c];
+	sockettoclient[socket] = c;
 
 	socket.on('getleveldata', (data) => {
 		// var data = JSON.parse(dataStr);
@@ -120,7 +127,7 @@ io.on('connection', (socket) => {
 			message : "",
 			success: false
 		};
-		addUser(data, returnPack, socket);		//Call the addUser method
+		addUser(data, returnPack, sockettoclient[socket]);		//Call the addUser method
 	});
 	
 	socket.on('login', (data) => {				//Listens for login requests
@@ -130,7 +137,7 @@ io.on('connection', (socket) => {
 			message : "",
 			success: false
 		};
-		login(data, returnPack, socket);
+		login(data, returnPack, sockettoclient[socket]);
 	});
 	
 	socket.on('guest', () => {				//Listens for guest login requests
@@ -139,29 +146,30 @@ io.on('connection', (socket) => {
 			message : "",
 			success : false
 		};
-		guest(returnPack, socket);
+		guest(returnPack, sockettoclient[socket]);
 	});
 	
 	socket.on('sign out', () => {
-		signOut(socket);
+		signOut(sockettoclient[socket]);
 	})
 	
 	socket.on('getStats', (stats) => {
-		getUserStats(stats, socket);
+		//getUserStats(stats, sockettoclient[socket]);
 	});
 
 	socket.on('chatmessage', (data) => {
-		if (loggedInUsers[socket.id] == undefined) {
+		var c = sockettoclient[socket];
+		if (!c.loggedin) {
 			socket.emit('chatmessagefail', "Failed to send message: Invalid session ID");
-			printLog(`chatmessage: from non logged in user: <${data.user}> ${data.message}`, "warning");
+			printLog(`chatmessage: from non logged in user: <${c.name}> ${data.message}`, "warning");
 			return;
 		}
-		printLog(`chatmessage: <${data.user}> ${data.message}`);
-		socket.broadcast.emit('chatmessage', data);
+		printLog(`chatmessage: <${c.name}> ${data.message}`);
+		c.socket.broadcast.emit('chatmessage', data);
 	});
 	
 	socket.on('updateTimer', (data) => {
-		updateTimer(data, socket);
+		//updateTimer(data, sockettoclient[socket]);
 	});
 
 	socket.on('playerstate', (data) => {
@@ -171,12 +179,17 @@ io.on('connection', (socket) => {
 	})
 
 	socket.on('disconnect', () => {
-		if (socket.isGuest)
+		/*if (socket.isGuest)
 			delete guests[socket.guestId];
 		if (loggedInUsers[socket.id] != undefined) {
 			printLog(`Logged out user ${loggedInUsers[socket.id]}`);
 		}
-		delete loggedInUsers[socket.id];
+		delete loggedInUsers[socket.id];*/
+
+		var c = sockettoclient[socket];
+
+		delete sockettoclient[socket];
+		clientlist.splice(clientlist.indexOf(c), 1);
 
 		printLog(`Connection closed (id: ${socket.id})`);
 	});
@@ -199,8 +212,8 @@ function loop() {
 
 	//printLog(JSON.stringify(playerStates), "debug");
 
-	for (var sId in loggedInUsers) {
-		loggedInUsers[sId].socket.emit('playerstate', playerStates);
+	for (var cindex in clientlist) {
+		clientlist[cindex].socket.emit('playerstate', playerStates);
 	}
 }
 
@@ -244,15 +257,15 @@ function createDatabase() {
 	});
 }
 
-function addUser(data, returnPack, socket) {
+function addUser(data, returnPack, client) {
 	if (!isValidUsername(data.user)) {
 		returnPack.message = "Invalid username";
-		socket.emit('addUser', returnPack);
+		client.socket.emit('addUser', returnPack);
 		return;
 	}
 	if (!isValidPassword(data.pass)) {
 		returnPack.message = "Invalid password";
-		socket.emit('addUser', returnPack);
+		client.socket.emit('addUser', returnPack);
 		return;
 	}
 	db.all('SELECT user FROM users WHERE user=?', [data.user], (err, rows) => {		// Loops through each entry in the table, looking for an account that already has the entered name
@@ -274,7 +287,7 @@ function addUser(data, returnPack, socket) {
 				returnPack.message = "Sorry, there was an error in creating your account, please try again.";
 				returnPack.userId = "";			//This and username might not be necessary
 				returnPack.username = "";
-				socket.emit('addUser', returnPack);
+				client.socket.emit('addUser', returnPack);
 			} else {
 				printLog("Added " + data.user + " to database");	
 				returnPack.message = "Welcome, " + data.user + " your account has been created.";
@@ -285,8 +298,12 @@ function addUser(data, returnPack, socket) {
 						returnPack.userId = rows[0].id;
 						returnPack.username = rows[0].user;
 						returnPack.success = true;
-						loggedInUsers[socket.id] = data.user;
-						socket.emit('addUser', returnPack);
+
+						client.id = rows[0].id;
+						client.name = rows[0].user;
+						client.loggedin = true;
+
+						client.socket.emit('addUser', returnPack);
 						printLog("User Created Id: "+returnPack.userId);
 					}
 				});
@@ -298,12 +315,12 @@ function addUser(data, returnPack, socket) {
 			returnPack.userId = "";			//This and username might not be necessary
 			returnPack.username = "";
 
-			socket.emit('addUser', returnPack);
+			clientsocket.emit('addUser', returnPack);
 		}
 	});
 }
 
-function login(data, returnPack, socket) {
+function login(data, returnPack, client) {
 	returnPack.message = "The details you have entered were incorrect, please try again.";
 	returnPack.userId = "null";
 	returnPack.username = "null"
@@ -323,8 +340,8 @@ function login(data, returnPack, socket) {
 			}
 
 
-			for (var u in loggedInUsers) {
-				if (row.user == loggedInUsers[u]) {
+			for (var u in clientlist) {
+				if (row.user == clientlist[u].name) {
 					returnPack.message = "That account is already logged in";
 					return;
 				}
@@ -335,10 +352,13 @@ function login(data, returnPack, socket) {
 			returnPack.username = row.user;
 			returnPack.success = true;
 
-			socket.emit('login', returnPack);
-			loggedInUsers[socket.id] = {};
-			loggedInUsers[socket.id].socket = socket;
-			socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
+			client.socket.emit('login', returnPack);
+
+			client.id = row.id;
+			client.name = row.user;
+			client.loggedin = true;
+
+			client.socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
 			printLog("login Id: "+returnPack.userId+", "+returnPack.success);
 
 			done = true;
@@ -346,39 +366,36 @@ function login(data, returnPack, socket) {
 		});
 
 		if (!done)
-			socket.emit('login', returnPack);
+			client.socket.emit('login', returnPack);
 	});
 	
 }
 
 function initUser(name, sId) {
-	loggedInUsers[sId] = {'name': name};
+	throw new Error("This function is not to be used! May be removed in the future");
+
+	//loggedInUsers[sId] = {'name': name}; // BROKEN
 }
 
 // TODO When guest disconnects, remove record from db
-function guest(returnPack, socket) {
+function guest(returnPack, client) {
 	//Creates a random id in the range 1000-10000
-	var createId = () => {return Math.floor(Math.random() * (10000 - 1000) + 1000)};
+	/*var createId = () => {return Math.floor(Math.random() * (10000 - 1000) + 1000)};
 	var rand = createId();
 	while (guests[rand] != undefined)
-		rand = createId();
+		rand = createId();*/
 
-	db.run('INSERT INTO users(id) VALUES(?)', [rand], function(err) {
-		if (err)
-			printLog(err.message, "error");
-		returnPack.message = "Welcome, " + genGuestName(rand);
-		returnPack.userId = rand;
-		returnPack.success = true;
+	returnPack.message = "Welcome, ";
+	returnPack.userId = 5;
+	returnPack.success = true;
 
-		guests[rand] = {sid:socket.id};
+	//guests[rand] = {sid:socket.id};
 
-		socket.isGuest = true;
-		socket.guestId = rand;
+	client.loggedin = true;
+	client.name = "guest_" + returnPack.userId; // Change to use random id again
 
-		socket.emit('guest', returnPack);
-		loggedInUsers[socket.id] = genGuestName(returnPack.userId);
-		printLog("guest Id: "+returnPack.userId);
-	});
+	client.socket.emit('guest', returnPack);
+	printLog("guest Id: "+returnPack.userId);
 }
 
 function isLoggedIn() {
