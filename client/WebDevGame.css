@@ -35,6 +35,13 @@ div#gamearea div#world img {
 	/*display: inline-block;*/
 }
 
+div#objects {
+	z-index: 5;
+}
+div#objects img {
+	position: absolute;
+}
+
 /* Static CSS for UI elements */
 div#ui {
 	z-index: 9999;

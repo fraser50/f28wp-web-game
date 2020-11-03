@@ -43,8 +43,18 @@ class GameLevel {
 	}
 
 	addObject(obj) {
-		this.gameobjects.push(obj);
-		this.newobjects.push(obj);
+		var exists = false;
+		for (var i in this.newobjects)
+			if (this.newobjects[i] == obj)
+				exists = true;
+		for (var i in this.gameobjects)
+			if (this.gameobjects[i] == obj)
+				exists = true;
+
+		if (!exists) {
+			this.gameobjects.push(obj);
+			this.newobjects.push(obj);
+		}
 	}
 
 	removeObject(obj) {

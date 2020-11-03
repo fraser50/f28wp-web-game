@@ -26,7 +26,7 @@ class GameObject {
 class Player extends GameObject {
 	constructor(pos, rotation, level, velocity, id) {
 		super(pos, rotation, level);
-		this.id = "p" + socket.id; // Add "p" to the start as socket id can start with a number
+		this.id = socket.id;
 		this.wins = 0;
 		this.kills = 0;
 		this.points = 0;
@@ -36,33 +36,19 @@ class Player extends GameObject {
 	addToPage() {
 		if (objects.querySelector("#"+this.id) != undefined)
 			objects.removeChild(ui.querySelector("#"+this.id))
-			
-		var playerDiv = document.createElement("div");
-		playerDiv.setAttribute("id", this.id);
 
-		//get player spritesheet
-		const playerImg = document.createElement("img");
-		playerImg.setAttribute("id", "playerimg");
-		playerImg.setAttribute("src", "client/assets/images/player_up.png");
-		
-		//set player size
-		playerDiv.style.width = zoomLevel + "px";
-		playerDiv.style.height = zoomLevel + "px";
-		playerDiv.style.zIndex = this.zPos;
-		
-		playerImg.style.width = "100%";
-		playerImg.style.height = "100%";
+		var elem = document.createElement("img");
+		elem.id = this.id;
+		elem.src = "client/assets/images/player_up.png";
+		elem.style.width = zoomLevel + "px";
+		elem.style.height = zoomLevel + "px";
 
+		elem.style.left = `calc(50% - ${zoomLevel/2}px)`;
+		elem.style.top = `calc(50% - ${zoomLevel/2}px)`;
 
-		//set player position
-		playerDiv.style.position = "absolute";	//Top and Left won't affect it if we use static
-		playerDiv.style.top = `calc(50% - ${zoomLevel/2}px + ${playerImg.y}px)`;
-		playerDiv.style.left = `calc(50% - ${zoomLevel/2}px + ${playerImg.x}px)`;
+		this.elem = elem;
 
-		playerDiv.appendChild(playerImg);
-		objects.appendChild(playerDiv);
-
-		this.div = playerDiv;
+		objects.appendChild(elem);
 	}
 	
 	remove() {
@@ -73,11 +59,27 @@ class Player extends GameObject {
 		loopStartButton.updateValue("Start loop");
 		loginWindow.show();
 	}
+
+	update() {
+		if (this.elem) {
+			this.elem.style.transform = `rotate(${this.rotation}rad)`;
+		}
+	}
 	
 	updateStats(wins, kills, points){
 		this.wins += wins;
 		this.kills += kills;
 		this.points += points;
+	}
+
+	toJSON() {
+		return {
+			pos: this.pos,
+			rot: this.rotation,
+			vel: this.velocity,
+
+			id: this.id
+		}
 	}
 }
 

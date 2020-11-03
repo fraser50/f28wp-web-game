@@ -102,10 +102,6 @@ io.on('connection', (socket) => {
 			success: false
 		};
 		addUser(data, returnPack, socket);		//Call the addUser method
-		setTimeout(() => {
-			// socket.emit('addUser', returnPack); 
-			// printLog("User Created Id: "+returnPack.userId);
-		}, 50);		//Give addUser time to complete, emit 'addUser' pack with the returnPack as the data
 	});
 	
 	socket.on('login', (data) => {				//Listens for login requests
@@ -116,12 +112,6 @@ io.on('connection', (socket) => {
 			success: false
 		};
 		login(data, returnPack, socket);
-		setTimeout(() => {
-			// socket.emit('login', returnPack);
-			// loggedInUsers[socket.id] = data.user;
-			// socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
-			// printLog("login Id: "+returnPack.userId+", "+returnPack.success);
-		}, 50);
 	});
 	
 	socket.on('guest', () => {				//Listens for guest login requests
@@ -131,12 +121,6 @@ io.on('connection', (socket) => {
 			success : false
 		};
 		guest(returnPack, socket);
-		setTimeout(() => { // Moved to guest function; doesn't work if it takes more than 50ms to read the database
-			// socket.emit('guest', returnPack);
-			// loggedInUsers[socket.id] = genGuestName(returnPack.userId);
-			// console.info("after", returnPack);
-			// printLog("guest Id: "+returnPack.userId);
-		}, 50);	
 	});
 	
 	socket.on('sign out', () => {
@@ -159,6 +143,12 @@ io.on('connection', (socket) => {
 	
 	socket.on('updateTimer', (data) => {
 		updateTimer(data, socket);
+	});
+
+	socket.on('playerstate', (data) => {
+		if (!loggedInUsers[socket.id]) return;
+		loggedInUsers[socket.id].pos = data.pos;
+		loggedInUsers[socket.id].rot = data.rot;
 	})
 
 	socket.on('disconnect', () => {
@@ -181,14 +171,33 @@ printLog("Server started".green); //Send a log to console to confirm connection
 
 //game loop for server
 const FPS = 60;
-var level = new GameLevel(0);
 
-function updateGameState() {
-	level.update();
+function loop() {
+	for (var i in levels)
+		levels[i].update();
 
+	var playerStates = getPlayerStates();
+
+	//printLog(JSON.stringify(playerStates), "debug");
+
+	for (var sId in loggedInUsers) {
+		loggedInUsers[sId].socket.emit('playerstate', playerStates);
+	}
 }
 
-setInterval(updateGameState, 1000/FPS);
+setInterval(loop, 1000/FPS);
+
+function getPlayerStates() {
+	var out = {};
+	for (var sId in loggedInUsers) {
+		if (!loggedInUsers[sId].pos) continue;
+		out[sId] = {};
+		out[sId].pos = loggedInUsers[sId].pos;
+		out[sId].rot = loggedInUsers[sId].rot;
+	}
+
+	return out;
+}
 
 //Create db to store player info
 
@@ -308,7 +317,8 @@ function login(data, returnPack, socket) {
 			returnPack.success = true;
 
 			socket.emit('login', returnPack);
-			loggedInUsers[socket.id] = data.user;
+			loggedInUsers[socket.id] = {};
+			loggedInUsers[socket.id].socket = socket;
 			socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
 			printLog("login Id: "+returnPack.userId+", "+returnPack.success);
 
@@ -320,6 +330,10 @@ function login(data, returnPack, socket) {
 			socket.emit('login', returnPack);
 	});
 	
+}
+
+function initUser(name, sId) {
+	loggedInUsers[sId] = {'name': name};
 }
 
 // TODO When guest disconnects, remove record from db

@@ -3,7 +3,9 @@ elementbuilders = [ // A new function will be placed here for creating the eleme
 		var e = document.createElement("img");
 		e.style.top = 0;
 		e.style.left = 0;
-		e.src = "client/assets/images/temp_player.png"
+		e.src = "client/assets/images/player_up.png";
+		e.width = zoomLevel;
+		e.height = zoomLevel;
 		return e;
 	}],
 
@@ -11,7 +13,7 @@ elementbuilders = [ // A new function will be placed here for creating the eleme
 		var e = document.createElement("img");
 		e.style.top = 0;
 		e.style.left = 0;
-		e.src = "client/assets/images/point.png"
+		e.src = "client/assets/images/point.png";
 		return e;
 	}]
 ]
@@ -19,11 +21,12 @@ elementbuilders = [ // A new function will be placed here for creating the eleme
 objectelements = [] // Please don't mess with this manually, modify one of the functions below
 
 function setElementPosition(element, pos) {
-	console.log('element below:');
-	console.log(element);
-	//element.style.left = pos.x;
-	//element.style.top  = pos.y;
-	element.style = "position:absolute; width:64px; height:64px; left:" + pos.x + "px; top:" + pos.y + "px;";
+	element.style.left = `calc(50% + ${(pos[0] - socket.player.pos[0])*zoomLevel}px - ${element.clientWidth/2}px)`;
+	element.style.top = `calc(50% + ${(pos[1] - socket.player.pos[1])*zoomLevel}px - ${element.clientHeight/2}px)`;
+}
+
+function setElementRotation(element, rot) {
+	element.style.transform = `rotate(${rot}rad)`;
 }
 
 function render(level) {
@@ -42,8 +45,7 @@ function render(level) {
 			if (newobj instanceof elementbuilders[j][0]) {
 				newelement = elementbuilders[j][1](newobj);
 				setElementPosition(newelement, newobj.pos);
-				var gamearea = document.getElementById("gamearea");
-				gamearea.appendChild(newelement);
+				objects.appendChild(newelement);
 
 				objectelements.push(newobj);
 				objectelements.push(newelement);
@@ -63,8 +65,7 @@ function render(level) {
 			continue;
 
 		} else {
-			var gamearea = document.getElementById("gamearea");
-			gamearea.removeChild(objectelements[objindex + 1]);
+			objects.removeChild(objectelements[objindex + 1]);
 			objectelements.splice(objindex, 2);
 		}
 	}
@@ -73,11 +74,8 @@ function render(level) {
 	for (let i=0; i<objectelements.length-1; i += 2) {
 		var obj = objectelements[i];
 
-		if (obj.pos.changed) {
-			setElementPosition(objectelements[i + 1], obj.pos);
-			obj.pos.changed = false;
-		}
-
+		setElementPosition(objectelements[i + 1], obj.pos);
+		setElementRotation(objectelements[i + 1], obj.rotation ? obj.rotation : 0);
 	}
 
 	level.newobjects.splice(0, level.newobjects.length);

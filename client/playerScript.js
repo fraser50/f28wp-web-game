@@ -119,7 +119,8 @@ function direction(player) {
 		final = playerAngle + Math.PI/2;
 	else
 		final = playerAngle + Math.sign(playerVelXY.x)*Math.PI/2;
-	player.div.style.transform = `rotate(${final}rad)`;
+	//player.elem.style.transform = `rotate(${final}rad)`;
+	player.rotation = final;
 }
 
 //Functions for collision detection below
