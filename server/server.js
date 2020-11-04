@@ -244,7 +244,7 @@ function loop() {
 				for (k in clientlist) {
 					var c = clientlist[k];
 					if (!c.loggedin) continue;
-					console.log(c.controlledobject.id + ' | ' + obj.id + ' -> ' + c.controlledobject);
+					//console.log(c.controlledobject.id + ' | ' + obj.id + ' -> ' + c.controlledobject);
 					if (c.controlledobject.id != obj.id) {
 						console.log('sending pos update message!');
 						c.socket.emit('posupdate', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation});
@@ -436,8 +436,8 @@ function guest(returnPack, client) {
 
 	initUser(client, levels[0]);
 
-	returnPack.message = "Welcome, ";
 	returnPack.userId = client.controlledobject.id;
+	returnPack.message = "Welcome, Guest " + returnPack.userId;
 	returnPack.success = true;
 
 	//guests[rand] = {sid:socket.id};
