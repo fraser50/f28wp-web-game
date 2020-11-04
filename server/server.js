@@ -306,12 +306,12 @@ function createDatabase() {
 function addUser(data, returnPack, client) {
 	if (!util.isValidUsername(data.user)) {
 		returnPack.message = "Invalid username";
-		socket.client.emit('addUser', returnPack);
+		client.socket.emit('addUser', returnPack);
 		return;
 	}
 	if (!util.isValidPassword(data.pass)) {
 		returnPack.message = "Invalid password";
-		socket.cli.emit('addUser', returnPack);
+		client.socket.emit('addUser', returnPack);
 		return;
 	}
 	db.all('SELECT user FROM users WHERE user=?', [data.user], (err, rows) => {		// Loops through each entry in the table, looking for an account that already has the entered name
@@ -333,7 +333,7 @@ function addUser(data, returnPack, client) {
 				returnPack.message = "Sorry, there was an error in creating your account, please try again.";
 				returnPack.userId = "";			//This and username might not be necessary
 				returnPack.username = "";
-				socket.cli.emit('addUser', returnPack);
+				client.socket.emit('addUser', returnPack);
 			} else {
 				printLog("Added " + data.user + " to database");	
 				returnPack.message = "Welcome, " + data.user + " your account has been created.";
@@ -361,7 +361,7 @@ function addUser(data, returnPack, client) {
 			returnPack.userId = "";			//This and username might not be necessary
 			returnPack.username = "";
 
-			socket.cli.emit('addUser', returnPack);
+			client.socket.emit('addUser', returnPack);
 		}
 	});
 }
@@ -414,7 +414,7 @@ function login(data, returnPack, client) {
 		});
 
 		if (!done)
-			socket.cli.emit('login', returnPack);
+			client.socket.emit('login', returnPack);
 	});
 	
 }
@@ -445,7 +445,7 @@ function guest(returnPack, client) {
 
 	initUser(client, levels[0]);
 
-	socket.cli.emit('guest', returnPack);
+	client.socket.emit('guest', returnPack);
 
 	printLog("guest Id: "+returnPack.userId);
 }
@@ -482,7 +482,7 @@ function getUserStats(stats, socket) {
 function signOut(client) {
 	printLog("sign out " + client.name);
 	client.signout();
-	socket.cli.emit('sign out');
+	client.emit('sign out');
 }
 
 function updateTimer(sec, client) {
