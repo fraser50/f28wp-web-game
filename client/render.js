@@ -1,6 +1,12 @@
 elementbuilders = [ // A new function will be placed here for creating the elements for different kinds of objects in the game
-	[Player, function(obj) {
+	[Player, function(obj, isGuest) {
 		var e = document.createElement("img");
+		if (isGuest) {
+			e.id = "guest_"+obj.id
+		}
+		else {
+			e.id = obj.id;
+		}
 		e.style.top = 0;
 		e.style.left = 0;
 		e.src = "client/assets/images/player_up.png";
@@ -45,10 +51,10 @@ function render(level, skip = null) {
 
 		for (let j=0; j<elementbuilders.length; j++) {
 			if (newobj instanceof elementbuilders[j][0]) {
-				newelement = elementbuilders[j][1](newobj);
+				newelement = elementbuilders[j][1](newobj, newobj.isGuest);
 				setElementPosition(newelement, newobj.pos);
 				objects.appendChild(newelement);
-
+				console.log(newobj);
 				objectelements.push(newobj);
 				objectelements.push(newelement);
 				break;

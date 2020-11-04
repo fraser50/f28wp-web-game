@@ -52,7 +52,8 @@ function generateLoginWindow(socket) {
 		if (data.success == true) {
 			loginWindow.hide();
 			userDetails.loginSuccess = true;
-			createPlayer(socket, userDetails.name);		//Just barely works
+			isGuest = true;
+			createPlayer(socket, userDetails.name, isGuest);		//Just barely works
 			loginActivateButton.updateValue("Signed in as: " + userDetails.name);
 			loginActivateButton.setCallback(() => {loginCallbackToLoggedIn()});
 			getUserStatVals();
@@ -71,7 +72,8 @@ function generateLoginWindow(socket) {
 		if (data.success == true) {
 			loginWindow.hide();
 			userDetails.loginSuccess = true;
-			createPlayer(socket, userDetails.name);		//Just barely works
+			isGuest = false;
+			createPlayer(socket, userDetails.name, isGuest);		//Just barely works
 			loginActivateButton.updateValue("Signed in as: " + userDetails.name);
 			loginActivateButton.setCallback(() => {loginCallbackToLoggedIn()});
 			getUserStatVals();
@@ -91,7 +93,8 @@ function generateLoginWindow(socket) {
 			loginWindow.hide();
 			userDetails.name = genGuestName(data.userId);
 			userDetails.loginSuccess = true;
-			createPlayer(socket, userDetails.name);		//Just barely works, should be adapted for guest specifically
+			isGuest = true;
+			createPlayer(socket, userDetails.name, isGuest);		//Just barely works, should be adapted for guest specifically
 			socket.player.isGuest = data.isGuest;
 			loginActivateButton.updateValue("Signed in as: " + userDetails.name);
 			loginActivateButton.setCallback(() => {loginCallbackToLoggedIn()});

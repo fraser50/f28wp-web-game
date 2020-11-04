@@ -54,7 +54,7 @@ function stopLoop() {
 function serverLoop(level) {
 	//socket.emit('playerstate', socket.player.toJSON());
 
-	socket.emit('playerposupdate', {'x' : socket.player.pos[0], 'y' : socket.player.pos[1], 'rotation' : socket.player.rotation});
+	socket.emit('playerposupdate', {'x' : socket.player.pos[0], 'y' : socket.player.pos[1], 'rotation' : socket.player.rotation, "isGuest" : socket.player.isGuest});
 }
 
 var serverLoopf = () => {serverLoop(currentLevel)};
@@ -84,17 +84,17 @@ window.addEventListener("load", () => {
 	});*/
 	
 	socket.on('posupdate', (data) => {
+		//if (isGuest) data.id = "guest_"+data.id;
 		var obj = currentLevel.findObject(data.id);
-		console.log(data);
 		var x = data.x;
 		var y = data.y;
-		//console.log(data.id);
 		var rot = data.rot;
-
+		var isGuest = data.isGuest;
+		
 		
 		if (obj == null) {
-			obj = new Player(new Position(x, y), rot, currentLevel, new Vector(0, 0), data.id);
-			//console.log(obj.id);
+			//data.id = "guest_"+data.id;
+			obj = new Player(new Position(x, y), rot, currentLevel, new Vector(0, 0), data.id, isGuest);
 			currentLevel.addObject(obj);
 
 		} else {
@@ -107,35 +107,35 @@ window.addEventListener("load", () => {
 	});
 });
 
-function updateOtherPlayers() {
-	// if (!currentLevel.objects && !currentLevel.newObjects) {
-	// 	currentLevel.addObject(new player())
-	// }
-	for (var sId in otherPlayers) {
-		if (sId == socket.id) continue;
-		var playerObj = new Player(otherPlayers[sId].pos, otherPlayers[sId].rot, currentLevel, sId);
-
-		// var exists = false;
-		// for (var i in currentLevel.newobjects) {
-		// 	//console.log(currentLevel.newobjects[i].id);
-		// 	if (currentLevel.newobjects[i].id == sId)
-		// 		exists = true;
-		// }
-		// for (var i in currentLevel.gameobjects) {
-		// 	//console.log(currentLevel.gameobjects[i].id);
-		// 	if (currentLevel.gameobjects[i].id == sId)
-		// 		exists = true;
-		// }
-
-		if (!otherPlayers[sId].exists) {
-			currentLevel.addObject(playerObj);
-			otherPlayers[sId].obj = playerObj;
-			otherPlayers[sId].exists = true;
-		} else {
-			playerObj = otherPlayers[sId].obj;
-			playerObj.pos = otherPlayers[sId].pos;
-			playerObj.rotation = otherPlayers[sId].rot;
-		}
-	}
-}
+//function updateOtherPlayers() {
+//	// if (!currentLevel.objects && !currentLevel.newObjects) {
+//	// 	currentLevel.addObject(new player())
+//	// }
+//	for (var sId in otherPlayers) {
+//		if (sId == socket.id) continue;
+//		var playerObj = new Player(otherPlayers[sId].pos, otherPlayers[sId].rot, currentLevel, sId);
+//
+//		// var exists = false;
+//		// for (var i in currentLevel.newobjects) {
+//		// 	//console.log(currentLevel.newobjects[i].id);
+//		// 	if (currentLevel.newobjects[i].id == sId)
+//		// 		exists = true;
+//		// }
+//		// for (var i in currentLevel.gameobjects) {
+//		// 	//console.log(currentLevel.gameobjects[i].id);
+//		// 	if (currentLevel.gameobjects[i].id == sId)
+//		// 		exists = true;
+//		// }
+//
+//		if (!otherPlayers[sId].exists) {
+//			currentLevel.addObject(playerObj);
+//			otherPlayers[sId].obj = playerObj;
+//			otherPlayers[sId].exists = true;
+//		} else {
+//			playerObj = otherPlayers[sId].obj;
+//			playerObj.pos = otherPlayers[sId].pos;
+//			playerObj.rotation = otherPlayers[sId].rot;
+//		}
+//	}
+//}
 

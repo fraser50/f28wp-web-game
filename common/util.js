@@ -120,7 +120,7 @@ function setBackgroundColorRGBA(element, newRGBA) {
 }
 
 function genGuestName(gId) {
-	return "Guest " + gId.toString();
+	return "guest_" + gId.toString();
 }
 
 // Check if a username is valid (maybe change the lengths later)

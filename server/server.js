@@ -95,7 +95,7 @@ io.on('connection', (socket) => {
 	var c = new Client(socket, false);
 	clientlist.push(c);
 	socket.cli = c;
-	socket.cli = c;
+	//socket.cli = c;
 
 	socket.on('getleveldata', (data) => {
 		// var data = JSON.parse(dataStr);
@@ -206,22 +206,19 @@ io.on('connection', (socket) => {
 			obj.pos.x = data.x;
 			obj.pos.y = data.y;
 			obj.rotation = data.rotation;
+			obj.isGuest = data.isGuest;
 		}
 	});
 
 	socket.on('disconnect', () => {
 		var c = socket.cli;
 		
-		printLog(socket.cli.level);
-
 		delete socket.cli;
 		clientlist.splice(clientlist.indexOf(c), 1);
-
-//		var obj = levels[i].gameobjects[j];
-//		for (k in clientlist) {
-//			var c = clientlist[k];
-//			c.socket.emit('removeplayer', {'id' : obj.id});
-//		}
+		
+		for (k in clientlist) {
+			c.socket.emit('removeplayer', {'id' : c.name});
+		}
 
 		socket.disconnect(0); // Close the socket
 
@@ -244,7 +241,7 @@ function loop() {
 
 		for (j in levels[i].gameobjects) {
 			var obj = levels[i].gameobjects[j];
-	
+			//printLog(obj.id);
 			if (obj.pos.changed) {
 				obj.pos.changed = false;
 				//console.log('pos change!');
@@ -255,7 +252,7 @@ function loop() {
 					//console.log(c.controlledobject.id + ' | ' + obj.id + ' -> ' + c.controlledobject);
 					if (c.controlledobject.id != obj.id) {
 						//console.log('sending pos update message!');
-						c.socket.emit('posupdate', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation});
+						c.socket.emit('posupdate', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation, 'isGuest' : obj.isGuest});
 					}
 				}
 			}
