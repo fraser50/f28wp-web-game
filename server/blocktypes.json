@@ -67,43 +67,95 @@
 		"src": "walls/wall_narrow_corner_bottomright.png",
 		"name": "Narrow Wall (Bottom Right Corner)"
 	},
+	"61": {
+		"src": "walls/wall_narrow_t_down.png",
+		"name": "Narrow Wall (T Down)"
+	},
+	"62": {
+		"src": "walls/wall_narrow_t_left.png",
+		"name": "Narrow Wall (T Left)"
+	},
+	"63": {
+		"src": "walls/wall_narrow_x.png",
+		"name": "Narrow Wall (Cross)"
+	},
+	"64": {
+		"src": "walls/wall_narrow_t_right.png",
+		"name": "Narrow Wall (T Right)"
+	},
+	"65": {
+		"src": "walls/wall_narrow_t_up.png",
+		"name": "Narrow Wall (T Up)"
+	},
 
 	// Big
-	"61": {
+	"66": {
 		"src": "walls/wall_big_centre.png",
 		"name": "Big Wall (Centre)"
 	},
-	"62": {
+	"67": {
 		"src": "walls/wall_big_edge_top.png",
 		"name": "Big Wall (Top Edge)"
 	},
-	"63": {
+	"68": {
 		"src": "walls/wall_big_edge_bottom.png",
 		"name": "Big Wall (Bottom Edge)"
 	},
-	"64": {
+	"69": {
 		"src": "walls/wall_big_corner_topleft.png",
 		"name": "Big Wall (Top Left Corner)"
 	},
-	"65": {
+	"70": {
 		"src": "walls/wall_big_edge_left.png",
 		"name": "Big Wall (Left Edge)"
 	},
-	"66": {
+	"71": {
 		"src": "walls/wall_big_corner_bottomleft.png",
 		"name": "Big Wall (Bottom Left Corner)"
 	},
-	"67": {
+	"72": {
 		"src": "walls/wall_big_corner_topright.png",
 		"name": "Big Wall (Top Right Corner)"
 	},
-	"68": {
+	"73": {
 		"src": "walls/wall_big_edge_right.png",
 		"name": "Big Wall (Right Edge)"
 	},
-	"69": {
+	"74": {
 		"src": "walls/wall_big_corner_bottomright.png",
 		"name": "Big Wall (Bottom Right Corner)"
+	},
+	"75": {
+		"src": "walls/wall_big_insidecorner_topleft.png",
+		"name": "Big Wall (Top Left Inside Corner)"
+	},
+	"76": {
+		"src": "walls/wall_big_insidecorner_bottomleft.png",
+		"name": "Big Wall (Bottom Left Inside Corner)"
+	},
+	"77": {
+		"src": "walls/wall_big_insidecorner_topright.png",
+		"name": "Big Wall (Top Right Inside Corner)"
+	},
+	"78": {
+		"src": "walls/wall_big_insidecorner_bottomright.png",
+		"name": "Big Wall (Bottom Right Inside Corner)"
+	},
+	"79": {
+		"src": "walls/wall_bigtonarrow_down.png",
+		"name": "Big To Narrow Wall (Down)"
+	},
+	"80": {
+		"src": "walls/wall_bigtonarrow_up.png",
+		"name": "Big To Narrow Wall (Up)"
+	},
+	"81": {
+		"src": "walls/wall_bigtonarrow_left.png",
+		"name": "Big To Narrow Wall (Left)"
+	},
+	"82": {
+		"src": "walls/wall_bigtonarrow_right.png",
+		"name": "Big To Narrow Wall (Right)"
 	},
 
 	// Dev textures
