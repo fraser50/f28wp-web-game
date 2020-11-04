@@ -11,6 +11,7 @@ gameobjectgenerators = [
 
 function objToJSON(gobj) {
     var jsonobj = gobj.toJSON();
+    jsonobj['id'] = gobj.id;
 
     for (var i = 0; i < gameobjectgenerators.length; i++) {
         if (gobj instanceof gameobjectgenerators[i][0]) {
@@ -29,6 +30,7 @@ function objFromJSON(jsonobj, level) {
 
     var generator = gameobjectgenerators[typeindex][1];
 
-    return generator(jsonobj, level);
+    var obj = generator(jsonobj, level);
+    obj.id = jsonobj['id'];
 
 }

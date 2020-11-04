@@ -57,8 +57,11 @@ class GameLevel {
 		if (!exists) {
 			this.gameobjects.push(obj);
 			this.newobjects.push(obj);
-			obj.id = this.objectcounter;
-			this.objectcounter++;
+
+			if (obj.id != undefined) {
+				obj.id = this.objectcounter;
+				this.objectcounter++;
+			}
 		}
 	}
 
