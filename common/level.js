@@ -173,7 +173,7 @@ class GameLevel {
 	findObject(id) {
 		for (var i in this.gameobjects) {
 			if (this.gameobjects[i].id == id) {
-				return this.gameobjects[i].id;
+				return this.gameobjects[i];
 			}
 		}
 
