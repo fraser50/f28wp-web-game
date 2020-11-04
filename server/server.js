@@ -197,6 +197,8 @@ io.on('connection', (socket) => {
 		delete sockettoclient[socket];
 		clientlist.splice(clientlist.indexOf(c), 1);
 
+		socket.disconnect(0); // Close the socket
+
 		printLog(`Connection closed (id: ${socket.id})`);
 	});
 });
