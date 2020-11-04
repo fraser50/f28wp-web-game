@@ -177,7 +177,7 @@ class GameLevel {
 
 	// Find a GameObject given its id
 	findObject(id) {
-		for (i in this.gameobjects) {
+		for (var i in this.gameobjects) {
 			if (this.gameobjects[i].id == id) {
 				return this.gameobjects[i].id;
 			}
