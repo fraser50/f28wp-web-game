@@ -93,7 +93,7 @@ window.addEventListener("load", () => {
 
 		
 		if (obj == null) {
-			obj = new Player(new Position(x, y), rot, currentLevel, new Vector(0, 0), "Guest " +data.id);
+			obj = new Player(new Position(x, y), rot, currentLevel, new Vector(0, 0), "Guest" +data.id);
 			//console.log(obj.id);
 			currentLevel.addObject(obj);
 

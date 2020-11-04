@@ -212,7 +212,7 @@ io.on('connection', (socket) => {
 	socket.on('disconnect', () => {
 		var c = socket.cli;
 		
-		printLog(c);
+		printLog(socket.cli.level);
 
 		delete socket.cli;
 		clientlist.splice(clientlist.indexOf(c), 1);
