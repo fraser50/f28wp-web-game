@@ -29,9 +29,7 @@ class Player extends GameObject {
 	constructor(pos, rotation, level, velocity, id) {
 		super(pos, rotation, level);
 		//this.id = socket.id;
-		if (id != null){
-			this.id = id.replace(/\s/g, '');
-		}
+	
 		this.wins = 0;
 		this.kills = 0;
 		this.points = 0;

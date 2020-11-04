@@ -84,7 +84,7 @@ window.addEventListener("load", () => {
 	});*/
 	
 	socket.on('posupdate', (data) => {
-		var obj = currentLevel.findObject("Guest"+data.id);
+		var obj = currentLevel.findObject(data.id);
 		console.log(data);
 		var x = data.x;
 		var y = data.y;
@@ -93,7 +93,7 @@ window.addEventListener("load", () => {
 
 		
 		if (obj == null) {
-			obj = new Player(new Position(x, y), rot, currentLevel, new Vector(0, 0), "Guest" +data.id);
+			obj = new Player(new Position(x, y), rot, currentLevel, new Vector(0, 0), data.id);
 			//console.log(obj.id);
 			currentLevel.addObject(obj);
 
