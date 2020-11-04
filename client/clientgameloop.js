@@ -82,22 +82,26 @@ window.addEventListener("load", () => {
 
 		updateOtherPlayers();
 	});*/
-
+	
 	socket.on('posupdate', (data) => {
-		var obj = currentLevel.findObject(data.id);
-
+		var obj = currentLevel.findObject("Guest"+data.id);
+		console.log(data);
 		var x = data.x;
 		var y = data.y;
+		//console.log(data.id);
 		var rot = data.rot;
 
+		
 		if (obj == null) {
-			obj = new Player(new Position(x, y), rot, currentLevel, new Vector(0, 0), data.id);
+			obj = new Player(new Position(x, y), rot, currentLevel, new Vector(0, 0), "Guest " +data.id);
+			//console.log(obj.id);
 			currentLevel.addObject(obj);
 
 		} else {
 			obj.pos.x = x;
 			obj.pos.y = y;
-			obj.rotation = rot;
+			if (rot != null)		//This fixed rotation reset
+				obj.rotation = rot;
 		}
 
 	});

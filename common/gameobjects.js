@@ -29,6 +29,9 @@ class Player extends GameObject {
 	constructor(pos, rotation, level, velocity, id) {
 		super(pos, rotation, level);
 		//this.id = socket.id;
+		this.id = (id.replace(/\s/g, ''));
+		//console.log("aaa" + this.id);
+
 		this.wins = 0;
 		this.kills = 0;
 		this.points = 0;
@@ -36,7 +39,6 @@ class Player extends GameObject {
 	}
 	
 	addToPage() {
-		console.log('Called');
 		if (objects.querySelector("#"+this.id) != undefined)
 			objects.removeChild(ui.querySelector("#"+this.id))
 

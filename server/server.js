@@ -211,9 +211,17 @@ io.on('connection', (socket) => {
 
 	socket.on('disconnect', () => {
 		var c = socket.cli;
+		
+		printLog(c);
 
 		delete socket.cli;
 		clientlist.splice(clientlist.indexOf(c), 1);
+
+//		var obj = levels[i].gameobjects[j];
+//		for (k in clientlist) {
+//			var c = clientlist[k];
+//			c.socket.emit('removeplayer', {'id' : obj.id});
+//		}
 
 		socket.disconnect(0); // Close the socket
 
@@ -246,7 +254,7 @@ function loop() {
 					if (!c.loggedin) continue;
 					//console.log(c.controlledobject.id + ' | ' + obj.id + ' -> ' + c.controlledobject);
 					if (c.controlledobject.id != obj.id) {
-						console.log('sending pos update message!');
+						//console.log('sending pos update message!');
 						c.socket.emit('posupdate', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation});
 					}
 				}
