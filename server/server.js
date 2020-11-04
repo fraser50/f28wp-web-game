@@ -95,6 +95,7 @@ io.on('connection', (socket) => {
 	var c = new Client(socket, false);
 	clientlist.push(c);
 	sockettoclient[socket] = c;
+	socket.cli = c;
 
 	socket.on('getleveldata', (data) => {
 		// var data = JSON.parse(dataStr);
@@ -174,7 +175,7 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('chatmessage', (data) => {
-		var c = sockettoclient[socket];
+		var c = socket.cli;
 		if (!c.loggedin) {
 			socket.emit('chatmessagefail', "Failed to send message: Invalid session ID");
 			printLog(`chatmessage: from non logged in user: <${c.name}> ${data.message}`, "warning");
@@ -189,7 +190,7 @@ io.on('connection', (socket) => {
 	});
 
 	/*socket.on('playerstate', (data) => {
-		var c = sockettoclient[socket];
+		var c = socket.cli;
 
 		if (c.loggedin) {
 			c.pos = data.pos;
@@ -199,7 +200,7 @@ io.on('connection', (socket) => {
 	});*/
 
 	socket.on('playerposupdate', (data) => {
-		var c = sockettoclient[socket];
+		var c = socket.cli;
 		if (c.loggedin && c.controlledobject != null) {
 			var obj = c.controlledobject;
 			obj.pos.x = data.x;
@@ -209,7 +210,7 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('disconnect', () => {
-		var c = sockettoclient[socket];
+		var c = socket.cli;
 
 		delete sockettoclient[socket];
 		clientlist.splice(clientlist.indexOf(c), 1);
@@ -242,6 +243,7 @@ function loop() {
 	
 				for (k in clientlist) {
 					var c = clientlist[k];
+					if (!c.loggedin) continue;
 					console.log(c.controlledobject.id + ' | ' + obj.id + ' -> ' + c.controlledobject);
 					if (c.controlledobject.id != obj.id) {
 						console.log('sending pos update message!');
@@ -304,12 +306,12 @@ function createDatabase() {
 function addUser(data, returnPack, client) {
 	if (!util.isValidUsername(data.user)) {
 		returnPack.message = "Invalid username";
-		client.socket.emit('addUser', returnPack);
+		socket.client.emit('addUser', returnPack);
 		return;
 	}
 	if (!util.isValidPassword(data.pass)) {
 		returnPack.message = "Invalid password";
-		client.socket.emit('addUser', returnPack);
+		socket.cli.emit('addUser', returnPack);
 		return;
 	}
 	db.all('SELECT user FROM users WHERE user=?', [data.user], (err, rows) => {		// Loops through each entry in the table, looking for an account that already has the entered name
@@ -331,7 +333,7 @@ function addUser(data, returnPack, client) {
 				returnPack.message = "Sorry, there was an error in creating your account, please try again.";
 				returnPack.userId = "";			//This and username might not be necessary
 				returnPack.username = "";
-				client.socket.emit('addUser', returnPack);
+				socket.cli.emit('addUser', returnPack);
 			} else {
 				printLog("Added " + data.user + " to database");	
 				returnPack.message = "Welcome, " + data.user + " your account has been created.";
@@ -347,7 +349,7 @@ function addUser(data, returnPack, client) {
 						client.name = rows[0].user;
 						client.loggedin = true;
 
-						client.socket.emit('addUser', returnPack);
+						socket.cli.emit('addUser', returnPack);
 						printLog("User Created Id: "+returnPack.userId);
 					}
 				});
@@ -359,7 +361,7 @@ function addUser(data, returnPack, client) {
 			returnPack.userId = "";			//This and username might not be necessary
 			returnPack.username = "";
 
-			client.socket.emit('addUser', returnPack);
+			socket.cli.emit('addUser', returnPack);
 		}
 	});
 }
@@ -412,7 +414,7 @@ function login(data, returnPack, client) {
 		});
 
 		if (!done)
-			client.socket.emit('login', returnPack);
+			socket.cli.emit('login', returnPack);
 	});
 	
 }
@@ -443,7 +445,7 @@ function guest(returnPack, client) {
 
 	initUser(client, levels[0]);
 
-	client.socket.emit('guest', returnPack);
+	socket.cli.emit('guest', returnPack);
 
 	printLog("guest Id: "+returnPack.userId);
 }
@@ -480,7 +482,7 @@ function getUserStats(stats, socket) {
 function signOut(client) {
 	printLog("sign out " + client.name);
 	client.signout();
-	client.socket.emit('sign out');
+	socket.cli.emit('sign out');
 }
 
 function updateTimer(sec, client) {
