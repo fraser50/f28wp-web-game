@@ -21,8 +21,8 @@ elementbuilders = [ // A new function will be placed here for creating the eleme
 objectelements = [] // Please don't mess with this manually, modify one of the functions below
 
 function setElementPosition(element, pos) {
-	element.style.left = `calc(50% + ${(pos[0] - socket.player.pos[0])*zoomLevel}px - ${element.clientWidth/2}px)`;
-	element.style.top = `calc(50% + ${(pos[1] - socket.player.pos[1])*zoomLevel}px - ${element.clientHeight/2}px)`;
+	element.style.left = `calc(50% + ${(pos.x - socket.player.pos[0])*zoomLevel}px - ${element.clientWidth/2}px)`;
+	element.style.top = `calc(50% + ${(pos.y - socket.player.pos[1])*zoomLevel}px - ${element.clientHeight/2}px)`;
 }
 
 function setElementRotation(element, rot) {

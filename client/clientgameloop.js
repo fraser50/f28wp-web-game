@@ -52,7 +52,9 @@ function stopLoop() {
 // Loop for handling server communications
 
 function serverLoop(level) {
-	socket.emit('playerstate', socket.player.toJSON());
+	//socket.emit('playerstate', socket.player.toJSON());
+
+	socket.emit('playerposupdate', {'x' : socket.player.pos[0], 'y' : socket.player.pos[1], 'rotation' : socket.player.rot});
 }
 
 var serverLoopf = () => {serverLoop(currentLevel)};
@@ -65,10 +67,11 @@ function stopServerLoop(level) {
 	clearInterval(serverLoopf);
 }
 
-var otherPlayers = {};
+//var otherPlayers = {};
+// currentLevel
 
 window.addEventListener("load", () => {
-	socket.on('playerstate', (data) => {
+	/*socket.on('playerstate', (data) => {
 		for (p in data) {
 			otherPlayers[p] = otherPlayers[p] ? otherPlayers[p] : {};
 			otherPlayers[p].pos = data[p].pos;
@@ -78,6 +81,25 @@ window.addEventListener("load", () => {
 		//console.debug(otherPlayers);
 
 		updateOtherPlayers();
+	});*/
+
+	socket.on('posupdate', (data) => {
+		var obj = currentLevel.findObject(data.id);
+
+		var x = data.x;
+		var y = data.y;
+		var rot = data.rot;
+
+		if (obj == null) {
+			obj = new Player(new Position(x, y), rot, currentLevel, new Vector(0, 0), data.id);
+			currentLevel.addObject(obj);
+
+		} else {
+			obj.pos.x = x;
+			obj.pos.y = y;
+			obj.rotation = rot;
+		}
+
 	});
 });
 

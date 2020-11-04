@@ -28,7 +28,7 @@ class GameObject {
 class Player extends GameObject {
 	constructor(pos, rotation, level, velocity, id) {
 		super(pos, rotation, level);
-		this.id = socket.id;
+		//this.id = socket.id;
 		this.wins = 0;
 		this.kills = 0;
 		this.points = 0;
@@ -92,3 +92,7 @@ class Point extends GameObject {
 		this.zPos = 4; //z index of points are one below player so player can run over points if already carrying ball
 	}
 }
+
+exports.GameObject = GameObject;
+exports.Player = Player;
+exports.Point = Point;

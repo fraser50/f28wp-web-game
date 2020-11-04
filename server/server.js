@@ -22,18 +22,24 @@ const BCRYPT_ROUNDS = 10; // Changing this will INVALIDATE everyone's passwords
 
 
 // Use eval to import files from common
-var GameLevel = eval('(' + fs.readFileSync('../common/level.js') + ')');
-eval(fs.readFileSync('../common/util.js') + '');
-eval(fs.readFileSync('../common/gameobjects.js') + ''); // Probably broken
+//var GameLevel = eval('(' + fs.readFileSync('../common/level.js') + ')');
+//eval(fs.readFileSync('../common/util.js') + '');
+
+
+//eval(fs.readFileSync('../common/gameobjects.js') + ''); // Probably broken
+
+var util = require('../common/util.js');
+var gameobjects = require('../common/gameobjects.js');
+var level = require('./server_level.js');
 
 // Import the block types from JSON file
-var blockTypes = JSON.parse(removeCommentsFromJSON(fs.readFileSync("blocktypes.json")));
+var blockTypes = JSON.parse(util.removeCommentsFromJSON(fs.readFileSync("blocktypes.json")));
 
 // Store all levels in here
 var levels = {};
 
 // Create level for testing
-levels[0] = new GameLevel(0);
+levels[0] = new level.GameLevel(0);
 
 // Load a test world
 levels[0].loadFromFile("testworld.json");
@@ -60,6 +66,7 @@ class Client { // This class along with the password/username validation code (l
 		this.name = null;
 		this.id = null; // The user is a guest if id is null and this.loggedin is true
 		this.loggedin = false; // When a client first connects to the server, it isn't logged in
+		this.controlledobject = null;
 
 	}
 
@@ -86,7 +93,7 @@ io.on('connection', (socket) => {
 	printLog(`Connection opened (id: ${socket.id})`);
 
 	var c = new Client(socket, false);
-	clientlist.push[c];
+	clientlist.push(c);
 	sockettoclient[socket] = c;
 
 	socket.on('getleveldata', (data) => {
@@ -107,18 +114,18 @@ io.on('connection', (socket) => {
 		var data = JSON.parse(dataStr);
 
 		if (!levels[data.level]) {
-			socket.emit('getchunkundef', {'id':genChunkId(data.x, data.y), 'level':data.level});
+			socket.emit('getchunkundef', {'id':util.util.genChunkId(data.x, data.y), 'level':data.level});
 			printLog(("getchunk: " + dataStr + ` chunk ${data.x},${data.y} is undefined`).yellow, "debug");
 			return;
 		}
 
-		var tiles = levels[data.level].chunks[genChunkId(data.x, data.y)];
+		var tiles = levels[data.level].chunks[util.genChunkId(data.x, data.y)];
 
 		if (tiles != undefined) {
 			socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':tiles}));
 			printLog("getchunk: " + dataStr);
 		} else {
-			socket.emit('getchunkundef', {'id':genChunkId(data.x, data.y), 'level':data.level});
+			socket.emit('getchunkundef', {'id':util.genChunkId(data.x, data.y), 'level':data.level});
 			printLog(("getchunk: " + dataStr + ` chunk ${data.x},${data.y} is undefined`).yellow, "debug");
 		}
 	});
@@ -181,13 +188,23 @@ io.on('connection', (socket) => {
 		updateTimer(data, sockettoclient[socket]);
 	});
 
-	socket.on('playerstate', (data) => {
+	/*socket.on('playerstate', (data) => {
 		var c = sockettoclient[socket];
 
 		if (c.loggedin) {
 			c.pos = data.pos;
 			c.rot = data.rot;
 
+		}
+	});*/
+
+	socket.on('playerposupdate', (data) => {
+		var c = sockettoclient[socket];
+		if (c.loggedin && c.controlledobject != null) {
+			var obj = c.controlledobject;
+			obj.pos.x = data.x;
+			obj.pos.y = data.y;
+			obj.rotation = data.rotation;
 		}
 	});
 
@@ -216,13 +233,32 @@ function loop() {
 	for (var i in levels)
 		levels[i].update();
 
-	var playerStates = getPlayerStates();
+		for (j in levels[i].gameobjects) {
+			var obj = levels[i].gameobjects[j];
+	
+			if (obj.pos.changed) {
+				obj.pos.changed = false;
+				//console.log('pos change!');
+	
+				for (k in clientlist) {
+					var c = clientlist[k];
+					console.log(c.controlledobject.id + ' | ' + obj.id + ' -> ' + c.controlledobject);
+					if (c.controlledobject.id != obj.id) {
+						console.log('sending pos update message!');
+						c.socket.emit('posupdate', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation});
+					}
+				}
+			}
+		}
+
+	//var playerStates = getPlayerStates();
 
 	//printLog(JSON.stringify(playerStates), "debug");
 
-	for (var cindex in clientlist) {
-		clientlist[cindex].socket.emit('playerstate', playerStates);
-	}
+	//for (var cindex in clientlist) {
+	//	clientlist[cindex].socket.emit('playerstate', playerStates);
+	//}
+
 }
 
 setInterval(loop, 1000/FPS);
@@ -266,12 +302,12 @@ function createDatabase() {
 }
 
 function addUser(data, returnPack, client) {
-	if (!isValidUsername(data.user)) {
+	if (!util.isValidUsername(data.user)) {
 		returnPack.message = "Invalid username";
 		client.socket.emit('addUser', returnPack);
 		return;
 	}
-	if (!isValidPassword(data.pass)) {
+	if (!util.isValidPassword(data.pass)) {
 		returnPack.message = "Invalid password";
 		client.socket.emit('addUser', returnPack);
 		return;
@@ -331,7 +367,7 @@ function addUser(data, returnPack, client) {
 function login(data, returnPack, client) {
 	returnPack.message = "The details you have entered were incorrect, please try again.";
 	returnPack.userId = "null";
-	returnPack.username = "null"
+	returnPack.username = "null";
 
 	db.all('SELECT id, user, passhash FROM users WHERE user=?', [data.user], (err, rows) => {
 		if (err) {
@@ -366,6 +402,8 @@ function login(data, returnPack, client) {
 			client.name = row.user;
 			client.loggedin = true;
 
+			initUser(client, levels[0]);
+
 			client.socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
 			printLog("login Id: "+returnPack.userId+", "+returnPack.success);
 
@@ -379,10 +417,10 @@ function login(data, returnPack, client) {
 	
 }
 
-function initUser(name, sId) {
-	throw new Error("This function is not to be used! May be removed in the future");
-
-	//loggedInUsers[sId] = {'name': name}; // BROKEN
+function initUser(client, level) {
+	var p = new gameobjects.Player(new util.Position(0, 0), 0, level, new util.Vector(0, 0));
+	level.addObject(p);
+	client.controlledobject = p;
 }
 
 // TODO When guest disconnects, remove record from db
@@ -402,6 +440,8 @@ function guest(returnPack, client) {
 
 	client.loggedin = true;
 	client.name = "guest_" + returnPack.userId; // Change to use random id again
+
+	initUser(client, levels[0]);
 
 	client.socket.emit('guest', returnPack);
 

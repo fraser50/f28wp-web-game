@@ -194,3 +194,19 @@ function getTileAt(level, x, y) {
 		return level.chunks[cId][ry*chunkSize + rx];
 	// If the chunk does not exist, the function will return undefined
 }
+
+exports.toRadians = toRadians;
+exports.toDegrees = toDegrees;
+exports.Position = Position;
+exports.Vector = Vector;
+exports.genChunkId = genChunkId;
+exports.fromChunkId = fromChunkId;
+exports.genTileImageId = genTileImageId;
+exports.getBackgroundColorRGBA = getBackgroundColorRGBA;
+exports.setBackgroundColorRGBA = setBackgroundColorRGBA;
+exports.genGuestName = genGuestName;
+exports.isValidUsername = isValidUsername;
+exports.isValidPassword = isValidPassword;
+exports.removeCommentsFromJSON = removeCommentsFromJSON;
+exports.roundNumber = roundNumber;
+exports.getTileAt = getTileAt;

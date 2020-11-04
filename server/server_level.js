@@ -1,3 +1,9 @@
+const SERVER = true;
+const CLIENT = !SERVER;
+
+var util = require('../common/util.js');
+var fs = require('fs');
+
 class GameLevel {
 	constructor(id) {
 		this.id = id;
@@ -180,3 +186,5 @@ class GameLevel {
 		return null;
 	}
 }
+
+exports.GameLevel = GameLevel;
