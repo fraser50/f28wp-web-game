@@ -165,4 +165,15 @@ class GameLevel {
 		this.spawnpos = data.spawnpos;
 		// There will probably be a lot more here
 	}
+
+	// Find a GameObject given its id
+	findObject(id) {
+		for (i in this.gameobjects) {
+			if (this.gameobjects[i].id == id) {
+				return this.gameobjects[i].id;
+			}
+		}
+
+		return null;
+	}
 }
