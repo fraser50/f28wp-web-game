@@ -94,7 +94,7 @@ io.on('connection', (socket) => {
 
 	var c = new Client(socket, false);
 	clientlist.push(c);
-	sockettoclient[socket] = c;
+	socket.cli = c;
 	socket.cli = c;
 
 	socket.on('getleveldata', (data) => {
@@ -143,7 +143,7 @@ io.on('connection', (socket) => {
 			message : "",
 			success: false
 		};
-		addUser(data, returnPack, sockettoclient[socket]);		//Call the addUser method
+		addUser(data, returnPack, socket.cli);		//Call the addUser method
 	});
 	
 	socket.on('login', (data) => {				//Listens for login requests
@@ -153,7 +153,7 @@ io.on('connection', (socket) => {
 			message : "",
 			success: false
 		};
-		login(data, returnPack, sockettoclient[socket]);
+		login(data, returnPack, socket.cli);
 	});
 	
 	socket.on('guest', () => {				//Listens for guest login requests
@@ -163,15 +163,15 @@ io.on('connection', (socket) => {
 			success : false,
 			isGuest : "true"
 		};
-		guest(returnPack, sockettoclient[socket]);
+		guest(returnPack, socket.cli);
 	});
 	
 	socket.on('sign out', () => {
-		signOut(sockettoclient[socket]);
+		signOut(socket.cli);
 	})
 	
 	socket.on('getStats', (stats) => {
-		//getUserStats(stats, sockettoclient[socket]);
+		//getUserStats(stats, socket.cli);
 	});
 
 	socket.on('chatmessage', (data) => {
@@ -186,7 +186,7 @@ io.on('connection', (socket) => {
 	});
 	
 	socket.on('updateTimer', (data) => {
-		updateTimer(data, sockettoclient[socket]);
+		updateTimer(data, socket.cli);
 	});
 
 	/*socket.on('playerstate', (data) => {
@@ -212,7 +212,7 @@ io.on('connection', (socket) => {
 	socket.on('disconnect', () => {
 		var c = socket.cli;
 
-		delete sockettoclient[socket];
+		delete socket.cli;
 		clientlist.splice(clientlist.indexOf(c), 1);
 
 		socket.disconnect(0); // Close the socket
