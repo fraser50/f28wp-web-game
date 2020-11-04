@@ -349,7 +349,7 @@ function addUser(data, returnPack, client) {
 						client.name = rows[0].user;
 						client.loggedin = true;
 
-						socket.cli.emit('addUser', returnPack);
+						client.socket.emit('addUser', returnPack);
 						printLog("User Created Id: "+returnPack.userId);
 					}
 				});
