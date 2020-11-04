@@ -484,7 +484,7 @@ function getUserStats(stats, socket) {
 function signOut(client) {
 	printLog("sign out " + client.name);
 	client.signout();
-	client.emit('sign out');
+	client.socket.emit('sign out');
 }
 
 function updateTimer(sec, client) {
