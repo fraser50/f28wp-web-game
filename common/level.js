@@ -6,6 +6,8 @@ class GameLevel {
 		this.newobjects = []; // To allow the server to determine when it needs to send information about a new object to the client, and to allow the client to render new objects
 		this.removedobjects = [];
 
+		this.objectcounter = 0; // Used to create a unique id for each object, objects created client-side should use this * -1
+
 		/* Each chunk is stored as an array of JSON objects with keys from their coordinates (e.g. "0,0")
 		Within each chunk, the tiles are also JSON objects, with the structure {id:0,layer:0,isTransition:false} */
 		this.newChunks = [];
@@ -45,8 +47,9 @@ class GameLevel {
 	addObject(obj) {
 		var exists = false;
 		for (var i in this.newobjects)
-			if (this.newobjects[i] == obj)
+			if (this.newobjects[i] == obj )
 				exists = true;
+
 		for (var i in this.gameobjects)
 			if (this.gameobjects[i] == obj)
 				exists = true;
@@ -54,6 +57,8 @@ class GameLevel {
 		if (!exists) {
 			this.gameobjects.push(obj);
 			this.newobjects.push(obj);
+			obj.id = this.objectcounter;
+			this.objectcounter++;
 		}
 	}
 

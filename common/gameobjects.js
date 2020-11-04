@@ -1,5 +1,7 @@
 class GameObject {
 	constructor(pos, rotation, velocity) {
+		this.id = 0; // This will be populated when added to a level
+
 		this.pos = pos;
 		this.rotation = rotation;
 		this.velocity = velocity;
