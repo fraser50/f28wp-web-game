@@ -188,8 +188,6 @@ io.on('connection', (socket) => {
 			c.pos = data.pos;
 			c.rot = data.rot;
 
-			}
-
 		}
 	});
 
