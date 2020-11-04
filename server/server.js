@@ -434,8 +434,10 @@ function guest(returnPack, client) {
 <<<<<<< HEAD
 		rand = createId();*/
 
+	initUser(client, levels[0]);
+
 	returnPack.message = "Welcome, ";
-	returnPack.userId = 5;
+	returnPack.userId = client.controlledobject.id;
 	returnPack.success = true;
 
 	//guests[rand] = {sid:socket.id};
@@ -443,7 +445,7 @@ function guest(returnPack, client) {
 	client.loggedin = true;
 	client.name = "guest_" + returnPack.userId; // Change to use random id again
 
-	initUser(client, levels[0]);
+	
 
 	client.socket.emit('guest', returnPack);
 
