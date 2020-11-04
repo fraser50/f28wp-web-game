@@ -1,6 +1,6 @@
 class GameObject {
 	constructor(pos, rotation, velocity) {
-		this.id = 0; // This will be populated when added to a level
+		this.id = undefined; // This will be populated when added to a level
 
 		this.pos = pos;
 		this.rotation = rotation;
@@ -36,6 +36,7 @@ class Player extends GameObject {
 	}
 	
 	addToPage() {
+		console.log('Called');
 		if (objects.querySelector("#"+this.id) != undefined)
 			objects.removeChild(ui.querySelector("#"+this.id))
 

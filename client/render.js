@@ -29,9 +29,11 @@ function setElementRotation(element, rot) {
 	element.style.transform = `rotate(${rot}rad)`;
 }
 
-function render(level) {
+function render(level, skip = null) {
 	// Adding objects
 	for (let i=0; i<level.newobjects.length; i++) {
+		if (level.newobjects[i] == skip) continue;
+
 		if (objectelements.indexOf(level.newobjects[i]) != -1) {
 			// This code should never be called, if it is, a warning will be printed to the console
 			console.log('WARNING: A new object that was already added to the screen was found!');
@@ -58,6 +60,8 @@ function render(level) {
 
 	// Removing objects
 	for (let i=0; i<level.removedobjects.length; i++) {
+		if (level.remobedobjects[i] == skip) continue;
+
 		var removedobj = level.removedobj[i];
 		var objindex = objectelements.indexOf(removedobj);
 		if (objindex == -1) {
@@ -73,6 +77,7 @@ function render(level) {
 	// Rendering objects
 	for (let i=0; i<objectelements.length-1; i += 2) {
 		var obj = objectelements[i];
+		if (obj == skip) continue;
 
 		setElementPosition(objectelements[i + 1], obj.pos);
 		setElementRotation(objectelements[i + 1], obj.rotation ? obj.rotation : 0);
