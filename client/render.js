@@ -1,12 +1,7 @@
 elementbuilders = [ // A new function will be placed here for creating the elements for different kinds of objects in the game
 	[Player, function(obj, isGuest) {
 		var e = document.createElement("img");
-		if (isGuest) {
-			e.id = "guest_"+obj.id
-		}
-		else {
-			e.id = obj.id;
-		}
+		e.id = obj.id;
 		e.style.top = 0;
 		e.style.left = 0;
 		e.src = "client/assets/images/player_up.png";

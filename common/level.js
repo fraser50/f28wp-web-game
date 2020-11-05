@@ -19,6 +19,7 @@ class GameLevel {
 		for (let i=0; i<this.gameobjects.length; i++) {
 			var obj = this.gameobjects[i];
 			var toremove = [];
+			//console.log(obj);
 
 			if (obj.removed) {
 				toremove.push(obj);
@@ -55,6 +56,9 @@ class GameLevel {
 				exists = true;
 
 		if (!exists) {
+			if (obj.isGuest && ((''+obj.id).substring(0,6) != 'guest_')) {
+				obj.id = 'guest_'+obj.id;
+			}
 			this.gameobjects.push(obj);
 			this.newobjects.push(obj);
 			if (obj.id === undefined) {

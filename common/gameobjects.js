@@ -65,6 +65,11 @@ class Player extends GameObject {
 		loopStartButton.updateValue("Start loop");
 		loginWindow.show();
 	}
+	
+	removeOtherPlayer() {
+		var player = document.getElementById(this.id);
+		objects.removeChild(player);
+	}
 
 	update() {
 		if (this.elem) {

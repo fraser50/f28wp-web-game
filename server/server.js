@@ -217,7 +217,8 @@ io.on('connection', (socket) => {
 		clientlist.splice(clientlist.indexOf(c), 1);
 		
 		for (k in clientlist) {
-			c.socket.emit('removeplayer', {'id' : c.name});
+			rClient = clientlist[k];
+			rClient.socket.emit('removeplayer', {'id' : c.name});
 		}
 
 		socket.disconnect(0); // Close the socket
@@ -488,6 +489,10 @@ function getUserStats(stats, socket) {
 
 function signOut(client) {
 	printLog("sign out " + client.name);
+	for (k in clientlist) {
+		rClient = clientlist[k];
+		rClient.socket.emit('removeplayer', {'id' : client.name});
+	}
 	client.signout();
 	client.socket.emit('sign out');
 }
