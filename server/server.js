@@ -353,7 +353,7 @@ function addUser(data, returnPack, client) {
 			} else {
 				printLog("Added " + data.user + " to database");	
 				returnPack.message = "Welcome, " + data.user + " your account has been created.";
-				returnPack.userId = db.all('SELECT id FROM users WHERE user = ?', (data.user), (err, rows) => {
+				returnPack.userId = db.all('SELECT id, user FROM users WHERE user = ?', (data.user), (err, rows) => {
 					if (err)
 						printLog(err.message, "error");
 					else {
@@ -362,7 +362,7 @@ function addUser(data, returnPack, client) {
 						returnPack.success = true;
 
 						client.id = rows[0].id;
-						client.name = rows[0].user;		//pretty sure this stuff doesn't work
+						client.name = rows[0].user;
 						client.loggedin = true;
 						
 						initUser(client, levels[0]);
