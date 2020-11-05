@@ -82,10 +82,20 @@ window.addEventListener("load", () => {
 
 		updateOtherPlayers();
 	});*/
+	socket.on('removeplayer', (data) => {
+		var removeplayer = currentLevel.findObject(data.id);
+		currentLevel.removeObject(removeplayer);
+		removeplayer.removeOtherPlayer();
+	})
 	
 	socket.on('posupdate', (data) => {
 		//if (isGuest) data.id = "guest_"+data.id;
 		var obj = currentLevel.findObject(data.id);
+		
+		if (data.isGuest && obj == null) {
+			obj = currentLevel.findObject('guest_'+data.id);
+		}
+		
 		var x = data.x;
 		var y = data.y;
 		var rot = data.rot;
@@ -94,9 +104,9 @@ window.addEventListener("load", () => {
 		
 		if (obj == null) {
 			//data.id = "guest_"+data.id;
+			console.log(data.id);
 			obj = new Player(new Position(x, y), rot, currentLevel, new Vector(0, 0), data.id, isGuest);
 			currentLevel.addObject(obj);
-
 		} else {
 			obj.pos.x = x;
 			obj.pos.y = y;
