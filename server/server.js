@@ -35,6 +35,15 @@ var level = require('./server_level.js');
 // Import the block types from JSON file
 var blockTypes = JSON.parse(util.removeCommentsFromJSON(fs.readFileSync("blocktypes.json")));
 
+// Remove all unnecessary data from blockTypes (only keeping src)
+for (var t in blockTypes) {
+	for (var p in blockTypes[t]) {
+		if (p != "src") {
+			delete blockTypes[t][p];
+		}
+	}
+}
+
 // Store all levels in here
 var levels = {};
 
