@@ -52,7 +52,7 @@ function generateLoginWindow(socket) {
 		if (data.success == true) {
 			loginWindow.hide();
 			userDetails.loginSuccess = true;
-			isGuest = true;
+			isGuest = false;
 			createPlayer(socket, userDetails.name, isGuest);		//Just barely works
 			loginActivateButton.updateValue("Signed in as: " + userDetails.name);
 			loginActivateButton.setCallback(() => {loginCallbackToLoggedIn()});

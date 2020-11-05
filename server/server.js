@@ -212,7 +212,8 @@ io.on('connection', (socket) => {
 		var c = socket.cli;
 		if (c.loggedin && c.controlledobject != null) {
 			var obj = c.controlledobject;
-			obj.pos.x = data.x;
+			obj.id = data.id
+;			obj.pos.x = data.x;
 			obj.pos.y = data.y;
 			obj.rotation = data.rotation;
 			obj.isGuest = data.isGuest;
@@ -361,8 +362,10 @@ function addUser(data, returnPack, client) {
 						returnPack.success = true;
 
 						client.id = rows[0].id;
-						client.name = rows[0].user;
+						client.name = rows[0].user;		//pretty sure this stuff doesn't work
 						client.loggedin = true;
+						
+						initUser(client, levels[0]);
 
 						client.socket.emit('addUser', returnPack);
 						printLog("User Created Id: "+returnPack.userId);
