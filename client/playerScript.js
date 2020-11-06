@@ -75,14 +75,19 @@ function doMovement(player, lastFrametime) {
 		playerVelXY.x *= playerVelDecay ** lastFrametime;
 	}
 
+	var tile = getTileAt(currentLevel, Math.floor(player.pos[0] + playerVelXY.x * lastFrametime), Math.floor(player.pos[1]));
 	// If there is a wall where the player would end up in the x axis, stop the player in that axis
-	if (getTileAt(currentLevel, Math.floor(player.pos[0] + playerVelXY.x * lastFrametime), Math.floor(player.pos[1])).isWall)
+	if (!tile || tile.isWall)
 		playerVelXY.x = 0;
+
+	tile = getTileAt(currentLevel, Math.floor(player.pos[0]), Math.floor(player.pos[1] + playerVelXY.y * lastFrametime));
 	// If there is a wall where the player would end up in the y axis, stop the player in that axis
-	if (getTileAt(currentLevel, Math.floor(player.pos[0]), Math.floor(player.pos[1] + playerVelXY.y * lastFrametime)).isWall)
+	if (!tile || tile.isWall)
 		playerVelXY.y = 0;
+
+	tile = getTileAt(currentLevel, Math.floor(player.pos[0] + playerVelXY.x * lastFrametime), Math.floor(player.pos[1] + playerVelXY.y * lastFrametime));
 	// If there is a wall directly in front of the player, stop them completely (fixes the rare occurence of getting stuck on the corner of a wall)
-	if (getTileAt(currentLevel, Math.floor(player.pos[0] + playerVelXY.x * lastFrametime), Math.floor(player.pos[1] + playerVelXY.y * lastFrametime)).isWall) {
+	if (!tile || tile.isWall) {
 		playerVelXY.x = 0;
 		playerVelXY.y = 0;
 	}
