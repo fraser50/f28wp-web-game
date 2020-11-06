@@ -141,19 +141,18 @@ function generateUserWindow() {
 	userWindow.addObject(new UiButton("Sign Out", 20, 120, "tl", 125, 60, "Sign Out", "20px sans-serif", () => {
 		socket.emit('sign out');
 		console.log('sign out');
-		socket.on('sign out', () => {
-			alert("Signed Out");
-			userDetails.name = null;
-			userDetails.loginSuccess = false;
-			removePlayer(socket);
-			loginActivateButton.updateValue("Login/Sign Up");
-			loginActivateButton.setCallback(() => {loginCallbackToLogIn()});
-			userWindow.hide();
+		alert("Signed Out");
+		userDetails.name = null;
+		userDetails.loginSuccess = false;
+		removePlayer(socket);
+		loginActivateButton.updateValue("Login/Sign Up");
+		loginActivateButton.setCallback(() => {loginCallbackToLogIn()});
+		userWindow.hide();
 			
 			
-			chatSendButton.disable();
-			chatInput.removeMovementDisable();
-		});
+		chatSendButton.disable();
+		chatInput.removeMovementDisable();
+		
 	}));
 	
 	userWindow.addObject(new UiButton("closeUserWindow", 20, 120, "tr", 125, 60, "Close", "20px sans-serif", () => {

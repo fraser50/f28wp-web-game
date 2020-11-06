@@ -502,7 +502,7 @@ function signOut(client) {
 		rClient.socket.emit('removeplayer', {'id' : client.name});
 	}
 	client.signout();
-	client.socket.emit('sign out');
+	//client.socket.emit('sign out');
 }
 
 var sec = 60;
