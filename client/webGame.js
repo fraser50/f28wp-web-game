@@ -164,34 +164,24 @@ window.addEventListener("load", () => {
 
 	function stopTimer() {
 		var sec = 60;
-		clearInterval(timerLoop);
+		socket.off('updateTimer');	//Dont think this works
 		timer.updateValue(sec);
 	}
-	
-	var timerLoop
 	
 	function startTimer() {
 		var sec = 60;
 		timer.updateValue(sec);
-		timerLoop = setInterval(function() {
-			socket.emit('updateTimer', sec);
-		}, 1000);
 		
 		socket.on('updateTimer', (data) => {
 			sec = data;
 			if (sec == 0) {
 				sec = "Game Over"; //Need to format this
-				clearInterval(timerLoop);
 				console.log("Timer Done");
 			}
 			timer.updateValue(sec);
 		});
 	}
-	
-
-
-	
-	
+		
 	socket.on('chatmessage', (data) => {
 		if (data.level != currentLevel.id) return;
 		var label = new UiLabel("", 0, 0, "s", "<" + data.user + "> " + data.message, "14px sans-serif");

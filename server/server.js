@@ -193,10 +193,6 @@ io.on('connection', (socket) => {
 		printLog(`chatmessage: <${c.name}> ${data.message}`);
 		c.socket.broadcast.emit('chatmessage', data);
 	});
-	
-	socket.on('updateTimer', (data) => {
-		updateTimer(data, socket.cli);
-	});
 
 	/*socket.on('playerstate', (data) => {
 		var c = socket.cli;
@@ -509,13 +505,21 @@ function signOut(client) {
 	client.socket.emit('sign out');
 }
 
-function updateTimer(sec, client) {
-		sec--
-		if (sec==0) {
-			printLog("Timer Done");
-		}
-		client.socket.emit('updateTimer', sec);
-}
+var sec = 60;
+
+setInterval(() => {
+	sec--;
+	
+	for (k in clientlist) {
+		rClient = clientlist[k];
+		rClient.socket.emit('updateTimer', sec);
+	}
+	
+	if (sec==0) {
+		setTimeout(() => {sec = 60}, 5000);
+		printLog("Timer Done");
+	}
+}, 1000);
 
 // Write to the console in a standard format with different levels (valid levels: warning, error, info (default))
 function printLog(text, level) {
