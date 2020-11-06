@@ -112,6 +112,14 @@ class Point extends GameObject {
 	}
 }
 
+class BallSpawnPoint extends GameObject {
+	constructor(pos, level) {
+		super(pos, 0, 0);
+		this.level = level;
+		this.hasBall = false;
+	}
+}
+
 exports.GameObject = GameObject;
 exports.Player = Player;
 exports.Point = Point;
