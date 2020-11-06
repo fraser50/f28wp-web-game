@@ -96,8 +96,19 @@ class Player extends GameObject {
 
 class Point extends GameObject {
 	constructor(pos, rotation, level) {
-		this.velocity = velocity;
-		this.zPos = 4; //z index of points are one below player so player can run over points if already carrying ball
+		var elem = document.createElement("img");
+
+		elem.src = "client/assets/images/Ball.png";
+		elem.style.width = zoomLevel + "px";
+		elem.style.height = zoomLevel + "px";
+		elem.style.zIndex = "4";
+		
+		//elem.style.left = `calc(50% - ${zoomLevel/2}px)`;
+		//elem.style.top = `calc(50% - ${zoomLevel/2}px)`;
+
+		this.elem = elem;
+
+		objects.appendChild(elem);
 	}
 }
 
