@@ -116,15 +116,7 @@ window.addEventListener("load", () => {
 
 	});
 	
-	//Adds balls to level
-	socket.on("addBallsToLevel", (data) =>{
-		ball1 = new Point(createRandomPosition, 0, currentLevel);
-		ball2 = new Point(createRandomPosition, 0, currentLevel);
-		ball3 = new Point(createRandomPosition, 0, currentLevel);
-		currentLevel.addObject(ball1);
-		currentLevel.addObject(ball2);
-		currentLevel.addObject(ball3);
-	});
+
 });
 
 //function updateOtherPlayers() {
