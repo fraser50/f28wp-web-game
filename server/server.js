@@ -509,17 +509,57 @@ var sec = 60;
 
 setInterval(() => {
 	sec--;
-	
+
 	for (k in clientlist) {
 		rClient = clientlist[k];
 		rClient.socket.emit('updateTimer', sec);
 	}
-	
+
+	if(sec==50) { //Currently set to spawn at 50secs for testing
+		printLog("Adding balls to level");
+		addBallsToLevelFixed;
+	}
+
 	if (sec==0) {
 		setTimeout(() => {sec = 60}, 5000);
 		printLog("Timer Done");
 	}
 }, 1000);
+
+/* Possible code for random ball spawns.
+//creates random position in main room of level
+//Could be improved in future by using width and height if different sized levels are going to be created.
+function createRandomPosition() {
+	randX = (Math.random() * (-13)) -1;
+	randY = (Math.random() * (-13)) -1;
+	return new Position(randX, randY);
+}
+
+//Add balls to level at random position.
+//Uses createRandomPosition function.
+function addBallsToLevelRandom() {
+	let randpos1 = new Position()
+	ball1 = new Point(createRandomPosition, 0, currentLevel);
+	ball2 = new Point(createRandomPosition, 0, currentLevel);
+	ball3 = new Point(createRandomPosition, 0, currentLevel);
+	currentLevel.addObject(ball1);
+	currentLevel.addObject(ball2);
+	currentLevel.addObject(ball3);
+}
+*/
+
+//Add balls to level at fixed position.
+function addBallsToLevelFixed() {
+	for(i = 0; i < level.gameobjects.length; i++) {
+		if (level.gameobjects[i] instanceof BallSpawnPoint) {
+			let spawnPosition = level.gameobjects[i].getPos;
+			let b = new gameobjects.Point(spawnPosition, 0, level);
+			level.addObject(b);
+		}
+	}
+}
+//Testcode: Add ball spawn points to level (Currently fails: "addObject is not defined")
+//addObject(new gameobjects.BallSpawnPoint(new util.Position(-12, -12), level));
 
 // Write to the console in a standard format with different levels (valid levels: warning, error, info (default))
 function printLog(text, level) {
