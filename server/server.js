@@ -243,14 +243,28 @@ io.on('connection', (socket) => {
 
 	socket.on('disconnect', () => {
 		var c = socket.cli;
-		
-		delete socket.cli;
-		clientlist.splice(clientlist.indexOf(c), 1);
+		c.present = false;
 		
 		for (k in clientlist) {
 			rClient = clientlist[k];
+			if (rClient.name == c.name && rClient.name) {
+				c.present = true;
+			}
 			rClient.socket.emit('removeplayer', {'id' : c.name});
 		}
+		
+		if (c.controlledobject != undefined && c.present == true) {	//This checks that the user is not refreshing from the login screen, it also accounts for instances where the user might have logged out then closed the window
+			if (c.controlledobject.team == 'team1') {			//Need to get levels sorted so there is not only one, this doesn't allow for scalability atm
+				levels[0].team1.pop(c.controlledobject.name);
+				printLog('removed ' + c.name + ' from team 1')
+			} else if (c.controlledobject.team == 'team2' && c.present == true){
+				levels[0].team2.pop(c.controlledobject.name);
+				printLog('removed ' + c.name + ' from team 2')
+			}	
+		}
+
+		delete socket.cli;
+		clientlist.splice(clientlist.indexOf(c), 1);
 
 		socket.disconnect(0); // Close the socket
 
@@ -520,14 +534,22 @@ function getUserStats(stats, socket) {
 	})
 }
 
-function signOut(client) {
+function signOut(client) {	//This removes client from their team, sends out emit package to tell all other clients that they have signed out and should remove the player from the screen
 	printLog("sign out " + client.name);
+	
+	if (client.controlledobject.team == 'team1') {			//Need to get levels sorted so there is not only one, this doesn't allow for scalability atm
+		levels[0].team1.pop(client.controlledobject.name);
+		printLog('removed ' + client.name + ' from team 1')
+	} else {
+		levels[0].team2.pop(client.controlledobject.name);
+		printLog('removed ' + client.name + ' from team 2')
+	}
+	
 	for (k in clientlist) {
 		rClient = clientlist[k];
 		rClient.socket.emit('removeplayer', {'id' : client.name});
 	}
 	client.signout();
-	//client.socket.emit('sign out');
 }
 
 var sec = 60;
