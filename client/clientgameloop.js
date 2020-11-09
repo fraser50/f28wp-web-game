@@ -26,9 +26,11 @@ function loop(level) {
 	doMovement(socket.player, frametime);
 	direction(socket.player);
 	
+
+	
 	// Update and render the current level
 	level.update();
-	render(level);
+	render(level, socket.player);
 	currentLevel.render(socket.player);
 	socket.player.update();
 
@@ -53,8 +55,7 @@ function stopLoop() {
 
 function serverLoop(level) {
 	//socket.emit('playerstate', socket.player.toJSON());
-
-	socket.emit('playerposupdate', {'id' : socket.player.id, 'x' : socket.player.pos[0], 'y' : socket.player.pos[1], 'rotation' : socket.player.rotation, "isGuest" : socket.player.isGuest});
+	socket.emit('playerposupdate', {'id' : socket.player.id, 'x' : socket.player.pos[0], 'y' : socket.player.pos[1], 'rotation' : socket.player.rotation, "isGuest" : socket.player.isGuest, "team" : socket.player.team});
 }
 
 var serverLoopf = () => {serverLoop(currentLevel)};
@@ -69,6 +70,21 @@ function stopServerLoop(level) {
 
 //var otherPlayers = {};
 // currentLevel
+
+function assignTeam(level) {	//This takes in level and sends the player of for team assign
+	if (socket.player.team == undefined) {	//Makes sure player doesn't already have a team
+		socket.emit('assignTeam', {"player" : JSON.stringify(socket.player), "level" : level.id});	//Send player and level id to be assigned by server
+		socket.on('assignedTeam', (data) => {	//Look for server response
+			socket.player.team = data.team;	// Set local client instance to the returned team value
+			console.log(socket.player)
+			socket.removeListener('assignedTeam');	// This is just for security (did work earlier, might be redundant now)
+		});
+	};
+	level.addObject(socket.player);
+	console.log(level.gameobjects)		//Shows all users have correct teams
+};
+
+
 
 window.addEventListener("load", () => {
 	/*socket.on('playerstate', (data) => {
@@ -100,12 +116,13 @@ window.addEventListener("load", () => {
 		var y = data.y;
 		var rot = data.rot;
 		var isGuest = data.isGuest;
+		var team = data.team;
 		
 		
 		if (obj == null) {
 			//data.id = "guest_"+data.id;
 			console.log(data.id);
-			obj = new Player(new Position(x, y), rot, currentLevel, new Vector(0, 0), data.id, isGuest);
+			obj = new Player(new Position(x, y), rot, currentLevel, new Vector(0, 0), data.id, isGuest, team);
 			currentLevel.addObject(obj);
 		} else {
 			obj.pos.x = x;

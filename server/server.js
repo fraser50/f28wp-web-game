@@ -204,6 +204,30 @@ io.on('connection', (socket) => {
 		}
 	});*/
 
+	socket.on('assignTeam', (data) => {	//This takes in a player and assigns them to a team
+		var level = levels[data.level];		//Takes in level id as sending full level is unnecessarily large 
+		var player = JSON.parse(data.player);	//Transform player back into JSON
+		if (level.gameobjects.length < 6) {		//Checks if  level is full
+			if (level.team1.length <= level.team2.length) {	//Check which team has the least players and assigns client to that team
+				level.team1.push(player);	//Adds client to the team (might want to change this to just id)
+				player.team = 'team1';	//Updates team value of client
+			} else {
+				level.team2.push(player);
+				player.team = 'team2';
+			}	
+		} else {
+			console.log(level + " is full");	//Temp error message for when room is full, this should be changed once we have rooms working properly
+		}
+		
+//		for (var i in level.gameobjects) {
+//			console.log(level.gameobjects[i].id + "  -  " + level.gameobjects[i].team)	//This doesn't work for the current obj, displays all ones before it though. Shouldn't matter too much
+//		}
+		
+		printLog(player.id + ' joined ' + player.team);
+		
+		socket.emit('assignedTeam', {"team" : player.team});	//Return the newly assigned player team so the local client can assign it to its player instance
+	})
+	
 	socket.on('playerposupdate', (data) => {
 		var c = socket.cli;
 		if (c.loggedin && c.controlledobject != null) {
@@ -213,6 +237,7 @@ io.on('connection', (socket) => {
 			obj.pos.y = data.y;
 			obj.rotation = data.rotation;
 			obj.isGuest = data.isGuest;
+			obj.team = data.team;
 		}
 	});
 
@@ -259,7 +284,7 @@ function loop() {
 					//console.log(c.controlledobject.id + ' | ' + obj.id + ' -> ' + c.controlledobject);
 					if (c.controlledobject.id != obj.id) {
 						//console.log('sending pos update message!');
-						c.socket.emit('posupdate', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation, 'isGuest' : obj.isGuest});
+						c.socket.emit('posupdate', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation, 'isGuest' : obj.isGuest, 'team' : obj.team});
 					}
 				}
 			}

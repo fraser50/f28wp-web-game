@@ -26,7 +26,7 @@ class GameObject {
 }
 
 class Player extends GameObject {
-	constructor(pos, rotation, level, velocity, id, isGuest) {
+	constructor(pos, rotation, level, velocity, id, isGuest, team) {
 		super(pos, rotation, level);
 		//this.id = socket.id;
 		if (!this.id) {
@@ -37,6 +37,7 @@ class Player extends GameObject {
 		this.points = 0;
 		this.zPos = 5;
 		this.isGuest = isGuest;
+		this.team = team;
 	}
 	
 	addToPage() {

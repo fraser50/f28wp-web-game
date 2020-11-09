@@ -140,6 +140,7 @@ window.addEventListener("load", () => {
 			stopTimer();
 		} else {
 			loopStartButton.loopRunning = true;
+			assignTeam(currentLevel);	//Assign to a team when start loop
 			startLoop(currentLevel);
 			startServerLoop(currentLevel);
 			loopStartButton.updateValue("Stop loop");
