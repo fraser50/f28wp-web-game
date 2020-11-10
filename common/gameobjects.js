@@ -124,10 +124,6 @@ class BallSpawnPoint extends GameObject {
 		this.level = level;
 		this.hasBall = false;
 	}
-	
-	getPos() {
-		return this.pos;
-	}
 }
 
 exports.GameObject = GameObject;
