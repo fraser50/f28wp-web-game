@@ -16,9 +16,14 @@ elementbuilders = [ // A new function will be placed here for creating the eleme
 
 	[Point, function(obj) {
 		var e = document.createElement("img");
+
+		e.src = "client/assets/images/Ball.png";
+		e.width = zoomLevel + "px";
+		e.height = zoomLevel + "px";
+		elem.style.zIndex = "4";
 		e.style.top = 0;
 		e.style.left = 0;
-		e.src = "client/assets/images/point.png";
+
 		return e;
 	}]
 ]
