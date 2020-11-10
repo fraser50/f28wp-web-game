@@ -102,19 +102,7 @@ class Player extends GameObject {
 
 class Point extends GameObject {
 	constructor(pos, rotation, level) {
-		var elem = document.createElement("img");
-
-		elem.src = "client/assets/images/Ball.png";
-		elem.style.width = zoomLevel + "px";
-		elem.style.height = zoomLevel + "px";
-		elem.style.zIndex = "4";
-		
-		//elem.style.left = `calc(50% - ${zoomLevel/2}px)`;
-		//elem.style.top = `calc(50% - ${zoomLevel/2}px)`;
-
-		this.elem = elem;
-
-		objects.appendChild(elem);
+		super(pos, 0, 0);
 	}
 }
 
