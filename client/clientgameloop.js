@@ -104,9 +104,14 @@ window.addEventListener("load", () => {
 		updateOtherPlayers();
 	});*/
 	socket.on('removeplayer', (data) => {
+		console.log(data.id)
 		var removeplayer = currentLevel.findObject(data.id);
-		currentLevel.removeObject(removeplayer);
-		removeplayer.removeOtherPlayer();
+		if (removeplayer != null) {
+			console.log(removeplayer);
+			currentLevel.removeObject(removeplayer);
+			console.log(currentLevel.gameobjects);
+			//removeplayer.removeOtherPlayer();
+		}
 	});
 	
 	socket.on('posupdate', (data) => {

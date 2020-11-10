@@ -1,4 +1,5 @@
-elementbuilders = [ // A new function will be placed here for creating the elements for different kinds of objects in the game
+elementbuilders = [ // A new function will be placed here for creating the
+					// elements for different kinds of objects in the game
 	[Player, function(obj, isGuest) {
 		var e = document.createElement("img");
 		e.id = obj.id;
@@ -23,7 +24,8 @@ elementbuilders = [ // A new function will be placed here for creating the eleme
 	}]
 ]
 
-objectelements = [] // Please don't mess with this manually, modify one of the functions below
+objectelements = [] // Please don't mess with this manually, modify one of the
+					// functions below
 
 function setElementPosition(element, pos) {
 	element.style.left = `calc(50% + ${(pos.x - socket.player.pos[0])*zoomLevel}px - ${element.clientWidth/2}px)`;
@@ -40,7 +42,8 @@ function render(level, skip = null) {
 		if (level.newobjects[i] == skip) continue;
 
 		if (objectelements.indexOf(level.newobjects[i]) != -1) {
-			// This code should never be called, if it is, a warning will be printed to the console
+			// This code should never be called, if it is, a warning will be
+			// printed to the console
 			console.log('WARNING: A new object that was already added to the screen was found!');
 			console.log(objectelements);
 			continue;
@@ -65,9 +68,9 @@ function render(level, skip = null) {
 
 	// Removing objects
 	for (let i=0; i<level.removedobjects.length; i++) {
-		if (level.remobedobjects[i] == skip) continue;
+		if (level.removedobjects[i] == skip) continue;
 
-		var removedobj = level.removedobj[i];
+		var removedobj = level.removedobjects[i];
 		var objindex = objectelements.indexOf(removedobj);
 		if (objindex == -1) {
 			console.log("WARNING: Object was already removed!");
@@ -151,18 +154,17 @@ function createWorld(level, replace) {
 
 			chunkElem.appendChild(tileElem);
 
-			/* Old shadow code
-			if (tile.isWall) {
-				tileElem.style.zIndex = 3;
-				var shadowElem = document.createElement("img");
-				shadowElem.className = "tileImg tileShadow";
-				shadowElem.src = tilesFolder + "tile_shadow_4x.png";
-
-				shadowElem.style.left = (x-4) + "px";
-				shadowElem.style.top = (y-4) + "px";
-
-				chunkElem.appendChild(shadowElem);
-			} */
+			/*
+			 * Old shadow code if (tile.isWall) { tileElem.style.zIndex = 3; var
+			 * shadowElem = document.createElement("img"); shadowElem.className =
+			 * "tileImg tileShadow"; shadowElem.src = tilesFolder +
+			 * "tile_shadow_4x.png";
+			 * 
+			 * shadowElem.style.left = (x-4) + "px"; shadowElem.style.top =
+			 * (y-4) + "px";
+			 * 
+			 * chunkElem.appendChild(shadowElem); }
+			 */
 
 			if (tile.isWall) {
 				tileElem.style.zIndex = 3;

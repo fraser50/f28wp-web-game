@@ -5,6 +5,7 @@ class GameLevel {
 		this.gameobjects = [];
 		this.newobjects = []; // To allow the server to determine when it needs to send information about a new object to the client, and to allow the client to render new objects
 		this.removedobjects = [];
+		this.toremove = []
 
 		this.objectcounter = 0; // Used to create a unique id for each object, objects created client-side should use this * -1
 
@@ -21,23 +22,27 @@ class GameLevel {
 	update() {
 		for (let i=0; i<this.gameobjects.length; i++) {
 			var obj = this.gameobjects[i];
-			var toremove = [];
+			this.toremove = [];
 			//console.log(obj);
 
 			if (obj.removed) {
-				toremove.push(obj);
+				this.toremove.push(obj);
+				console.log(this.toremove[i]);
 				continue;
 			}
 
 			this.gameobjects[i].update();
 		}
-
-		for (let i=0; i<toremove; i++) {
-			if (this.gameobjects.indexOf(this.toremove[i]) != -1) {
-				this.gameobjects.splice(this.gameobjects.indexOf(i));
-				this.removedobjects.push(this.toremove[i]);
+		
+		if (this.toremove != undefined) {
+			for (var i in this.toremove) {
+				console.log(this.gameobjects);
+				//console.log(this.toremove[i]);
+				if (this.gameobjects.indexOf(this.toremove[i]) != -1) {
+					this.gameobjects.splice(this.gameobjects.indexOf(i));
+					this.removedobjects.push(this.toremove[i]);
+				}
 			}
-
 		}
 
 		// Move all chunks from newChunks to chunks ignoring undefined chunks
@@ -73,6 +78,8 @@ class GameLevel {
 	}
 
 	removeObject(obj) {
+		console.log("!!!!!!")
+		console.log(obj)
 		obj.removed = true;
 	}
 

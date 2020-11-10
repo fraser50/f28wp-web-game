@@ -216,6 +216,7 @@ io.on('connection', (socket) => {
 				player.team = 'red';
 			}	
 		} else {
+			console.log(level.gameobjects)
 			console.log('level ' + level.id + " is full");	//Temp error message for when room is full, this should be changed once we have rooms working properly
 		}
 		
@@ -257,9 +258,11 @@ io.on('connection', (socket) => {
 			if (c.controlledobject.team == 'blue') {			//Need to get levels sorted so there is not only one, this doesn't allow for scalability atm
 				levels[0].blue.pop(c.controlledobject.name);
 				printLog('removed ' + c.name + ' from team 1')
+				printLog(levels[0].blue)
 			} else if (c.controlledobject.team == 'red' && c.present == true){
 				levels[0].red.pop(c.controlledobject.name);
 				printLog('removed ' + c.name + ' from team 2')
+				printLog(levels[0].red)
 			}	
 		}
 
