@@ -34,7 +34,7 @@ class GameLevel {
 			this.gameobjects[i].update();
 		}
 		
-		if (this.toremove != undefined) {
+		if (this.toremove != undefined) {	//This might be ok to remove now, was just for when this didn't work
 			for (var i in this.toremove) {
 				console.log(this.gameobjects);
 				//console.log(this.toremove[i]);
@@ -78,8 +78,6 @@ class GameLevel {
 	}
 
 	removeObject(obj) {
-		console.log("!!!!!!")
-		console.log(obj)
 		obj.removed = true;
 	}
 

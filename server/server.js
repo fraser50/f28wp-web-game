@@ -257,15 +257,20 @@ io.on('connection', (socket) => {
 		if (c.controlledobject != undefined && c.present == true) {	//This checks that the user is not refreshing from the login screen, it also accounts for instances where the user might have logged out then closed the window
 			if (c.controlledobject.team == 'blue') {			//Need to get levels sorted so there is not only one, this doesn't allow for scalability atm
 				levels[0].blue.pop(c.controlledobject.name);
+				level.blue.pop(c.controlledobject.name) //Might not need this
 				printLog('removed ' + c.name + ' from team 1')
 				printLog(levels[0].blue)
 			} else if (c.controlledobject.team == 'red' && c.present == true){
 				levels[0].red.pop(c.controlledobject.name);
+				level.red.pop(c.controlledobject.name) //Might not need this
+
 				printLog('removed ' + c.name + ' from team 2')
 				printLog(levels[0].red)
 			}	
 		}
 
+		levels[0].removeObject(c.controlledobject)
+		
 		delete socket.cli;
 		clientlist.splice(clientlist.indexOf(c), 1);
 
