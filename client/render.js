@@ -4,7 +4,11 @@ elementbuilders = [ // A new function will be placed here for creating the eleme
 		e.id = obj.id;
 		e.style.top = 0;
 		e.style.left = 0;
-		e.src = "client/assets/images/player_up.png";
+		if (obj.team == 'blue') {
+			e.src = "client/assets/images/player_up.png";
+		} else if (obj.team == 'red') {
+			e.src = "client/assets/images/player_red.png";
+		}
 		e.width = zoomLevel;
 		e.height = zoomLevel;
 		return e;

@@ -207,16 +207,16 @@ io.on('connection', (socket) => {
 	socket.on('assignTeam', (data) => {	//This takes in a player and assigns them to a team
 		var level = levels[data.level];		//Takes in level id as sending full level is unnecessarily large 
 		var player = JSON.parse(data.player);	//Transform player back into JSON
-		if (level.gameobjects.length < 6) {		//Checks if  level is full
-			if (level.team1.length <= level.team2.length) {	//Check which team has the least players and assigns client to that team
-				level.team1.push(player);	//Adds client to the team (might want to change this to just id)
-				player.team = 'team1';	//Updates team value of client
+		if (level.gameobjects.length < 7) {		//Checks if  level is full
+			if (level.blue.length <= level.red.length) {	//Check which team has the least players and assigns client to that team
+				level.blue.push(player);	//Adds client to the team (might want to change this to just id)
+				player.team = 'blue';	//Updates team value of client
 			} else {
-				level.team2.push(player);
-				player.team = 'team2';
+				level.red.push(player);
+				player.team = 'red';
 			}	
 		} else {
-			console.log(level + " is full");	//Temp error message for when room is full, this should be changed once we have rooms working properly
+			console.log('level ' + level.id + " is full");	//Temp error message for when room is full, this should be changed once we have rooms working properly
 		}
 		
 //		for (var i in level.gameobjects) {
@@ -227,7 +227,7 @@ io.on('connection', (socket) => {
 		
 		socket.emit('assignedTeam', {"team" : player.team});	//Return the newly assigned player team so the local client can assign it to its player instance
 	})
-	
+		
 	socket.on('playerposupdate', (data) => {
 		var c = socket.cli;
 		if (c.loggedin && c.controlledobject != null) {
@@ -254,11 +254,11 @@ io.on('connection', (socket) => {
 		}
 		
 		if (c.controlledobject != undefined && c.present == true) {	//This checks that the user is not refreshing from the login screen, it also accounts for instances where the user might have logged out then closed the window
-			if (c.controlledobject.team == 'team1') {			//Need to get levels sorted so there is not only one, this doesn't allow for scalability atm
-				levels[0].team1.pop(c.controlledobject.name);
+			if (c.controlledobject.team == 'blue') {			//Need to get levels sorted so there is not only one, this doesn't allow for scalability atm
+				levels[0].blue.pop(c.controlledobject.name);
 				printLog('removed ' + c.name + ' from team 1')
-			} else if (c.controlledobject.team == 'team2' && c.present == true){
-				levels[0].team2.pop(c.controlledobject.name);
+			} else if (c.controlledobject.team == 'red' && c.present == true){
+				levels[0].red.pop(c.controlledobject.name);
 				printLog('removed ' + c.name + ' from team 2')
 			}	
 		}
@@ -537,11 +537,11 @@ function getUserStats(stats, socket) {
 function signOut(client) {	//This removes client from their team, sends out emit package to tell all other clients that they have signed out and should remove the player from the screen
 	printLog("sign out " + client.name);
 	
-	if (client.controlledobject.team == 'team1') {			//Need to get levels sorted so there is not only one, this doesn't allow for scalability atm
-		levels[0].team1.pop(client.controlledobject.name);
+	if (client.controlledobject.team == 'blue') {			//Need to get levels sorted so there is not only one, this doesn't allow for scalability atm
+		levels[0].blue.pop(client.controlledobject.name);
 		printLog('removed ' + client.name + ' from team 1')
 	} else {
-		levels[0].team2.pop(client.controlledobject.name);
+		levels[0].red.pop(client.controlledobject.name);
 		printLog('removed ' + client.name + ' from team 2')
 	}
 	

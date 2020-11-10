@@ -20,8 +20,8 @@ class GameLevel {
 		this.chunks = {};
 		this.chunkElems = [];
 		
-		this.team1 = [];
-		this.team2 = [];
+		this.blue = [];
+		this.red = [];
 	}
 
 	update() {

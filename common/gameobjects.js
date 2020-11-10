@@ -71,6 +71,11 @@ class Player extends GameObject {
 		var player = document.getElementById(this.id);
 		objects.removeChild(player);
 	}
+	
+	updatePlayerImg(image) {
+		var filepath = 'client/assets/images/'
+		this.elem.src = filepath + image;
+	}
 
 	update() {
 		if (this.elem) {

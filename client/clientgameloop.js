@@ -77,6 +77,11 @@ function assignTeam(level) {	//This takes in level and sends the player of for t
 		socket.on('assignedTeam', (data) => {	//Look for server response
 			socket.player.team = data.team;	// Set local client instance to the returned team value
 			console.log(socket.player)
+			if (socket.player.team == 'red') {
+				socket.player.updatePlayerImg("player_red.png");
+			} else {
+				socket.player.updatePlayerImg("player_up.png");
+			}
 			socket.removeListener('assignedTeam');	// This is just for security (did work earlier, might be redundant now)
 		});
 	};
