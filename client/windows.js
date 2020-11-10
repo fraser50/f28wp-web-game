@@ -153,6 +153,7 @@ function generateUserWindow() {
 		chatSendButton.disable();
 		chatInput.removeMovementDisable();
 		
+		location.reload();
 	}));
 	
 	userWindow.addObject(new UiButton("closeUserWindow", 20, 120, "tr", 125, 60, "Close", "20px sans-serif", () => {

@@ -105,8 +105,12 @@ window.addEventListener("load", () => {
 	});*/
 	socket.on('removeplayer', (data) => {
 		var removeplayer = currentLevel.findObject(data.id);
-		currentLevel.removeObject(removeplayer);
-		removeplayer.removeOtherPlayer();
+		if (removeplayer != null) {
+			console.log(removeplayer);
+			currentLevel.removeObject(removeplayer);
+			console.log(currentLevel.gameobjects);
+			//removeplayer.removeOtherPlayer();	this was here as a temp solution as objectRemove wasn't working. It is now
+		}
 	});
 	
 	socket.on('posupdate', (data) => {

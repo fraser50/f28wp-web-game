@@ -19,6 +19,7 @@ class GameLevel {
 		this.newChunks = [];
 		this.chunks = {};
 		this.chunkElems = [];
+		this.toremove = [];
 		
 		this.blue = [];
 		this.red = [];
@@ -27,17 +28,19 @@ class GameLevel {
 	update() {
 		for (let i=0; i<this.gameobjects.length; i++) {
 			var obj = this.gameobjects[i];
-			var toremove = [];
-
-			if (obj.removed) {
-				toremove.push(obj);
-				continue;
+			this.toremove = [];
+			
+			if (obj != null) {
+				if (obj.removed) {
+					this.toremove.push(obj);
+					continue;
+				}
 			}
 
 			this.gameobjects[i].update();
 		}
 
-		for (let i=0; i<toremove; i++) {
+		for (var i in this.toremove) {
 			if (this.gameobjects.indexOf(this.toremove[i]) != -1) {
 				this.gameobjects.splice(this.gameobjects.indexOf(i));
 				this.removedobjects.push(this.toremove[i]);
