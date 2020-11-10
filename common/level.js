@@ -24,12 +24,14 @@ class GameLevel {
 			var obj = this.gameobjects[i];
 			this.toremove = [];
 			//console.log(obj);
-
-			if (obj.removed) {
-				this.toremove.push(obj);
-				console.log(this.toremove[i]);
-				continue;
+			
+			if (obj != null) {
+				if (obj.removed) {
+					this.toremove.push(obj);
+					continue;
+				}
 			}
+
 
 			this.gameobjects[i].update();
 		}
