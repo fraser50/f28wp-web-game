@@ -195,18 +195,41 @@ function getTileAt(level, x, y) {
 	// If the chunk does not exist, the function will return undefined
 }
 
-exports.toRadians = toRadians;
-exports.toDegrees = toDegrees;
-exports.Position = Position;
-exports.Vector = Vector;
-exports.genChunkId = genChunkId;
-exports.fromChunkId = fromChunkId;
-exports.genTileImageId = genTileImageId;
-exports.getBackgroundColorRGBA = getBackgroundColorRGBA;
-exports.setBackgroundColorRGBA = setBackgroundColorRGBA;
-exports.genGuestName = genGuestName;
-exports.isValidUsername = isValidUsername;
-exports.isValidPassword = isValidPassword;
-exports.removeCommentsFromJSON = removeCommentsFromJSON;
-exports.roundNumber = roundNumber;
-exports.getTileAt = getTileAt;
+function serverExports() {
+	exports.toRadians = toRadians;
+	exports.toDegrees = toDegrees;
+	exports.Position = Position;
+	exports.Vector = Vector;
+	exports.genChunkId = genChunkId;
+	exports.fromChunkId = fromChunkId;
+	exports.genTileImageId = genTileImageId;
+	exports.getBackgroundColorRGBA = getBackgroundColorRGBA;
+	exports.setBackgroundColorRGBA = setBackgroundColorRGBA;
+	exports.genGuestName = genGuestName;
+	exports.isValidUsername = isValidUsername;
+	exports.isValidPassword = isValidPassword;
+	exports.removeCommentsFromJSON = removeCommentsFromJSON;
+	exports.roundNumber = roundNumber;
+	exports.getTileAt = getTileAt;
+}
+
+function clientExports() {
+	util = {};
+	util.toRadians = toRadians;
+	util.toDegrees = toDegrees;
+	util.Position = Position;
+	util.Vector = Vector;
+	util.genChunkId = genChunkId;
+	util.fromChunkId = fromChunkId;
+	util.genTileImageId = genTileImageId;
+	util.getBackgroundColorRGBA = getBackgroundColorRGBA;
+	util.setBackgroundColorRGBA = setBackgroundColorRGBA;
+	util.genGuestName = genGuestName;
+	util.isValidUsername = isValidUsername;
+	util.isValidPassword = isValidPassword;
+	util.removeCommentsFromJSON = removeCommentsFromJSON;
+	util.roundNumber = roundNumber;
+	util.getTileAt = getTileAt;
+}
+
+serverExports();

@@ -29,6 +29,7 @@ const BCRYPT_ROUNDS = 10; // Changing this will INVALIDATE everyone's passwords
 //eval(fs.readFileSync('../common/gameobjects.js') + ''); // Probably broken
 
 var util = require('../common/util.js');
+
 var gameobjects = require('../common/gameobjects.js');
 var level = require('./server_level.js');
 

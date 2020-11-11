@@ -1,6 +1,10 @@
+var util_tmp = require('../common/util.js');
+if (util_tmp != null) util = util_tmp;
+
 class GameLevel {
 	constructor(id) {
 		this.id = id;
+		this.playercount = 0;
 
 		this.gameobjects = [];
 		this.newobjects = []; // To allow the server to determine when it needs to send information about a new object to the client, and to allow the client to render new objects
@@ -209,4 +213,13 @@ class GameLevel {
 
 		return null;
 	}
+}
+
+function serverExports() {
+	exports.GameLevel = GameLevel;
+}
+
+function clientExports() {
+	level = {};
+	level.GameLevel = GameLevel;
 }

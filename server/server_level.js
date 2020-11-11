@@ -7,6 +7,7 @@ var fs = require('fs');
 class GameLevel {
 	constructor(id) {
 		this.id = id;
+		this.playercount = 0;
 
 		this.gameobjects = [];
 		this.newobjects = []; // To allow the server to determine when it needs to send information about a new object to the client, and to allow the client to render new objects
@@ -21,7 +22,6 @@ class GameLevel {
 		this.chunkElems = [];
 		this.toremove = [];
 		
-		this.playercount = 0;
 		this.blue = [];
 		this.red = [];
 		

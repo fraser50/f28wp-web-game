@@ -21,7 +21,7 @@ class GameObject {
 		return {
 			"x" : this.pos.x,
 			"y" : this.pos.y,
-			"rot" : this.rotation,
+			//"rot" : this.rotation,
 
 		}
 	}
@@ -92,8 +92,11 @@ class Player extends GameObject {
 	}
 
 	toJSON() {
-		var jobj = super.toJSON();
-		jobj["team"] = 0; // TODO: Fix this
+		return {
+		pos:this.pos,
+		rot:this.rotation,
+		vel: this.velocity,
+		id: this.id};
 	}
 }
 
