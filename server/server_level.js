@@ -21,6 +21,7 @@ class GameLevel {
 		this.chunkElems = [];
 		this.toremove = [];
 		
+		this.playercount = 0;
 		this.blue = [];
 		this.red = [];
 		
