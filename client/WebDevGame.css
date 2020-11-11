@@ -29,7 +29,9 @@ div#gamearea div#world {
 	line-height: 0;
 }
 div#gamearea div#world div {
-	position: absolute;
+	/*position: absolute;*/
+	position: relative;
+	display: inline;
 }
 div#gamearea div#world img {
 	/*display: inline-block;*/

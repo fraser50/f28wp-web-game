@@ -150,8 +150,13 @@ class GameLevel {
 	render(player) {
 		if (this.chunkElems == [] || SERVER) return;
 
-		var pos = player.pos;
+		var wx = -player.pos[0]*zoomLevel + world.clientWidth/2;
+		var wy = -player.pos[1]*zoomLevel + world.clientHeight/2;
 
+		world.style.left = wx + "px";
+		world.style.top = wy + "px";
+
+		/* Old rendering code (positions all chunks individually)
 		for (var i=0; i<this.chunkElems.length; i++) {
 			var cPos = fromChunkId(this.chunkElems[i].id);
 
@@ -166,6 +171,7 @@ class GameLevel {
 			this.chunkElems[i].style.left = sPos.x + "px";
 			this.chunkElems[i].style.top = sPos.y + "px";
 		}
+		*/
 	}
 
 	// Load a world from a JSON file (server only)
