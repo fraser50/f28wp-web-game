@@ -179,8 +179,8 @@ class GameLevel {
 	}
 
 	// Load a world from a JSON file (server only)
-	loadFromFile(JSONFile) {
-		if (CLIENT) return;
+	loadFromFile(JSONFile, fs) {
+		//if (CLIENT) return; <-- Might want to reactivate this later
 
 		var data = JSON.parse(util.removeCommentsFromJSON(fs.readFileSync(JSONFile)));
 
@@ -223,3 +223,5 @@ function clientExports() {
 	level = {};
 	level.GameLevel = GameLevel;
 }
+
+serverExports();

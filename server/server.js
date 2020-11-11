@@ -31,7 +31,7 @@ const BCRYPT_ROUNDS = 10; // Changing this will INVALIDATE everyone's passwords
 var util = require('../common/util.js');
 
 var gameobjects = require('../common/gameobjects.js');
-var level = require('./server_level.js');
+var level = require('../common/level.js');
 
 // Import the block types from JSON file
 var blockTypes = JSON.parse(util.removeCommentsFromJSON(fs.readFileSync("blocktypes.json")));
@@ -52,7 +52,7 @@ var levels = {};
 levels[0] = new level.GameLevel(0);
 
 // Load a test world
-levels[0].loadFromFile("world_1_with_bases.json");
+levels[0].loadFromFile("world_1_with_bases.json", fs);
 levels[0].update();
 
 // Store all the logged in users to use for security
