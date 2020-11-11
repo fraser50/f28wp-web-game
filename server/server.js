@@ -51,7 +51,7 @@ var levels = {};
 levels[0] = new level.GameLevel(0);
 
 // Load a test world
-levels[0].loadFromFile("world_1.json");
+levels[0].loadFromFile("world_1_with_bases.json");
 levels[0].update();
 
 // Store all the logged in users to use for security

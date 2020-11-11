@@ -166,5 +166,30 @@
 	"101": {
 		"src": "dev_orange.png", 
 		"name": "Dev Orange"
+	},
+
+
+	//Base colours
+	//Blue team
+	"110": {
+		"src": "bluebase_light_tile.png",
+		"name": "Bluebase Light"
+	},
+
+	"111": {
+		"src": "bluebase_dark_tile.png",
+		"name": "Bluebase Dark"
+	},
+	
+	//Red team
+	"115": {
+		"src": "redbase_light_tile.png",
+		"name": "Redbase Light"
+	},
+
+	"116": {
+		"src": "redbase_dark_tile.png",
+		"name": "Redbase dark"
 	}
+
 }
