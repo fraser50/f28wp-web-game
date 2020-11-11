@@ -210,7 +210,7 @@ io.on('connection', (socket) => {
 		socket.cli.levelId = data.level;
 		var player = JSON.parse(data.player);	//Transform player back into JSON
 
-		if (level.gameobjects.length < 7) {		//Checks if  level is full
+		if (level.playercount < 7) {		//Checks if  level is full
 			if (level.blue.length <= level.red.length) {	//Check which team has the least players and assigns client to that team
 				level.blue.push(player);	//Adds client to the team (might want to change this to just id)
 				player.team = 'blue';	//Updates team value of client
@@ -222,6 +222,7 @@ io.on('connection', (socket) => {
 				player.pos = level.redspawnpos[level.redspawn]	// Gives the client a spawn point
 				level.redspawn++;
 			}	
+			level.playercount++; // Increase the player count by 1.
 		} else {
 			console.log(level.gameobjects)
 			console.log('level ' + level.id + " is full");	//Temp error message for when room is full, this should be changed once we have rooms working properly
@@ -271,7 +272,9 @@ io.on('connection', (socket) => {
 				level.red.pop(c.controlledobject.name);
 				level.redspawn--;
 				printLog('removed ' + c.name + ' from team 2')
-			}	
+			}
+			level.playercount--; // Decrease the player count by 1
+			printLog("There are now " + level.playercount + " players in the game.");
 		}
 		if (c.controlledobject != null) {
 			levels[0].removeObject(c.controlledobject)
