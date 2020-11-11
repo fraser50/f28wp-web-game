@@ -23,6 +23,9 @@ class GameLevel {
 		
 		this.blue = [];
 		this.red = [];
+		
+		this.bluespawn = 0;	//This sets a spawn index counter to determine which spawn point the user should spawn at
+		this.redspawn = 0;
 	}
 
 	update() {
@@ -169,15 +172,22 @@ class GameLevel {
 
 		var data = JSON.parse(util.removeCommentsFromJSON(fs.readFileSync(JSONFile)));
 
-		this.spawnpos = data.spawnpos;
+		this.spawnpos = data.spawnpos[0];	//This sets default spawn
+		this.bluespawnpos = [data.spawnpos[0], data.spawnpos[1], data.spawnpos[2]];	//This sets spawn 3 spawn points for both blue and red teams
+		this.redspawnpos = [data.spawnpos[3], data.spawnpos[4], data.spawnpos[5]];
 
 		for (var c in data.chunks)
 			this.addChunk(c, data.chunks[c]);
 	}
 
 	// Random extra thing only used by server
-	setInfo(data) {
-		this.spawnpos = data.spawnpos;
+	setInfo(data) {	//Don't know what this is actually used for, leaving the stuff here just in case
+		this.spawnpos = data.spawnpos[0];
+//		this.bluespawnpos = [data.spawnpos[0], data.spawnpos[1], data.spawnpos[2]];
+//		this.redspawnpos = [data.spawnpos[3], data.spawnpos[4], data.spawnpos[5]];
+//		console.log(this.spawnpos)
+//		console.log(this.bluespawnpos);
+//		console.log(this.redspawnpos);		
 		// There will probably be a lot more here
 	}
 

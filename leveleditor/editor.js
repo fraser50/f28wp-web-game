@@ -154,7 +154,7 @@ window.addEventListener("load", () => {
 		worldPropertiesWindow.show();
 
 		worldPropertiesNameInput.updateValue(worldProperties.name);
-		worldPropertiesSpawnInput.updateValue(worldProperties.spawnpos[0] + ", " + worldProperties.spawnpos[1]);
+		worldPropertiesSpawnInput.updateValue(worldProperties.spawnpos);
 	});
 	worldPropertiesButton.disable();
 	menuWindow.addObject(worldPropertiesButton);
@@ -194,7 +194,11 @@ window.addEventListener("load", () => {
 	worldPropertiesSpawnInput.addEventListener("change", (e) => {
 		var arr = worldPropertiesSpawnInput.getValue().split(",");
 
-		worldProperties.spawnpos = [parseFloat(arr[0]), parseFloat(arr[1])];
+		for (var i in arr) {
+			var temp = arr[i].split(" ");
+			worldProperties.spawnpos[i] = [parseFloat(temp[0]), parseFloat(temp[1])]
+		}
+		console.log(worldProperties.spawnpos)
 	});
 
 	fileWindow = new UiWindow("fileWindow", 0, 0, "cc", 250, 58);

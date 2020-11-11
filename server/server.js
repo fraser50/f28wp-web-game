@@ -51,7 +51,7 @@ var levels = {};
 levels[0] = new level.GameLevel(0);
 
 // Load a test world
-levels[0].loadFromFile("testworld.json");
+levels[0].loadFromFile("world_1.json");
 levels[0].update();
 
 // Store all the logged in users to use for security
@@ -76,6 +76,7 @@ class Client { // This class along with the password/username validation code (l
 		this.id = null; // The user is a guest if id is null and this.loggedin is true
 		this.loggedin = false; // When a client first connects to the server, it isn't logged in
 		this.controlledobject = null;
+		this.levelId = null; //This stores the id of client, should be given when client is assigned a team
 
 	}
 
@@ -206,14 +207,20 @@ io.on('connection', (socket) => {
 
 	socket.on('assignTeam', (data) => {	//This takes in a player and assigns them to a team
 		var level = levels[data.level];		//Takes in level id as sending full level is unnecessarily large 
+		socket.cli.levelId = data.level;
 		var player = JSON.parse(data.player);	//Transform player back into JSON
+
 		if (level.gameobjects.length < 7) {		//Checks if  level is full
 			if (level.blue.length <= level.red.length) {	//Check which team has the least players and assigns client to that team
 				level.blue.push(player);	//Adds client to the team (might want to change this to just id)
 				player.team = 'blue';	//Updates team value of client
+				player.pos = level.bluespawnpos[level.bluespawn];	// Gives the client a spawn point
+				level.bluespawn++;
 			} else {
 				level.red.push(player);
 				player.team = 'red';
+				player.pos = level.redspawnpos[level.redspawn]	// Gives the client a spawn point
+				level.redspawn++;
 			}	
 		} else {
 			console.log(level.gameobjects)
@@ -226,7 +233,7 @@ io.on('connection', (socket) => {
 		
 		printLog(player.id + ' joined ' + player.team);
 		
-		socket.emit('assignedTeam', {"team" : player.team});	//Return the newly assigned player team so the local client can assign it to its player instance
+		socket.emit('assignedTeam', {"team" : player.team, "pos" : player.pos});	//Return the newly assigned player team so the local client can assign it to its player instance
 	})
 		
 	socket.on('playerposupdate', (data) => {
@@ -245,6 +252,7 @@ io.on('connection', (socket) => {
 	socket.on('disconnect', () => {
 		var c = socket.cli;
 		c.present = false;
+		var level = levels[c.levelId];	// This makes sure the things done below are to this clients level
 		
 		for (k in clientlist) {
 			rClient = clientlist[k];
@@ -255,17 +263,14 @@ io.on('connection', (socket) => {
 		}
 		
 		if (c.controlledobject != undefined && c.present == true) {	//This checks that the user is not refreshing from the login screen, it also accounts for instances where the user might have logged out then closed the window
-			if (c.controlledobject.team == 'blue') {			//Need to get levels sorted so there is not only one, this doesn't allow for scalability atm
-				levels[0].blue.pop(c.controlledobject.name);
-				//level.blue.pop(c.controlledobject.name) //Might not need this I've kept these in as comments so if there is any problems in the future with teams, these might help. Although at the min, they cause some errors when a player closes down their window
+			if (c.controlledobject.team == 'blue') {
+				level.blue.pop(c.controlledobject.name); // Remove player from team on disconnect
+				level.bluespawn--;	// Decrement the counter for team spawns
 				printLog('removed ' + c.name + ' from team 1')
-				printLog(levels[0].blue)
 			} else if (c.controlledobject.team == 'red' && c.present == true){
-				levels[0].red.pop(c.controlledobject.name);
-				//level.red.pop(c.controlledobject.name) //Might not need this
-
+				level.red.pop(c.controlledobject.name);
+				level.redspawn--;
 				printLog('removed ' + c.name + ' from team 2')
-				printLog(levels[0].red)
 			}	
 		}
 		if (c.controlledobject != null) {
@@ -545,12 +550,15 @@ function getUserStats(stats, socket) {
 
 function signOut(client) {	//This removes client from their team, sends out emit package to tell all other clients that they have signed out and should remove the player from the screen
 	printLog("sign out " + client.name);
+	var level = levels[client.levelId];
 	
 	if (client.controlledobject.team == 'blue') {			//Need to get levels sorted so there is not only one, this doesn't allow for scalability atm
-		levels[0].blue.pop(client.controlledobject.name);
+		level.blue.pop(client.controlledobject.name);	// Remove player from team on sign out
+		level.bluespawn--;	// Decrement the team spawn counter
 		printLog('removed ' + client.name + ' from team 1')
 	} else {
-		levels[0].red.pop(client.controlledobject.name);
+		level.red.pop(client.controlledobject.name);
+		level.redspawn--;
 		printLog('removed ' + client.name + ' from team 2')
 	}
 	

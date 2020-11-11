@@ -17,6 +17,9 @@ class GameLevel {
 		
 		this.blue = [];
 		this.red = [];
+		
+		this.bluespawn = 0;
+		this.redspawn = 0;
 	}
 
 	update() {
@@ -171,7 +174,9 @@ class GameLevel {
 
 		var data = JSON.parse(util.removeCommentsFromJSON(fs.readFileSync(JSONFile)));
 
-		this.spawnpos = data.spawnpos;
+		this.spawnpos = data.spawnpos[0];	//This sets default spawn
+		this.bluespawnpos = [data.spawnpos[0], data.spawnpos[1], data.spawnpos[2]]; // This sets the spawn points for each team, the spawns should be listed as 3 for blue then 3 for red
+		this.redspawnpos = [data.spawnpos[3], data.spawnpos[4], data.spawnpos[5]];
 
 		for (var c in data.chunks)
 			this.addChunk(c, data.chunks[c]);
@@ -179,7 +184,12 @@ class GameLevel {
 
 	// Random extra thing only used by server
 	setInfo(data) {
-		this.spawnpos = data.spawnpos;
+		this.spawnpos = data.spawnpos[0];
+//		this.bluespawnpos = [data.spawnpos[0], data.spawnpos[1], data.spawnpos[2]];
+//		this.redspawnpos = [data.spawnpos[3], data.spawnpos[4], data.spawnpos[5]];
+//		console.log(this.spawnpos)
+//		console.log(this.bluespawnpos);
+//		console.log(this.redspawnpos);
 		// There will probably be a lot more here
 	}
 

@@ -82,6 +82,7 @@ function assignTeam(level) {	//This takes in level and sends the player of for t
 			} else {
 				socket.player.updatePlayerImg("player_up.png");
 			}
+			socket.player.pos = data.pos;	// This updates the players position with assigned spawn point
 			socket.removeListener('assignedTeam');	// This is just for security (did work earlier, might be redundant now)
 		});
 	};
@@ -109,7 +110,6 @@ window.addEventListener("load", () => {
 			console.log(removeplayer);
 			currentLevel.removeObject(removeplayer);
 			console.log(currentLevel.gameobjects);
-			//removeplayer.removeOtherPlayer();	this was here as a temp solution as objectRemove wasn't working. It is now
 		}
 	});
 	
