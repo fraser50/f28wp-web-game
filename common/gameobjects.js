@@ -20,7 +20,9 @@ class GameObject {
 	toJSON() {
 		return {
 			"x" : this.pos.x,
-			"y" : this.pos.y
+			"y" : this.pos.y,
+			"rot" : this.rotation,
+
 		}
 	}
 }
@@ -40,7 +42,7 @@ class Player extends GameObject {
 		this.team = team;
 	}
 	
-	addToPage() {
+	addToPage() { // Consider moving this to client
 		if (objects.querySelector("#"+this.id) != undefined)
 			objects.removeChild(ui.querySelector("#"+this.id))
 
@@ -90,13 +92,8 @@ class Player extends GameObject {
 	}
 
 	toJSON() {
-		return {
-			pos: this.pos,
-			rot: this.rotation,
-			vel: this.velocity,
-
-			id: this.id
-		}
+		var jobj = super.toJSON();
+		jobj["team"] = 0; // TODO: Fix this
 	}
 }
 
