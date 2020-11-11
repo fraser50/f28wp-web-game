@@ -142,6 +142,11 @@ window.addEventListener("load", () => {
 
 	});
 	
+	socket.on('playerChangeImg', (data) => {		// This is for updating player images when another player has their image changed
+		var obj = currentLevel.findObject(data.playerId);	// Get your instance of this player
+		if (obj != null) 
+			currentLevel.updatePlayerImg(obj, data.image);		//update this client for the changed player's image
+	});
 
 });
 

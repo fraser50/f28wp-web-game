@@ -91,13 +91,25 @@ function doMovement(player, lastFrametime) {
 		playerVelXY.x = 0;
 		playerVelXY.y = 0;
 	}
-	if (tile != undefined) {		// This makes sure an error doesn't throw as there hasn't been a frame before this
-		if (tile.isRedbase && player.team == 'red') // Checks to see if a player from redteam is standing on redbase, add in future another if to check if player is holding ball
-			console.log("standing on your base (red)");	// Change in future to change player image back to the default red one
-														// add a point to the player
-														// add a point to the team
-		if (tile.isBluebase && player.team == 'blue') 
-			console.log("standing on your base (blue)");
+	if (tile != undefined && player.holdingBall) {		// This makes sure an error doesn't throw as there hasn't been a frame before this
+		if (tile.isRedbase && player.team == 'red') { // Checks to see if a player from redteam is standing on redbase
+			console.log("adding point for red");	// Change player image back to default red
+			var image = "player_red.png";
+			player.updatePlayerImg(image);
+			socket.emit('playerChangeImg', {"playerId" : player.id, "image" : image})		// add a point to the player
+			player.holdingBall = false;
+			player.points++;
+			currentLevel.redteamscore++; // Should try to send this value out to server after it is increased, otherwise all other clients view it as 0
+		}
+		if (tile.isBluebase && player.team == 'blue') {	//Change this back after testing 
+			console.log("adding point for blue");
+			var image = "player_up.png";		
+			player.updatePlayerImg(image);	//Updates local player image
+			socket.emit('playerChangeImg', {"playerId" : player.id, "image" : image}) //Sends info to server to tell other clients player has changed image
+			player.holdingBall = false;	// Set holding ball to false as user has desposited ball in base
+			player.points++;	// Increment player points
+			currentLevel.blueteamscore++; // Should try to send this value out to server after it is increased, otherwise all other clients view it as 0. Use similar format as playerChangeImg
+		}
 	}
 
 	// Limit the velocity

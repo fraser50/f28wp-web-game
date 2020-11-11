@@ -1,20 +1,23 @@
 elementbuilders = [ // A new function will be placed here for creating the
-					// elements for different kinds of objects in the game
-	[Player, function(obj, isGuest) {
-		var e = document.createElement("img");
-		e.id = obj.id;
-		e.style.top = 0;
-		e.style.left = 0;
-		if (obj.team == 'blue') {
-			e.src = "client/assets/images/player_up.png";
-		} else if (obj.team == 'red') {
-			e.src = "client/assets/images/player_red.png";
-		}
+     [Player, function(obj, isGuest, image) {	// Takes image filename for when it has to be updated
+     	var e = document.createElement("img");
+     	e.id = obj.id;
+     	e.style.top = 0;
+     	e.style.left = 0;
+     	var imgFilepath = 'client/assets/images/';
+        if (!image) {	// While the default image is still active (generally just after spawn)
+        	if (obj.team == 'blue') {
+        		e.src = imgFilepath + "player_up.png";
+        	} else if (obj.team == 'red') {
+            	e.src = imgFilepath + "player_red.png";
+            }
+        } else {
+        	e.src = imgFilepath + image;
+        }
 		e.width = zoomLevel;
 		e.height = zoomLevel;
 		return e;
 	}],
-
 	[Point, function(obj) {
 		var e = document.createElement("img");
 
@@ -58,7 +61,7 @@ function render(level, skip = null) {
 
 		for (let j=0; j<elementbuilders.length; j++) {
 			if (newobj instanceof elementbuilders[j][0]) {
-				newelement = elementbuilders[j][1](newobj, newobj.isGuest);
+				newelement = elementbuilders[j][1](newobj, newobj.isGuest, newobj.image);
 				setElementPosition(newelement, newobj.pos);
 				objects.appendChild(newelement);
 				console.log(newobj);

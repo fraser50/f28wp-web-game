@@ -19,11 +19,14 @@ class GameLevel {
 		this.chunks = {};
 		this.chunkElems = [];
 		
-		this.blue = [];
+		this.blue = [];		//Could maybe refactor the teams stuff into a class later on
 		this.red = [];
 		
 		this.bluespawn = 0;
 		this.redspawn = 0;
+		
+		this.blueteamscore = 0;	// Keeps track of team scores for this level
+		this.redteamscore = 0;
 	}
 
 	update() {
@@ -88,6 +91,13 @@ class GameLevel {
 
 	removeObject(obj) {
 		obj.removed = true;
+	}
+	
+	updatePlayerImg(obj, image) {	// Remove player image when it has to be updated and add another of the same instance in but with the new image file name
+		var tempObj = obj;
+		tempObj.image = image;
+		this.removeObject(obj);
+		this.addObject(tempObj);
 	}
 
 

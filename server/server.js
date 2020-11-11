@@ -236,7 +236,15 @@ io.on('connection', (socket) => {
 		printLog(player.id + ' joined ' + player.team);
 		
 		socket.emit('assignedTeam', {"team" : player.team, "pos" : player.pos});	//Return the newly assigned player team so the local client can assign it to its player instance
-	})
+	});
+	
+	socket.on('playerChangeImg', (data) => {	// Listens for when a client changes their image and send emit with details to all other clients. Might need to adapt this for multiple levels as it sends it to ALL clients. Probably an emit change to fix this
+		for (k in clientlist) {
+			rClient = clientlist[k];
+			rClient.socket.emit('playerChangeImg', {"playerId": data.playerId, "image" : data.image}); 
+		}
+		socket.emit()
+	});
 		
 	socket.on('playerposupdate', (data) => {
 		var c = socket.cli;

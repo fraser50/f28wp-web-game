@@ -28,7 +28,7 @@ class GameObject {
 }
 
 class Player extends GameObject {
-	constructor(pos, rotation, level, velocity, id, isGuest, team) {
+	constructor(pos, rotation, level, velocity, id, isGuest, team, image) {
 		super(pos, rotation, level);
 		//this.id = socket.id;
 		if (!this.id) {
@@ -40,6 +40,8 @@ class Player extends GameObject {
 		this.zPos = 5;
 		this.isGuest = isGuest;
 		this.team = team;
+		this.holdingBall = false;	// This is to track whether player currently has a ball
+		this.image = image;
 	}
 	
 	addToPage() { // Consider moving this to client
@@ -69,7 +71,7 @@ class Player extends GameObject {
 		loginWindow.show();
 	}
 	
-	removeOtherPlayer() {
+	removeOtherPlayer() {	//THIS MIGHT BE USELESS NOW
 		var player = document.getElementById(this.id);
 		objects.removeChild(player);
 	}
@@ -77,6 +79,7 @@ class Player extends GameObject {
 	updatePlayerImg(image) {
 		var filepath = 'client/assets/images/'
 		this.elem.src = filepath + image;
+		this.image = image;	// Maybe have to remove this if we struggle changing player image multiple times
 	}
 
 	update() {
