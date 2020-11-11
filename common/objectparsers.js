@@ -1,11 +1,11 @@
 gameobjectgenerators = [
-    [Player, function(jobj, level) {
-        return new Player(new Position(jobj["x"], jobj["y"]), 0, level, new Vector(0, 0), 0);
+    [gameobjects.Player, function(jobj, level) {
+        return new gameobjects.Player(new util.Position(jobj["x"], jobj["y"]), 0, level, new util.Vector(0, 0), 0);
 
     }],
 
-    [Point, function(jobj, level) {
-        return new Point(new Position(jobj["x"], jobj["y"]), 0, level);
+    [gameobjects.Point, function(jobj, level) {
+        return new gameobjects.Point(new util.Position(jobj["x"], jobj["y"]), 0, level);
     }]
 ]
 
