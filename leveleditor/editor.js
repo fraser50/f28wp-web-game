@@ -294,6 +294,12 @@ function renderWorld() {
 
 			if (chunk[t].isWall)
 				tileElem.className = "tileWall";
+			
+			if (chunk[t].isBluebase)		//Nothing really done with these two yet (just here in case it is necessary probably isn't though)
+				tileElem.className = "bluebase";
+			
+			if (chunk[t].isRedbase)
+				tileElem.className = "redbase"
 
 			chunkElem.appendChild(tileElem);
 		}
@@ -384,6 +390,13 @@ function setTileAt(x, y, tileId, isWall) {
 	chunk[t] = {id:tileId};
 	if (isWall)
 		chunk[t].isWall = true;
+	
+	if (tileId == 110 || tileId == 111) 		// Checks to see if tileId is one of the ones that is for the bluebase, will need to update if statement if more get added
+		chunk[t].isBluebase = true;
+	
+	if (tileId == 115 || tileId == 116) 		// Checks to see if tileId is one of the ones that is for the redbase, will need to update if statement if more get added
+		chunk[t].isRedbase = true;
+	
 }
 
 function initNewChunk(cx, cy) {

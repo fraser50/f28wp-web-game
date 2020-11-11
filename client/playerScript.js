@@ -91,6 +91,14 @@ function doMovement(player, lastFrametime) {
 		playerVelXY.x = 0;
 		playerVelXY.y = 0;
 	}
+	if (tile != undefined) {		// This makes sure an error doesn't throw as there hasn't been a frame before this
+		if (tile.isRedbase && player.team == 'red') // Checks to see if a player from redteam is standing on redbase, add in future another if to check if player is holding ball
+			console.log("standing on your base (red)");	// Change in future to change player image back to the default red one
+														// add a point to the player
+														// add a point to the team
+		if (tile.isBluebase && player.team == 'blue') 
+			console.log("standing on your base (blue)");
+	}
 
 	// Limit the velocity
 	var total = Math.sqrt(playerVelXY.x**2 + playerVelXY.y**2);
