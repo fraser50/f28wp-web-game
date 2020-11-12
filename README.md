@@ -25,4 +25,8 @@ Controls:
 
 To place a tile, a type must be selected from the list on the left.
 
-For the world to function properly, the spawn points must be set in the World Properties window in the form `(x y),(x y),(x y),(x y),(x y),(x y)` where the first 3 sets of coordinates are for the blue team and the last 3 are for the red team.
+For the world to function properly, the spawn points must be set in the World Properties window in the form:
+
+    `(x y),(x y),(x y),(x y),(x y),(x y)`
+
+where the first 3 sets of coordinates are for the blue team and the last 3 are for the red team.
