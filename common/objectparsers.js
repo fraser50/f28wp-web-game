@@ -1,3 +1,9 @@
+var util_tmp = require('../common/util.js');
+if (util_tmp != null) util = util_tmp;
+
+var gameobjects_tmp = require('../common/gameobjects.js');
+if (gameobjects_tmp != null) util = util_tmp;
+
 gameobjectgenerators = [
     [gameobjects.Player, function(jobj, level) {
         return new gameobjects.Player(new util.Position(jobj["x"], jobj["y"]), 0, level, new util.Vector(0, 0), 0);
@@ -34,3 +40,10 @@ function objFromJSON(jsonobj, level) {
     obj.id = jsonobj['id'];
 
 }
+
+function serverExports() {
+    exports.objToJSON = objToJSON;
+    exports.objFromJSON = objFromJSON;
+}
+
+serverExports();

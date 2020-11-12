@@ -1,6 +1,7 @@
 class GameObject {
-	constructor(pos, rotation, velocity) {
+	constructor(pos, rotation, velocity, level=undefined) {
 		this.id = undefined; // This will be populated when added to a level
+		this.level = level;
 
 		this.pos = pos;
 		this.rotation = rotation;
@@ -29,7 +30,7 @@ class GameObject {
 
 class Player extends GameObject {
 	constructor(pos, rotation, level, velocity, id, isGuest, team, image) {
-		super(pos, rotation, level);
+		super(pos, rotation, velocity, level);
 		//this.id = socket.id;
 		if (!this.id) {
 			this.id = id;
@@ -105,7 +106,7 @@ class Player extends GameObject {
 
 class Point extends GameObject {
 	constructor(pos, rotation, level) {
-		super(pos, 0, 0);
+		super(pos, rotation, 0, level);
 	}
 }
 
@@ -117,6 +118,20 @@ class BallSpawnPoint extends GameObject {
 	}
 }
 
-exports.GameObject = GameObject;
-exports.Player = Player;
-exports.Point = Point;
+function serverExports() {
+	exports.GameObject = GameObject;
+	exports.Player = Player;
+	exports.Point = Point;
+	exports.BallSpawnPoint = BallSpawnPoint;
+}
+
+function clientExports() {
+	gameobjects = {};
+	gameobjects.GameObject = GameObject;
+	gameobjects.Player = Player;
+	gameobjects.Point = Point;
+	gameobjects.BallSpawnPoint = BallSpawnPoint;
+}
+
+serverExports();
+clientExports();

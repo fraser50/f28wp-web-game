@@ -32,6 +32,7 @@ var util = require('../common/util.js');
 
 var gameobjects = require('../common/gameobjects.js');
 var level = require('../common/level.js');
+var objectparsers = require('../common/objectparsers.js');
 
 // Import the block types from JSON file
 var blockTypes = JSON.parse(util.removeCommentsFromJSON(fs.readFileSync("blocktypes.json")));
@@ -308,11 +309,36 @@ printLog("Server started".green); //Send a log to console to confirm connection
 const FPS = 60;
 
 function loop() {
-	for (var i in levels)
-		levels[i].update();
+	for (var i in levels) {
 
-		for (j in levels[i].gameobjects) {
-			var obj = levels[i].gameobjects[j];
+		var lvl = levels[i];
+
+		lvl.update();
+
+		for (j in lvl.newobjects) {
+			var obj = lvl.newobjects[j];
+
+			var jobj = objectparsers.objToJSON(obj);
+
+			for (var p in clientlist) {
+				var pl = clientlist[p];
+
+				if (pl.controlledobject === obj) {
+					console.log('equal');
+					console.log(pl.controlledobject);
+					console.log(obj);
+					continue;
+				}
+
+				pl.socket.emit('newobject', jobj);
+				console.log('Sent newobject packet');
+			}
+		}
+
+		lvl.newobjects.splice(0, lvl.newobjects.length); // Clear lvl.newobjects
+
+		for (j in lvl.gameobjects) {
+			var obj = lvl.gameobjects[j];
 			//printLog(obj.id);
 			if (obj.pos.changed) {
 				obj.pos.changed = false;
@@ -329,6 +355,7 @@ function loop() {
 				}
 			}
 		}
+	}
 
 	//var playerStates = getPlayerStates();
 
@@ -593,7 +620,7 @@ setInterval(() => {
 
 	if(sec==50) { //Currently set to spawn at 50secs for testing
 		printLog("Adding balls to level");
-		addBallsToLevelFixed;
+		addBallsToLevelFixed(levels[0]);
 	}
 
 	if (sec==0) {
@@ -625,12 +652,12 @@ function addBallsToLevelRandom() {
 */
 
 //Add balls to level at fixed position.
-function addBallsToLevelFixed() {
-	for(i = 0; i < level.gameobjects.length; i++) {
-		if (level.gameobjects[i] instanceof BallSpawnPoint) {
-			let spawnPosition = level.gameobjects[i].getPos;
-			let b = new gameobjects.Point(spawnPosition, 0, level);
-			level.addObject(b);
+function addBallsToLevelFixed(lvl) {
+	for(i = 0; i < lvl.gameobjects.length; i++) {
+		if (lvl.gameobjects[i] instanceof gameobjects.BallSpawnPoint) {
+			let spawnPosition = lvl.gameobjects[i].getPos;
+			let b = new gameobjects.Point(spawnPosition.clone(), 0, lvl);
+			lvl.addObject(b);
 		}
 	}
 }
