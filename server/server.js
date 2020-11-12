@@ -127,7 +127,7 @@ io.on('connection', (socket) => {
 
 		if (!levels[data.level]) {
 			socket.emit('getchunkundef', {'id':util.util.genChunkId(data.x, data.y), 'level':data.level});
-			printLog(("getchunk: " + dataStr + ` chunk ${data.x},${data.y} is undefined`).yellow, "debug");
+			// printLog(("getchunk: " + dataStr + ` chunk ${data.x},${data.y} is undefined`).yellow, "debug");
 			return;
 		}
 
@@ -135,10 +135,10 @@ io.on('connection', (socket) => {
 
 		if (tiles != undefined) {
 			socket.emit('getchunk', JSON.stringify({'x':data.x,'y':data.y,'level':data.level,'tiles':tiles}));
-			printLog("getchunk: " + dataStr);
+			// printLog("getchunk: " + dataStr);
 		} else {
 			socket.emit('getchunkundef', {'id':util.genChunkId(data.x, data.y), 'level':data.level});
-			printLog(("getchunk: " + dataStr + ` chunk ${data.x},${data.y} is undefined`).yellow, "debug");
+			// printLog(("getchunk: " + dataStr + ` chunk ${data.x},${data.y} is undefined`).yellow, "debug");
 		}
 	});
 
@@ -248,10 +248,11 @@ io.on('connection', (socket) => {
 		
 	socket.on('playerposupdate', (data) => {
 		var c = socket.cli;
+		if (!socket.cli) return;
 		if (c.loggedin && c.controlledobject != null) {
 			var obj = c.controlledobject;
-			obj.id = data.id
-;			obj.pos.x = data.x;
+			obj.id = data.id;
+			obj.pos.x = data.x;
 			obj.pos.y = data.y;
 			obj.rotation = data.rotation;
 			obj.isGuest = data.isGuest;
@@ -663,8 +664,6 @@ function printLog(text, level) {
 		return `${yyyy}-${mm}-${dd} ${hours}:${mins}:${secs}.${millis}`;
 	};
 
-	//var out = (new Date().toISOString()).magenta + " [".grey;
-	//var out = ((new Date(new Date() + new Date().getTimezoneOffset())).toISOString()).magenta + " [".grey;
 	var out = getTimeString().magenta + " [".grey;
 	switch(level) {
 		case "debug":
