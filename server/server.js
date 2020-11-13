@@ -37,14 +37,12 @@ var objectparsers = require('../common/objectparsers.js');
 // Import the block types from JSON file
 var blockTypes = JSON.parse(util.removeCommentsFromJSON(fs.readFileSync("blocktypes.json")));
 
-// Remove all unnecessary data from blockTypes (only keeping src)
-for (var t in blockTypes) {
-	for (var p in blockTypes[t]) {
-		if (p != "src") {
+// Remove all unnecessary data from blockTypes
+for (var t in blockTypes)
+	for (var p in blockTypes[t])
+		if (blockTypes.editorproperties.includes(p))
 			delete blockTypes[t][p];
-		}
-	}
-}
+delete blockTypes.editorproperties;
 
 // Store all levels in here
 var levels = {};
