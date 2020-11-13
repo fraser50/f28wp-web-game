@@ -66,17 +66,14 @@ class GameLevel {
 	}
 
 	addObject(obj) {
-		console.log('trying to add');
 		var exists = false;
 		for (var i in this.newobjects)
 			if (this.newobjects[i] == obj )
 				exists = true;
-				console.log('exists in newobjects');
 
 		for (var i in this.gameobjects)
 			if (this.gameobjects[i] == obj)
 				exists = true;
-				console.log('exists in gameobjects');
 
 		if (!exists) {
 			if (obj.isGuest && ((''+obj.id).substring(0,6) != 'guest_')) {
@@ -89,7 +86,6 @@ class GameLevel {
 				console.log(obj.id);
 				this.objectcounter++;
 			}
-			console.log('add');
 		}
 	}
 

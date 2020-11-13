@@ -226,13 +226,8 @@ io.on('connection', (socket) => {
 			}	
 			level.playercount++; // Increase the player count by 1.
 		} else {
-			console.log(level.gameobjects)
 			console.log('level ' + level.id + " is full");	//Temp error message for when room is full, this should be changed once we have rooms working properly
 		}
-		
-//		for (var i in level.gameobjects) {
-//			console.log(level.gameobjects[i].id + "  -  " + level.gameobjects[i].team)	//This doesn't work for the current obj, displays all ones before it though. Shouldn't matter too much
-//		}
 		
 		printLog(player.id + ' joined ' + player.team);
 		
@@ -325,14 +320,10 @@ function loop() {
 				var pl = clientlist[p];
 
 				if (pl.controlledobject === obj) {
-					console.log('equal');
-					console.log(pl.controlledobject);
-					console.log(obj);
 					continue;
 				}
 
 				pl.socket.emit('newobject', jobj);
-				console.log('Sent newobject packet');
 			}
 		}
 
@@ -343,14 +334,11 @@ function loop() {
 			//printLog(obj.id);
 			if (obj.pos.changed) {
 				obj.pos.changed = false;
-				//console.log('pos change!');
 	
 				for (k in clientlist) {
 					var c = clientlist[k];
 					if (!c.loggedin) continue;
-					//console.log(c.controlledobject.id + ' | ' + obj.id + ' -> ' + c.controlledobject);
 					if (c.controlledobject.id != obj.id) {
-						//console.log('sending pos update message!');
 						c.socket.emit('posupdate', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation, 'isGuest' : obj.isGuest, 'team' : obj.team});
 					}
 				}
