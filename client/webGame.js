@@ -39,8 +39,14 @@ var pingLabel;
 
 // Add the elements to the page when it finishes loading
 window.addEventListener("load", () => {
-	socket.emit('getblocktypes');
-	socket.emit('getleveldata', {"id": currentLevel.id});
+	socket.emit('getLevelId');
+	socket.on('returnLevelId', (data) => {
+		currentLevel = new GameLevel(data.id);	// This will either be too slow or will not work as it creates a different level to the one provided in the server
+		
+		console.log("this is it chief " + currentLevel.id);
+		socket.emit('getblocktypes');
+		socket.emit('getleveldata', {"id": currentLevel.id});
+	});
 
 	document.body.appendChild(gamearea);
 
@@ -233,7 +239,7 @@ socket.on("pong", (time) => {
 });
 
 // Temporary variable to store the current level. Definitly change the way this works
-var currentLevel = new GameLevel(0);
+//var currentLevel = new GameLevel(0);
 
 function initWorld() {
 	setInterval(() => {

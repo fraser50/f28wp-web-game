@@ -53,6 +53,7 @@ levels[0] = new level.GameLevel(0);
 // Load a test world
 levels[0].loadFromFile("world_1_with_bases.json", fs);
 levels[0].update();
+var levelCount = 1;
 
 // Store all the logged in users to use for security
 var loggedInUsers = {};
@@ -125,7 +126,7 @@ io.on('connection', (socket) => {
 		var data = JSON.parse(dataStr);
 
 		if (!levels[data.level]) {
-			socket.emit('getchunkundef', {'id':util.util.genChunkId(data.x, data.y), 'level':data.level});
+			socket.emit('getchunkundef', {'id':util.genChunkId(data.x, data.y), 'level':data.level});
 			// printLog(("getchunk: " + dataStr + ` chunk ${data.x},${data.y} is undefined`).yellow, "debug");
 			return;
 		}
@@ -204,13 +205,39 @@ io.on('connection', (socket) => {
 
 		}
 	});*/
+	
+	socket.on('getLevelId', () => {
+		console.log(levels.length)	//This doesn't seem to actually get the length of the levels array
+		var level = levels[levelCount-1];
+		console.log("playercount: " + level.playercount);
+		console.log("levelCount: " + levelCount);
+		if (level.playercount < 6) {
+			var id = level.id
+		} else {
+			var id = levelCount
+			levelCount++;
+			console.log("levelCountRedux: " + levelCount);
+			var tempLevelCount = levelCount-1;
+			setNewLevel(tempLevelCount);
+		}
+		socket.emit('returnLevelId', {"id" : id});
+	});
+	
+	function setNewLevel(levelId) {
+		console.log("new level:  " + levelId)
+		levels[levelId] = new level.GameLevel(levelId);
+		console.log(levels[levelId]);
+		
+		levels[levelId].loadFromFile("world_1_with_bases.json", fs);
+		levels[levelId].update();
+	};
 
 	socket.on('assignTeam', (data) => {	//This takes in a player and assigns them to a team
 		var level = levels[data.level];		//Takes in level id as sending full level is unnecessarily large 
 		socket.cli.levelId = data.level;
 		var player = JSON.parse(data.player);	//Transform player back into JSON
 
-		if (level.playercount < 7) {		//Checks if  level is full
+		if (level.playercount < 6) {		//Checks if  level is full
 			if (level.blue.length <= level.red.length) {	//Check which team has the least players and assigns client to that team
 				level.blue.push(player);	//Adds client to the team (might want to change this to just id)
 				player.team = 'blue';	//Updates team value of client

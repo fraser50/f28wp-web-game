@@ -11,6 +11,8 @@ class GameLevel {
 		this.removedobjects = [];
 		this.toremove = []
 
+		this.clientlist = [];
+		
 		this.objectcounter = 0; // Used to create a unique id for each object, objects created client-side should use this * -1
 
 		/* Each chunk is stored as an array of JSON objects with keys from their coordinates (e.g. "0,0")
@@ -83,7 +85,7 @@ class GameLevel {
 			this.newobjects.push(obj);
 			if (obj.id === undefined) {
 				obj.id = this.objectcounter;
-				console.log(obj.id);
+				console.log("obj id:  " + obj.id);
 				this.objectcounter++;
 			}
 		}
