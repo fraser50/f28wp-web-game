@@ -194,6 +194,7 @@ io.on('connection', (socket) => {
 		}
 		printLog(`chatmessage: <${c.name}> ${data.message}`);
 		c.socket.broadcast.emit('chatmessage', data);
+		levels[c.levelId].addObject(new gameobjects.Point(new util.Position(25, -25), 0, levels[c.levelId])); // Testing
 	});
 
 	/*socket.on('playerstate', (data) => {
@@ -354,8 +355,13 @@ function loop() {
 
 		lvl.newobjects.splice(0, lvl.newobjects.length); // Clear lvl.newobjects
 
-		for (j in lvl.gameobjects) {
+		for (j in lvl.gameobjects) { // TODO: Remove this soon, just for dealing with players, should be merged with posupdate
 			var obj = lvl.gameobjects[j];
+
+			if (!(obj instanceof gameobjects.Player)) {
+				continue; // Ignore object that are not players, this code is only designed for dealing with players
+			}
+
 			//printLog(obj.id);
 			if (obj.pos.changed) {
 				obj.pos.changed = false;
@@ -364,7 +370,22 @@ function loop() {
 					var c = clientlist[k];
 					if (!c.loggedin) continue;
 					if (c.controlledobject.id != obj.id) {
-						c.socket.emit('posupdate', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation, 'isGuest' : obj.isGuest, 'team' : obj.team});
+						c.socket.emit('posupdate_old', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation, 'isGuest' : obj.isGuest, 'team' : obj.team});
+					}
+				}
+			}
+		}
+
+		for (j in lvl.gameobjects) {
+			var obj = lvl.gameobjects[j];
+			if (obj.pos.changed) {
+				obj.pos.changed = false;
+	
+				for (k in clientlist) {
+					var c = clientlist[k];
+					if (!c.loggedin) continue;
+					if (c.controlledobject.id != obj.id) {
+						c.socket.emit('posupdate', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation});
 					}
 				}
 			}

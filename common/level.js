@@ -68,6 +68,14 @@ class GameLevel {
 	}
 
 	addObject(obj) {
+		if (!(obj instanceof gameobjects.GameObject)) {
+			throw new Error("Not a GameObject!");
+		}
+
+		if (!(obj.pos instanceof util.Position)) {
+			return; // Silently fail, TODO: remove this, The player object created locally uses an array instead of a Position object.
+		}
+
 		var exists = false;
 		for (var i in this.newobjects)
 			if (this.newobjects[i] == obj )
@@ -83,6 +91,9 @@ class GameLevel {
 			}
 			this.gameobjects.push(obj);
 			this.newobjects.push(obj);
+
+			obj.pos.changed = true;
+
 			if (obj.id === undefined) {
 				obj.id = this.objectcounter;
 				console.log("obj id:  " + obj.id);

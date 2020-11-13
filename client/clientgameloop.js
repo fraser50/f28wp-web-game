@@ -113,7 +113,7 @@ window.addEventListener("load", () => {
 		}
 	});
 	
-	socket.on('posupdate', (data) => {
+	socket.on('posupdate_old', (data) => { //TODO: Remove this later, see TODOS in server.js for more info
 		//if (isGuest) data.id = "guest_"+data.id;
 		var obj = currentLevel.findObject(data.id);
 		
@@ -136,10 +136,40 @@ window.addEventListener("load", () => {
 		} else {
 			obj.pos.x = x;
 			obj.pos.y = y;
-			if (rot != null)		//This fixed rotation reset
+			if (rot != null)		// This fixed rotation reset
 				obj.rotation = rot;
 		}
 
+	});
+
+	socket.on('posupdate', (data) => {
+		//if (isGuest) data.id = "guest_"+data.id;
+		var obj = currentLevel.findObject(data.id);
+		
+		var x = data.x;
+		var y = data.y;
+		var rot = data.rot;
+		
+		if (obj != null) {
+			obj.pos.x = x;
+			obj.pos.y = y;
+			if (rot != null)		// This fixed rotation reset
+				obj.rotation = rot;
+		}
+	});
+
+	socket.on('newobject', (data) => {
+		console.log('newobject handled');
+		var objid = data.id;
+
+		if (currentLevel.findObject(objid) != null) { // If an object with this ID already exists, don't add it again
+			console.log('WARNING: Object that already exists was sent!');
+
+		} else {
+			var obj = objFromJSON(data);
+			obj.level = currentLevel;
+			currentLevel.addObject(obj);
+		}
 	});
 	
 	socket.on('playerChangeImg', (data) => {		// This is for updating player images when another player has their image changed

@@ -3,7 +3,7 @@ elementbuilders = [ // A new function will be placed here for creating the
      	var e = document.createElement("img");
      	e.id = obj.id;
      	e.style.top = 0;
-     	e.style.left = 0;
+		e.style.left = 0;
      	var imgFilepath = 'client/assets/images/';
         if (!image) {	// While the default image is still active (generally just after spawn)
         	if (obj.team == 'blue') {
@@ -24,9 +24,11 @@ elementbuilders = [ // A new function will be placed here for creating the
 		e.src = "client/assets/images/Ball.png";
 		e.width = zoomLevel + "px";
 		e.height = zoomLevel + "px";
-		elem.style.zIndex = "4";
+		e.style.zIndex = "4";
 		e.style.top = 0;
 		e.style.left = 0;
+		e.width = zoomLevel / 2;
+		e.height = zoomLevel / 2;
 
 		return e;
 	}]
