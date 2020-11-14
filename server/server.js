@@ -236,6 +236,9 @@ io.on('connection', (socket) => {
 	socket.on('assignTeam', (data) => {	//This takes in a player and assigns them to a team
 		var level = levels[data.level];		//Takes in level id as sending full level is unnecessarily large 
 		socket.cli.levelId = data.level;
+
+		sendObjects(level.gameobjects, [socket.cli]);
+
 		var player = JSON.parse(data.player);	//Transform player back into JSON
 
 		if (level.playercount < 6) {		//Checks if  level is full
@@ -330,6 +333,24 @@ printLog("Server started".green); //Send a log to console to confirm connection
 //game loop for server
 const FPS = 60;
 
+function sendObjects(objlist, clients) {
+	for (j in objlist) {
+		var obj = objlist[j];
+
+		var jobj = objectparsers.objToJSON(obj);
+
+		for (var p in clients) {
+			var pl = clientlist[p];
+
+			if (pl.controlledobject === obj) {
+				continue;
+			}
+
+			pl.socket.emit('newobject', jobj);
+		}
+	}
+}
+
 function loop() {
 	for (var i in levels) {
 
@@ -337,21 +358,7 @@ function loop() {
 
 		lvl.update();
 
-		for (j in lvl.newobjects) {
-			var obj = lvl.newobjects[j];
-
-			var jobj = objectparsers.objToJSON(obj);
-
-			for (var p in clientlist) {
-				var pl = clientlist[p];
-
-				if (pl.controlledobject === obj) {
-					continue;
-				}
-
-				pl.socket.emit('newobject', jobj);
-			}
-		}
+		sendObjects(lvl.newobjects, clientlist);
 
 		lvl.newobjects.splice(0, lvl.newobjects.length); // Clear lvl.newobjects
 
