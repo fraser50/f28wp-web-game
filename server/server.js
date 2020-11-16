@@ -51,7 +51,7 @@ var levels = {};
 levels[0] = new level.GameLevel(0);
 
 // Load a test world
-levels[0].loadFromFile("world_1_with_bases.json", fs);
+levels[0].loadFromFile("small_world.json", fs);
 levels[0].update();
 var levelCount = 1;
 
