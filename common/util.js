@@ -201,7 +201,7 @@ function spawnposFromString(str) {
 	var outarr = [];
 
 	for (var p in posarr) {
-		var pos = arr[i].replace("(", "").replace(")", "").split(" ");
+		var pos = arr[p].replace("(", "").replace(")", "").split(" ");
 		outarr.push([parseFloat(pos[0]), parseFloat(pos[1])]);
 	}
 
