@@ -404,9 +404,22 @@ class UiTextInput extends UiElement {
 		};
 		this.elem.addEventListener("focusout", this.focusoutf);
 	}
+
 	removeMovementDisable() {
 		this.elem.removeEventListener("focusin", this.focusinf);
 		this.elem.removeEventListener("focusout", this.focusoutf);
+	}
+
+	setMovementDisableEditor() {
+		this.focusinf = () => {
+			disableMovement = true;
+		};
+		this.elem.addEventListener("focusin", this.focusinf);
+
+		this.focusoutf = () => {
+			disableMovement = false;
+		};
+		this.elem.addEventListener("focusout", this.focusoutf);
 	}
 }
 

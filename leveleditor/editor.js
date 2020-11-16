@@ -16,6 +16,8 @@ var cameraPos = [0, 0];
 var cameraVel = [0, 0];
 var cameraVelMax = 0.12;
 
+var disableMovement = false;
+
 var typeReader = new FileReader();
 
 typeReader.onload = (e) => {
@@ -190,6 +192,7 @@ window.addEventListener("load", () => {
 	worldPropertiesNameInput.addEventListener("change", (e) => {
 		worldProperties.name = worldPropertiesNameInput.getValue();
 	});
+	worldPropertiesNameInput.setMovementDisableEditor();
 
 	worldPropertiesSpawnInput.addEventListener("change", (e) => {
 		var arr = worldPropertiesSpawnInput.getValue().split(",");
@@ -200,6 +203,7 @@ window.addEventListener("load", () => {
 		}
 		console.log(worldProperties.spawnpos)
 	});
+	worldPropertiesSpawnInput.setMovementDisableEditor();
 
 	fileWindow = new UiWindow("fileWindow", 0, 0, "cc", 250, 58);
 	fileWindow.addObject(new UiLabel("", 10, 7, "tl", "Select blocktypes.json", "14px sans-serif"));
@@ -323,7 +327,7 @@ function loop() {
 	updateWorld();
 	updateUI();
 
-	if (keyStates.place.pressed && selectedType.type == "tile") {
+	if (!disableMovement && keyStates.place.pressed && selectedType.type == "tile") {
 		setTileAt(-cameraPos[0]/(texSize/zoomLevel), -cameraPos[1]/(texSize/zoomLevel), selectedType.id, keyStates.shift.pressed);
 		renderWorld();
 	}
@@ -333,6 +337,8 @@ function loop() {
 }
 
 function doMovement() {
+	if (disableMovement) return;
+
 	if (keyStates.up.pressed)
 		cameraVel[1] += cameraVelMax;
 	if (keyStates.down.pressed)
