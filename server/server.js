@@ -194,7 +194,7 @@ io.on('connection', (socket) => {
 		}
 		printLog(`chatmessage: <${c.name}> ${data.message}`);
 		c.socket.broadcast.emit('chatmessage', data);
-		levels[c.levelId].addObject(new gameobjects.Point(new util.Position(25, -25), 0, levels[c.levelId])); // Testing
+		levels[c.levelId].addObject(new gameobjects.Point(new util.Position(13, -13), 0, levels[c.levelId])); // Testing
 	});
 
 	/*socket.on('playerstate', (data) => {
@@ -397,6 +397,24 @@ function loop() {
 				}
 			}
 		}
+
+		for (j in lvl.removedobjects) {
+			var obj = lvl.removedobjects[j];
+
+			var index = lvl.gameobjects.indexOf(obj);
+			if (index > -1) {
+				lvl.gameobjects.splice(index);
+			}
+
+			for (k in clientlist) {
+				var c = clientlist[k];
+				if (!c.loggedin) continue;
+
+				c.socket.emit('removeplayer', {'id' : obj.id});
+			}
+		}
+
+		lvl.removedobjects.splice(0, lvl.removedobjects.length);
 	}
 
 	//var playerStates = getPlayerStates();

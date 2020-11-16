@@ -86,6 +86,15 @@ class Player extends GameObject {
 	update() {
 		if (this.elem) {
 			this.elem.style.transform = `rotate(${this.rotation}rad)`;
+
+		} else { // This logic is to only run on the server
+			for (var i in this.level.gameobjects) {
+				var obj = this.level.gameobjects[i];
+
+				if (obj instanceof Point && obj.pos.distance(this.pos) < 0.5) {
+					obj.remove();
+				}
+			}
 		}
 	}
 	

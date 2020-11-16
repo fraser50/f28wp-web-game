@@ -49,8 +49,8 @@ class Position {
 	}
 
 	distance(otherpos) {
-		diffX = pos.x - otherpos.x
-		diffY = pos.y - otherpos.y
+		var diffX = this.x - otherpos.x;
+		var diffY = this.y - otherpos.y;
 
 		return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2))
 	}
