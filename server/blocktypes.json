@@ -8,6 +8,7 @@
 		"name": "Null"
 	},
 
+
 	// FLOORS
 
 	// Wooden
@@ -19,6 +20,7 @@
 		"src": "floor_wood_light.png",
 		"name": "Light Wood Floor"
 	},
+
 
 	// WALLS
 
@@ -158,7 +160,9 @@
 		"name": "Big To Narrow Wall (Right)"
 	},
 
-	// Dev textures
+
+	// DEV TEXTURES
+
 	"100": {
 		"src": "dev_grey.png", 
 		"name": "Dev Grey"
@@ -169,27 +173,26 @@
 	},
 
 
-	//Base colours
-	//Blue team
+	// BASES
+
+	// Blue Team
 	"110": {
 		"src": "bluebase_light_tile.png",
 		"name": "Bluebase Light",
 		"base": "blue"
 	},
-
 	"111": {
 		"src": "bluebase_dark_tile.png",
 		"name": "Bluebase Dark",
 		"base": "blue"
 	},
 	
-	//Red team
+	// Red Team
 	"115": {
 		"src": "redbase_light_tile.png",
 		"name": "Redbase Light",
 		"base": "red"
 	},
-
 	"116": {
 		"src": "redbase_dark_tile.png",
 		"name": "Redbase dark",
