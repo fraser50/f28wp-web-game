@@ -392,10 +392,10 @@ function setTileAt(x, y, tileId, isWall) {
 	if (isWall)
 		chunk[t].isWall = true;
 	
-	if (tileId == 110 || tileId == 111) 		// Checks to see if tileId is one of the ones that is for the bluebase, will need to update if statement if more get added
+	if (blockTypes[tileId].base == "blue") // Checks to see if tileId is a blue base
 		chunk[t].isBluebase = true;
 	
-	if (tileId == 115 || tileId == 116) 		// Checks to see if tileId is one of the ones that is for the redbase, will need to update if statement if more get added
+	if (blockTypes[tileId].base == "red") // Checks to see if tileId is a red base
 		chunk[t].isRedbase = true;
 	
 }
