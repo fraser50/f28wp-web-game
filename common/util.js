@@ -195,6 +195,30 @@ function getTileAt(level, x, y) {
 	// If the chunk does not exist, the function will return undefined
 }
 
+function spawnposFromString(str) {
+	var posarr = str.split(",");
+
+	var outarr = [];
+
+	for (var p in posarr) {
+		var pos = arr[i].replace("(", "").replace(")", "").split(" ");
+		outarr.push([parseFloat(pos[0]), parseFloat(pos[1])]);
+	}
+
+	return outarr;
+}
+
+function spawnposToString(spawnpos) {
+	var outstr = "";
+
+	for (p in spawnpos) {
+		var pos = spawnpos[p];
+		outstr += `(${pos[0]} ${pos[1]}),`;
+	}
+
+	return outstr.substr(0, outstr.length-1);
+}
+
 function serverExports() {
 	exports.toRadians = toRadians;
 	exports.toDegrees = toDegrees;

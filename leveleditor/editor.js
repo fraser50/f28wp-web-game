@@ -156,7 +156,7 @@ window.addEventListener("load", () => {
 		worldPropertiesWindow.show();
 
 		worldPropertiesNameInput.updateValue(worldProperties.name);
-		worldPropertiesSpawnInput.updateValue(worldProperties.spawnpos);
+		worldPropertiesSpawnInput.updateValue(spawnposToString(worldProperties.spawnpos));
 	});
 	worldPropertiesButton.disable();
 	menuWindow.addObject(worldPropertiesButton);
@@ -195,12 +195,7 @@ window.addEventListener("load", () => {
 	worldPropertiesNameInput.setMovementDisableEditor();
 
 	worldPropertiesSpawnInput.addEventListener("change", (e) => {
-		var arr = worldPropertiesSpawnInput.getValue().split(",");
-
-		for (var i in arr) {
-			var temp = arr[i].split(" ");
-			worldProperties.spawnpos[i] = [parseFloat(temp[0]), parseFloat(temp[1])]
-		}
+		worldProperties.spawnpos = spawnposFromString(worldPropertiesSpawnInput.getValue());
 		console.log(worldProperties.spawnpos)
 	});
 	worldPropertiesSpawnInput.setMovementDisableEditor();
