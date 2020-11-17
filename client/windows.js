@@ -188,7 +188,10 @@ function generateLeaderboard() {
 	leaderboardWindow.addObject(leaderboard);
 	leaderboard.hideScrollbar();		
 
-	//var team1Title = new UiLabel("team1Title", 20, 60) //Need to continue with this, I've been distracted
+	var blueTeamTitle = new UiLabel("blueTeamTitle", 60, 60, "tl", "Blue", "24px sans-serif", "blue");
+	var redTeamTitle = new UiLabel("redTeamTitle", 495.97, 60, "tl", "Red", "24px sans-serif", "red");
+	leaderboardWindow.addObject(blueTeamTitle);
+	leaderboardWindow.addObject(redTeamTitle);
 
 	return leaderboardWindow;
 }
