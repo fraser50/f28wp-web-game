@@ -182,7 +182,7 @@ io.on('connection', (socket) => {
 	})
 	
 	socket.on('getStats', (stats) => {
-		//getUserStats(stats, socket.cli);
+		getUserStats(stats, socket.cli);
 	});
 
 	socket.on('chatmessage', (data) => {
@@ -635,8 +635,8 @@ function getUserStats(stats, socket) {
 			if (row.user = stats.user) {
 				stats.wins = row.wins;
 				stats.kills = row.kills;
-				stats.totalPoints = row.totalPoints;
-				socket.emit('getStats', stats);
+				stats.points = row.totalPoints;
+				socket.socket.emit('getStats', stats);		//Needs socket.socket for some reason. Works though so may aswell keep it
 				done = true;
 				return;
 			}
