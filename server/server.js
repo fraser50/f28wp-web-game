@@ -269,7 +269,8 @@ io.on('connection', (socket) => {
 	});
 	
 	socket.on('playerChangeImg', (data) => {	// Listens for when a client changes their image and send emit with details to all other clients. Might need to adapt this for multiple levels as it sends it to ALL clients. Probably an emit change to fix this
-		for (k in clientlist) {
+		var level = levels[data.levelId];
+		for (k in level.clientlist) {
 			rClient = clientlist[k];
 			rClient.socket.emit('playerChangeImg', {"playerId": data.playerId, "image" : data.image}); 
 		}
