@@ -16,7 +16,7 @@ function loop(level) {
 	frametimeLabel.updateValue(`frametime: ${frametime}ms`);
 	fpsLabel.updateValue("fps: " + roundNumber(fps, 2));
 	frametimeGraph.addBar(frametime/100);
-	posLabel.updateValue(`Pos: X: ${roundNumber(socket.player.pos[0], 4)}, Y: ${roundNumber(socket.player.pos[1], 4)}, CX: ${Math.floor(socket.player.pos[0]/chunkSize)}, CY: ${Math.floor(socket.player.pos[1]/chunkSize)}`);
+	posLabel.updateValue(`Pos: X: ${roundNumber(socket.player.pos.x, 4)}, Y: ${roundNumber(socket.player.pos.y, 4)}, CX: ${Math.floor(socket.player.pos.x/chunkSize)}, CY: ${Math.floor(socket.player.pos.y/chunkSize)}`);
 	velLabel.updateValue(`Vel: H: ${roundNumber(playerVelXY.x, 4)}, V: ${roundNumber(playerVelXY.y, 4)}, Total: ${roundNumber(Math.sqrt(playerVelXY.x**2 + playerVelXY.y**2), 4)}`);
 	pingLabel.updateValue(`ping: ${ping}ms`);
 
@@ -55,7 +55,7 @@ function stopLoop() {
 
 function serverLoop(level) {
 	//socket.emit('playerstate', socket.player.toJSON());
-	socket.emit('playerposupdate', {'id' : socket.player.id, 'x' : socket.player.pos[0], 'y' : socket.player.pos[1], 'rotation' : socket.player.rotation, "isGuest" : socket.player.isGuest, "team" : socket.player.team, "levelId" : level.id});
+	socket.emit('playerposupdate', {'id' : socket.player.id, 'x' : socket.player.pos.x, 'y' : socket.player.pos.y, 'rotation' : socket.player.rotation, "isGuest" : socket.player.isGuest, "team" : socket.player.team, "levelId" : level.id});
 }
 
 var serverLoopf = () => {serverLoop(currentLevel)};
