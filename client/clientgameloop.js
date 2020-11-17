@@ -82,7 +82,7 @@ function assignTeam(level) {	//This takes in level and sends the player of for t
 			} else {
 				socket.player.updatePlayerImg("player_up.png");
 			}
-			socket.player.pos = data.pos;	// This updates the players position with assigned spawn point
+			socket.player.pos = new Position(data.pos[0], data.pos[1]);	// This updates the players position with assigned spawn point
 			socket.removeListener('assignedTeam');	// This is just for security (did work earlier, might be redundant now)
 		});
 	};
