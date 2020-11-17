@@ -164,6 +164,7 @@ io.on('connection', (socket) => {
 			message : "",
 			success: false
 		};
+		console.log("this is the socket.cli stuff: " + Object.keys(socket.cli));
 		login(data, returnPack, socket.cli);
 	});
 	
@@ -214,13 +215,17 @@ io.on('connection', (socket) => {
 		console.log("levelCount: " + levelCount);
 		if (level.playercount < 6) {
 			var id = level.id
+			c.levelId = id;
 		} else {
 			var id = levelCount
 			levelCount++;
 			console.log("levelCountRedux: " + levelCount);
 			var tempLevelCount = levelCount-1;
 			setNewLevel(tempLevelCount);
+			c.levelId = id;
 		}
+		levels[id].clientlist.push(c);
+		console.log(levels[id].clientlist);
 		socket.emit('returnLevelId', {"id" : id});
 	});
 	
@@ -229,7 +234,7 @@ io.on('connection', (socket) => {
 		levels[levelId] = new level.GameLevel(levelId);
 		console.log(levels[levelId]);
 		
-		levels[levelId].loadFromFile("world_1_with_bases.json", fs);
+		levels[levelId].loadFromFile("small_world.json", fs);
 		levels[levelId].update();
 	};
 
@@ -290,8 +295,8 @@ io.on('connection', (socket) => {
 		c.present = false;
 		var level = levels[c.levelId];	// This makes sure the things done below are to this clients level
 		
-		for (k in clientlist) {
-			rClient = clientlist[k];
+		for (k in level.clientlist) {
+			rClient = level.clientlist[k];
 			if (rClient.name == c.name && rClient.name) {
 				c.present = true;
 			}
@@ -312,11 +317,12 @@ io.on('connection', (socket) => {
 			printLog("There are now " + level.playercount + " players in the game.");
 		}
 		if (c.controlledobject != null) {
-			levels[0].removeObject(c.controlledobject)
+			level.removeObject(c.controlledobject)
 		}
-		
+		level.clientlist.splice(level.clientlist.indexOf(c), 1);		//This one is for the levels client list
+
 		delete socket.cli;
-		clientlist.splice(clientlist.indexOf(c), 1);
+		clientlist.splice(clientlist.indexOf(c), 1);			// This one is for the overall client list
 
 		socket.disconnect(0); // Close the socket
 
@@ -340,7 +346,7 @@ function sendObjects(objlist, clients) {
 		var jobj = objectparsers.objToJSON(obj);
 
 		for (var p in clients) {
-			var pl = clientlist[p];
+			var pl = clientlist[p];		// might need a level. in there but should be getting sent the level clientlist from the function below
 
 			if (pl.controlledobject === obj) {
 				continue;
@@ -355,15 +361,18 @@ function loop() {
 	for (var i in levels) {
 
 		var lvl = levels[i];
-
+		
+		console.log(lvl.clientlist);
+		
 		lvl.update();
 
-		sendObjects(lvl.newobjects, clientlist);
+		sendObjects(lvl.newobjects, lvl.clientlist);
 
 		lvl.newobjects.splice(0, lvl.newobjects.length); // Clear lvl.newobjects
 
 		for (j in lvl.gameobjects) { // TODO: Remove this soon, just for dealing with players, should be merged with posupdate
 			var obj = lvl.gameobjects[j];
+			//console.log(lvl.gameobjects);
 
 			if (!(obj instanceof gameobjects.Player)) {
 				continue; // Ignore object that are not players, this code is only designed for dealing with players
@@ -373,8 +382,8 @@ function loop() {
 			if (obj.pos.changed) {
 				obj.pos.changed = false;
 	
-				for (k in clientlist) {
-					var c = clientlist[k];
+				for (k in lvl.clientlist) {
+					var c = lvl.clientlist[k];
 					if (!c.loggedin) continue;
 					if (c.controlledobject.id != obj.id) {
 						c.socket.emit('posupdate_old', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation, 'isGuest' : obj.isGuest, 'team' : obj.team});
@@ -388,8 +397,8 @@ function loop() {
 			if (obj.pos.changed) {
 				obj.pos.changed = false;
 	
-				for (k in clientlist) {
-					var c = clientlist[k];
+				for (k in lvl.clientlist) {
+					var c = lvl.clientlist[k];
 					if (!c.loggedin) continue;
 					if (c.controlledobject.id != obj.id) {
 						c.socket.emit('posupdate', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation});
@@ -406,8 +415,8 @@ function loop() {
 				lvl.gameobjects.splice(index);
 			}
 
-			for (k in clientlist) {
-				var c = clientlist[k];
+			for (k in lvl.clientlist) {
+				var c = lvl.clientlist[k];
 				if (!c.loggedin) continue;
 
 				c.socket.emit('removeplayer', {'id' : obj.id});
@@ -468,6 +477,7 @@ function createDatabase() {
 }
 
 function addUser(data, returnPack, client) {
+	var level = levels[client.levelId];
 	if (!util.isValidUsername(data.user)) {
 		returnPack.message = "Invalid username";
 		client.socket.emit('addUser', returnPack);
@@ -513,7 +523,7 @@ function addUser(data, returnPack, client) {
 						client.name = rows[0].user;
 						client.loggedin = true;
 						
-						initUser(client, levels[0]);
+						initUser(client, level);
 
 						client.socket.emit('addUser', returnPack);
 						printLog("User Created Id: "+returnPack.userId);
@@ -536,6 +546,7 @@ function login(data, returnPack, client) {
 	returnPack.message = "The details you have entered were incorrect, please try again.";
 	returnPack.userId = "null";
 	returnPack.username = "null";
+	var level = levels[client.levelId];
 
 	db.all('SELECT id, user, passhash FROM users WHERE user=?', [data.user], (err, rows) => {
 		if (err) {
@@ -552,8 +563,8 @@ function login(data, returnPack, client) {
 			}
 
 
-			for (var u in clientlist) {
-				if (row.user == clientlist[u].name) {
+			for (var u in level.clientlist) {
+				if (row.user == level.clientlist[u].name) {
 					returnPack.message = "That account is already logged in";
 					return;
 				}
@@ -570,7 +581,7 @@ function login(data, returnPack, client) {
 			client.name = row.user;
 			client.loggedin = true;
 
-			initUser(client, levels[0]);
+			initUser(client, level);
 
 			client.socket.broadcast.emit('chatmessage', {user:"Server", message:`Player logged in: ${data.user}`});
 			printLog("login Id: "+returnPack.userId+", "+returnPack.success);
@@ -599,8 +610,10 @@ function guest(returnPack, client) {
 	while (guests[rand] != undefined)
 <<<<<<< HEAD
 		rand = createId();*/
+	
+	var level = levels[client.levelId];
 
-	initUser(client, levels[0]);
+	initUser(client, level);
 
 	returnPack.userId = client.controlledobject.id;
 	returnPack.message = "Welcome, Guest " + returnPack.userId;
@@ -661,8 +674,8 @@ function signOut(client) {	//This removes client from their team, sends out emit
 		printLog('removed ' + client.name + ' from team 2')
 	}
 	
-	for (k in clientlist) {
-		rClient = clientlist[k];
+	for (k in level.clientlist) {
+		rClient = level.clientlist[k];
 		rClient.socket.emit('removeplayer', {'id' : client.name});
 	}
 	client.signout();
@@ -670,7 +683,7 @@ function signOut(client) {	//This removes client from their team, sends out emit
 
 var sec = 60;
 
-setInterval(() => {
+setInterval(() => {		// This means it is synced across all levels, change this
 	sec--;
 
 	for (k in clientlist) {

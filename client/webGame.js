@@ -43,7 +43,6 @@ window.addEventListener("load", () => {
 	socket.on('returnLevelId', (data) => {
 		currentLevel = new GameLevel(data.id);	// This will either be too slow or will not work as it creates a different level to the one provided in the server
 		
-		console.log("this is it chief " + currentLevel.id);
 		socket.emit('getblocktypes');
 		socket.emit('getleveldata', {"id": currentLevel.id});
 	});

@@ -196,6 +196,10 @@ function generateLeaderboard() {
 	return leaderboardWindow;
 }
 
+function updateLeaderboard() {
+	
+}
+
 	
 function getUserStatVals() {
 	userWindowMessage.updateValue("Signed in as " + userDetails.name);
