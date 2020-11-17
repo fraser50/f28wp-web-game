@@ -126,8 +126,8 @@ class GameLevel {
 	}
 
 	loadChunksAround(player, chunkRadius) {
-		var x = player.pos[0];
-		var y = player.pos[1];
+		var x = player.pos.x;
+		var y = player.pos.y
 
 		var lx = x - chunkRadius*chunkSize;
 		var rx = x + chunkRadius*chunkSize;
@@ -147,8 +147,8 @@ class GameLevel {
 	}
 
 	unloadChunks(player, notInRadius) {
-		var x = player.pos[0];
-		var y = player.pos[1];
+		var x = player.pos.x;
+		var y = player.pos.y;
 
 		var lx = x - notInRadius*chunkSize;
 		var rx = x + notInRadius*chunkSize;
@@ -177,8 +177,8 @@ class GameLevel {
 	render(player) {
 		if (this.chunkElems == [] || SERVER) return;
 
-		var wx = -player.pos[0]*zoomLevel + world.clientWidth/2;
-		var wy = -player.pos[1]*zoomLevel + world.clientHeight/2;
+		var wx = -player.pos.x*zoomLevel + world.clientWidth/2;
+		var wy = -player.pos.y*zoomLevel + world.clientHeight/2;
 
 		world.style.left = wx + "px";
 		world.style.top = wy + "px";

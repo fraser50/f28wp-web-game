@@ -45,8 +45,8 @@ var playerVelXY = {x:0, y:0};
 
 function doMovement(player, lastFrametime) {
 	var lastPos = [];
-	lastPos.push(player.pos[0]);
-	lastPos.push(player.pos[1]);
+	lastPos.push(player.pos.x);
+	lastPos.push(player.pos.y);
 
 	// Frametime can be NaN somehow
 	lastFrametime = isNaN(lastFrametime) ? 0 : lastFrametime;
@@ -75,17 +75,17 @@ function doMovement(player, lastFrametime) {
 		playerVelXY.x *= playerVelDecay ** lastFrametime;
 	}
 
-	var tile = getTileAt(currentLevel, Math.floor(player.pos[0] + playerVelXY.x * lastFrametime), Math.floor(player.pos[1]));
+	var tile = getTileAt(currentLevel, Math.floor(player.pos.x + playerVelXY.x * lastFrametime), Math.floor(player.pos.y));
 	// If there is a wall where the player would end up in the x axis, stop the player in that axis
 	if (!tile || tile.isWall)
 		playerVelXY.x = 0;
 
-	tile = getTileAt(currentLevel, Math.floor(player.pos[0]), Math.floor(player.pos[1] + playerVelXY.y * lastFrametime));
+	tile = getTileAt(currentLevel, Math.floor(player.pos.x), Math.floor(player.pos.y + playerVelXY.y * lastFrametime));
 	// If there is a wall where the player would end up in the y axis, stop the player in that axis
 	if (!tile || tile.isWall)
 		playerVelXY.y = 0;
 
-	tile = getTileAt(currentLevel, Math.floor(player.pos[0] + playerVelXY.x * lastFrametime), Math.floor(player.pos[1] + playerVelXY.y * lastFrametime));
+	tile = getTileAt(currentLevel, Math.floor(player.pos.x + playerVelXY.x * lastFrametime), Math.floor(player.pos.y + playerVelXY.y * lastFrametime));
 	// If there is a wall directly in front of the player, stop them completely (fixes the rare occurence of getting stuck on the corner of a wall)
 	if (!tile || tile.isWall) {
 		playerVelXY.x = 0;
@@ -131,21 +131,21 @@ function doMovement(player, lastFrametime) {
 		//check that player is not moving against a wall
 		if(this.checkVerticalCollision) {
 			//player can only move right and left
-			player.pos[0] += playerVelXY.x * lastFrametime;
-			player.pos[1] += 0;
+			player.pos.x += playerVelXY.x * lastFrametime;
+			player.pos.y += 0;
 		}
 
 		if(this.checkHorizontalCollision) {
 			//player can only move up and down
-			player.pos[0] += 0;
-			player.pos[1] += playerVelXY.y * lastFrametime;
+			player.pos.x += 0;
+			player.pos.y += playerVelXY.y * lastFrametime;
 		}
 	}
 
 	else {
 		// Apply the velocity to the player's position
-		player.pos[0] += playerVelXY.x * lastFrametime;
-		player.pos[1] += playerVelXY.y * lastFrametime;
+		player.pos.x += playerVelXY.x * lastFrametime;
+		player.pos.y += playerVelXY.y * lastFrametime;
 	}
 }
 
@@ -166,14 +166,14 @@ function checkVerticalCollision() {
 	//Checks for collisions on top and bottom edges of player
 	//check x coords
 	//Check if player is on the left of object
-	if(player.pos[0] < object.pos[0]) {
-		if((player.pos[0] + 64) > object.pos[0]) {
+	if(player.pos.x < object.pos.x) {
+		if((player.pos.x + 64) > object.pos.x) {
 			return true; //collision has occurred
 		}
 	}
 	//Check if player is on the right of object
-	else if(player.pos[0] > object.pos[0]) {
-		if(player.pos[0] < (object.pos[0] + 64)) {
+	else if(player.pos.x > object.pos.x) {
+		if(player.pos.x < (object.pos.x + 64)) {
 			return true; //collision has occurred
 		}
 	}
@@ -187,14 +187,14 @@ function checkHorizontalCollision() {
 	//Checks for collisions on left and right edges of player
 	//check y coords
 	//Check if player is above object
-	if(player.pos[1] < object.pos[1]) {
-		if((player.pos[1] + 64) > object.pos[1]) {
+	if(player.pos.y < object.pos.y) {
+		if((player.pos.y + 64) > object.pos.y) {
 			return true; //collision has occurred
 		}
 	}
 	//Check if player is below object
-	else if(player.pos[1] > object.pos[1]) {
-		if(player.pos[1] < (object.pos[1] + 64)) {
+	else if(player.pos.y > object.pos.y) {
+		if(player.pos.y < (object.pos.y + 64)) {
 			return true; //collision has occurred
 		}
 	}
