@@ -295,32 +295,35 @@ io.on('connection', (socket) => {
 		c.present = false;
 		var level = levels[c.levelId];	// This makes sure the things done below are to this clients level
 		
-		for (k in level.clientlist) {
-			rClient = level.clientlist[k];
-			if (rClient.name == c.name && rClient.name) {
-				c.present = true;
+		if (level) {
+			for (k in level.clientlist) {
+				rClient = level.clientlist[k];
+				if (rClient.name == c.name && rClient.name) {
+					c.present = true;
+				}
+				rClient.socket.emit('removeplayer', {'id' : c.name});
 			}
-			rClient.socket.emit('removeplayer', {'id' : c.name});
+			
+			if (c.controlledobject != undefined && c.present == true) {	//This checks that the user is not refreshing from the login screen, it also accounts for instances where the user might have logged out then closed the window
+				if (c.controlledobject.team == 'blue') {
+					level.blue.pop(c.controlledobject.name); // Remove player from team on disconnect
+					level.bluespawn--;	// Decrement the counter for team spawns
+					printLog('removed ' + c.name + ' from team 1')
+				} else if (c.controlledobject.team == 'red' && c.present == true){
+					level.red.pop(c.controlledobject.name);
+					level.redspawn--;
+					printLog('removed ' + c.name + ' from team 2')
+				}
+				level.playercount--; // Decrease the player count by 1
+				printLog("There are now " + level.playercount + " players in the game.");
+				//checkLevelPlayerCount(level.id);	//Something broken atm, will need to think more on implementation
+			}
+			if (c.controlledobject != null) {
+				level.removeObject(c.controlledobject)
+			}
+			level.clientlist.splice(level.clientlist.indexOf(c), 1);		//This one is for the levels client list
 		}
 		
-		if (c.controlledobject != undefined && c.present == true) {	//This checks that the user is not refreshing from the login screen, it also accounts for instances where the user might have logged out then closed the window
-			if (c.controlledobject.team == 'blue') {
-				level.blue.pop(c.controlledobject.name); // Remove player from team on disconnect
-				level.bluespawn--;	// Decrement the counter for team spawns
-				printLog('removed ' + c.name + ' from team 1')
-			} else if (c.controlledobject.team == 'red' && c.present == true){
-				level.red.pop(c.controlledobject.name);
-				level.redspawn--;
-				printLog('removed ' + c.name + ' from team 2')
-			}
-			level.playercount--; // Decrease the player count by 1
-			printLog("There are now " + level.playercount + " players in the game.");
-		}
-		if (c.controlledobject != null) {
-			level.removeObject(c.controlledobject)
-		}
-		level.clientlist.splice(level.clientlist.indexOf(c), 1);		//This one is for the levels client list
-
 		delete socket.cli;
 		clientlist.splice(clientlist.indexOf(c), 1);			// This one is for the overall client list
 
@@ -362,7 +365,7 @@ function loop() {
 
 		var lvl = levels[i];
 		
-		console.log(lvl.clientlist);
+		//console.log(lvl.clientlist);
 		
 		lvl.update();
 
@@ -678,7 +681,16 @@ function signOut(client) {	//This removes client from their team, sends out emit
 		rClient = level.clientlist[k];
 		rClient.socket.emit('removeplayer', {'id' : client.name});
 	}
+	level.playercount--;	// Decrement level playercount when player signs out
+	//checkLevelPlayerCount(client.levelId);	//Need to think a bit more on this implementation
 	client.signout();
+}
+
+function checkLevelPlayerCount(id) {		// This removes the level if empty, although something breaks atm. Will fix later
+	var level = levels[id];
+	if (level.playercount == 0) {
+		delete levels[id];
+	}
 }
 
 var sec = 60;
