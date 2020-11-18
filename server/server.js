@@ -155,6 +155,7 @@ io.on('connection', (socket) => {
 			success: false
 		};
 		addUser(data, returnPack, socket.cli);		//Call the addUser method
+		checkLevelStart(socket.cli.levelId);
 	});
 	
 	socket.on('login', (data) => {				//Listens for login requests
@@ -166,6 +167,7 @@ io.on('connection', (socket) => {
 		};
 		console.log("this is the socket.cli stuff: " + Object.keys(socket.cli));
 		login(data, returnPack, socket.cli);
+		checkLevelStart(socket.cli.levelId);
 	});
 	
 	socket.on('guest', () => {				//Listens for guest login requests
@@ -176,6 +178,7 @@ io.on('connection', (socket) => {
 			isGuest : "true"
 		};
 		guest(returnPack, socket.cli);
+		checkLevelStart(socket.cli.levelId);
 	});
 	
 	socket.on('sign out', () => {
@@ -694,26 +697,45 @@ function checkLevelPlayerCount(id) {		// This removes the level if empty, althou
 	}
 }
 
-var sec = 60;
 
-setInterval(() => {		// This means it is synced across all levels, change this
-	sec--;
-
-	for (k in clientlist) {
-		rClient = clientlist[k];
-		rClient.socket.emit('updateTimer', sec);
+function checkLevelStart(level) {	//This checks to see if at least 2 players have entered the game
+	var level = levels[level];		// Maybe add in a boolean to the level class to see if it is started
+	if (level.playercount+1 > 1 && !level.started) {	// This would allow for a > 2 and !hasStarted check // The +1 is there as for some reason playercount is 1 less that what it should be
+		startTimer(level.id);
 	}
+}
 
-	if(sec==50) { //Currently set to spawn at 50secs for testing
-		printLog("Adding balls to level");
-		addBallsToLevelFixed(levels[0]);
-	}
+function startTimer(level, sec=60) {
+	var level = levels[level];
+	level.started = true;
+	var timerInterval = setInterval(() => {		// This means it is synced across all levels, change this
+		sec--;
 
-	if (sec==0) {
-		setTimeout(() => {sec = 60}, 5000);
-		printLog("Timer Done");
-	}
-}, 1000);
+		for (k in level.clientlist) {
+			rClient = level.clientlist[k];
+			rClient.socket.emit('updateTimer', sec);
+		}
+
+		if(sec==50) { //Currently set to spawn at 50secs for testing
+			printLog("Adding balls to level");
+			addBallsToLevelFixed(level);
+		}
+
+		if (sec==0) {
+			clearInterval(timerInterval);
+			  sec = 60;
+			  for (k in level.clientlist) {
+				  rClient = level.clientlist[k];
+				  rClient.socket.emit('updateTimer', "Game Over")
+			  }
+			setTimeout(() => {startTimer(level.id)}, 5000);
+			printLog("Timer Done");
+		}
+	}, 1000);
+}
+
+
+
 
 /* Possible code for random ball spawns.
 //creates random position in main room of level

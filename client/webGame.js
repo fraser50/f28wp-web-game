@@ -136,12 +136,12 @@ window.addEventListener("load", () => {
 	velLabel = new UiLabel("perfVel", 5, 165, "tl", "", "15px monospace", "white");
 	perfWindow.addObject(velLabel);
 
-	loopStartButton = new UiButton("loopStartButton", 5, 5, "tr", null, null, "Start loop", null, () => {
+	loopStartButton = new UiButton("loopStartButton", 5, 5, "tr", null, null, "Join Match", null, () => {
 		if (loopStartButton.loopRunning) {
 			loopStartButton.loopRunning = false;
 			stopLoop();
 			stopServerLoop(currentLevel);
-			loopStartButton.updateValue("Start loop");
+			loopStartButton.updateValue("Join Match");
 			stopTimer();
 		} else {
 			loopStartButton.loopRunning = true;
@@ -175,13 +175,12 @@ window.addEventListener("load", () => {
 	}
 	
 	function startTimer() {
-		var sec = 60;
+		var sec = "Waiting for players";
 		timer.updateValue(sec);
 		
 		socket.on('updateTimer', (data) => {
 			sec = data;
-			if (sec == 0) {
-				sec = "Game Over"; //Need to format this
+			if (sec == "Game Over") {
 				console.log("Timer Done");
 			}
 			timer.updateValue(sec);

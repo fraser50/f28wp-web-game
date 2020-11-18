@@ -29,6 +29,8 @@ class GameLevel {
 		
 		this.blueteamscore = 0;	// Keeps track of team scores for this level
 		this.redteamscore = 0;
+		
+		this.started = false;
 	}
 
 	update() {
