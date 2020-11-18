@@ -179,6 +179,22 @@ window.addEventListener("load", () => {
 			currentLevel.updatePlayerImg(obj, data.image);		//update this client for the changed player's image
 	});
 
+	socket.on('ballstatechange', (data) => {
+		var holding = data.holding;
+		var player = socket.player;
+		var teamwithoutball = {'red' : "player_red.png", 'blue' : "player_up.png"};
+		var teamwithball = {'red' : "player_red_with_ball.png", 'blue' : "player_with_ball.png"};
+
+		if (holding) {
+			socket.emit('playerChangeImg', {"playerId" : player.id, "image" : teamwithball[player.team], "levelId" : player.level});
+			player.updatePlayerImg(teamwithball[player.team]);
+
+		} else {
+			socket.emit('playerChangeImg', {"playerId" : player.id, "image" : teamwithoutball[player.team], "levelId" : player.level});
+			player.updatePlayerImg(teamwithoutball[player.team]);
+		}
+	});
+
 });
 
 //function updateOtherPlayers() {

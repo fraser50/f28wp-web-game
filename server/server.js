@@ -385,6 +385,18 @@ function loop() {
 				continue; // Ignore object that are not players, this code is only designed for dealing with players
 			}
 
+			if (obj.holdingBallChanged) { // Send message to player if their ball holding state has changed
+				obj.holdingBallChanged = false;
+				for (k in clientlist) {
+					var cli = clientlist[k];
+
+					if (cli.controlledobject == obj) {
+						cli.socket.emit("ballstatechange", {'holding':obj.holdingBall}); // TODO: Probably don't need to send a JSON object
+						break; // No two players will control the same object, so can break out when we find them
+					}
+				}
+			}
+
 			//printLog(obj.id);
 			if (obj.pos.changed) {
 				obj.pos.changed = false;

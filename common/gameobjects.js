@@ -42,6 +42,7 @@ class Player extends GameObject {
 		this.isGuest = isGuest;
 		this.team = team;
 		this.holdingBall = false;	// This is to track whether player currently has a ball
+		this.holdingBallChanged = false;
 		this.image = image;
 	}
 	
@@ -93,6 +94,8 @@ class Player extends GameObject {
 
 				if (obj instanceof Point && obj.pos.distance(this.pos) < 0.5) {
 					obj.remove();
+					this.holdingBall = true;
+					this.holdingBallChanged = true;
 				}
 			}
 		}
