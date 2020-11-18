@@ -68,9 +68,6 @@ function stopServerLoop(level) {
 	clearInterval(serverLoopf);
 }
 
-//var otherPlayers = {};
-// currentLevel
-
 function assignTeam(level) {	//This takes in level and sends the player of for team assign
 	if (socket.player.team == undefined) {	//Makes sure player doesn't already have a team
 		socket.emit('assignTeam', {"player" : JSON.stringify(socket.player), "level" : level.id});	//Send player and level id to be assigned by server
@@ -94,17 +91,6 @@ function assignTeam(level) {	//This takes in level and sends the player of for t
 
 
 window.addEventListener("load", () => {
-	/*socket.on('playerstate', (data) => {
-		for (p in data) {
-			otherPlayers[p] = otherPlayers[p] ? otherPlayers[p] : {};
-			otherPlayers[p].pos = data[p].pos;
-			otherPlayers[p].rot = data[p].rot;
-		}
-
-		//console.debug(otherPlayers);
-
-		updateOtherPlayers();
-	});*/
 	socket.on('removeplayer', (data) => {
 		var removeplayer = currentLevel.findObject(data.id);
 		if (removeplayer != null) {
@@ -180,6 +166,12 @@ window.addEventListener("load", () => {
 	});
 
 	socket.on('ballstatechange', (data) => {
+		/*
+		This code works by sending a playerChangeImg message to the server which changes the current players image according to every client
+		There are problems with this mainly for security as a client might choose not to tell other players they have picked up a ball, or they may pretend to be on a
+		different team.
+		TODO: Look into this.
+		*/
 		var holding = data.holding;
 		var player = socket.player;
 		var teamwithoutball = {'red' : "player_red.png", 'blue' : "player_up.png"};
@@ -196,36 +188,4 @@ window.addEventListener("load", () => {
 	});
 
 });
-
-//function updateOtherPlayers() {
-//	// if (!currentLevel.objects && !currentLevel.newObjects) {
-//	// 	currentLevel.addObject(new player())
-//	// }
-//	for (var sId in otherPlayers) {
-//		if (sId == socket.id) continue;
-//		var playerObj = new Player(otherPlayers[sId].pos, otherPlayers[sId].rot, currentLevel, sId);
-//
-//		// var exists = false;
-//		// for (var i in currentLevel.newobjects) {
-//		// 	//console.log(currentLevel.newobjects[i].id);
-//		// 	if (currentLevel.newobjects[i].id == sId)
-//		// 		exists = true;
-//		// }
-//		// for (var i in currentLevel.gameobjects) {
-//		// 	//console.log(currentLevel.gameobjects[i].id);
-//		// 	if (currentLevel.gameobjects[i].id == sId)
-//		// 		exists = true;
-//		// }
-//
-//		if (!otherPlayers[sId].exists) {
-//			currentLevel.addObject(playerObj);
-//			otherPlayers[sId].obj = playerObj;
-//			otherPlayers[sId].exists = true;
-//		} else {
-//			playerObj = otherPlayers[sId].obj;
-//			playerObj.pos = otherPlayers[sId].pos;
-//			playerObj.rotation = otherPlayers[sId].rot;
-//		}
-//	}
-//}
 

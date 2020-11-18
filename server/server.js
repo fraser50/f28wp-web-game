@@ -379,7 +379,6 @@ function loop() {
 
 		for (j in lvl.gameobjects) { // TODO: Remove this soon, just for dealing with players, should be merged with posupdate
 			var obj = lvl.gameobjects[j];
-			//console.log(lvl.gameobjects);
 
 			if (!(obj instanceof gameobjects.Player)) {
 				continue; // Ignore object that are not players, this code is only designed for dealing with players
@@ -397,7 +396,6 @@ function loop() {
 				}
 			}
 
-			//printLog(obj.id);
 			if (obj.pos.changed) {
 				obj.pos.changed = false;
 	
@@ -444,14 +442,6 @@ function loop() {
 
 		lvl.removedobjects.splice(0, lvl.removedobjects.length);
 	}
-
-	//var playerStates = getPlayerStates();
-
-	//printLog(JSON.stringify(playerStates), "debug");
-
-	//for (var cindex in clientlist) {
-	//	clientlist[cindex].socket.emit('playerstate', playerStates);
-	//}
 
 }
 
@@ -621,15 +611,7 @@ function initUser(client, level) {
 	client.controlledobject = p;
 }
 
-// TODO When guest disconnects, remove record from db
 function guest(returnPack, client) {
-	//Creates a random id in the range 1000-10000
-	/*var createId = () => {return Math.floor(Math.random() * (10000 - 1000) + 1000)};
-	var rand = createId();
-	while (guests[rand] != undefined)
-<<<<<<< HEAD
-		rand = createId();*/
-	
 	var level = levels[client.levelId];
 
 	initUser(client, level);
@@ -781,8 +763,6 @@ function addBallsToLevelFixed(lvl) {
 		}
 	}
 }
-//Testcode: Add ball spawn points to level (Currently fails: "addObject is not defined")
-//addObject(new gameobjects.BallSpawnPoint(new util.Position(-12, -12), level));
 
 // Write to the console in a standard format with different levels (valid levels: warning, error, info (default))
 function printLog(text, level) {
