@@ -55,7 +55,7 @@ function stopLoop() {
 
 function serverLoop(level) {
 	//socket.emit('playerstate', socket.player.toJSON());
-	socket.emit('playerposupdate', {'id' : socket.player.id, 'x' : socket.player.pos.x, 'y' : socket.player.pos.y, 'rotation' : socket.player.rotation, "isGuest" : socket.player.isGuest, "team" : socket.player.team, "levelId" : level.id});
+	socket.emit('playerposupdate', {'id' : socket.player.id, 'x' : socket.player.pos.x, 'y' : socket.player.pos.y, 'rotation' : socket.player.rotation, "isGuest" : socket.player.isGuest, "team" : socket.player.team, "levelId" : level.id, "holdingBall" : socket.player.holdingBall, "holdingBallChanged" : socket.player.holdingBallChanged});
 }
 
 var serverLoopf = () => {serverLoop(currentLevel)};

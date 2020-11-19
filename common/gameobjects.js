@@ -95,7 +95,7 @@ class Player extends GameObject {
 				if (obj instanceof Point && obj.pos.distance(this.pos) < 0.5) {
 					obj.remove();
 					this.holdingBall = true;
-					this.holdingBallChanged = true;
+					this.holdingBallChanged = true;	// This is only server side, client side info doesn't change
 				}
 			}
 		}

@@ -291,6 +291,8 @@ io.on('connection', (socket) => {
 			obj.rotation = data.rotation;
 			obj.isGuest = data.isGuest;
 			obj.team = data.team;
+			obj.holdingBallChanged = data.holdingBallChanged;
+			obj.holdingBall = data.holdingBall;
 		}
 	});
 
@@ -386,8 +388,8 @@ function loop() {
 
 			if (obj.holdingBallChanged) { // Send message to player if their ball holding state has changed
 				obj.holdingBallChanged = false;
-				for (k in clientlist) {
-					var cli = clientlist[k];
+				for (k in lvl.clientlist) {
+					var cli = lvl.clientlist[k];
 
 					if (cli.controlledobject == obj) {
 						cli.socket.emit("ballstatechange", {'holding':obj.holdingBall}); // TODO: Probably don't need to send a JSON object
