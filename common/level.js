@@ -30,6 +30,8 @@ class GameLevel {
 		this.blueteamscore = 0;	// Keeps track of team scores for this level
 		this.redteamscore = 0;
 		
+		this.pointspawnpos = [];
+		
 		this.started = false;
 	}
 
@@ -212,6 +214,12 @@ class GameLevel {
 		this.spawnpos = data.spawnpos[0];	//This sets default spawn
 		this.bluespawnpos = [data.spawnpos[0], data.spawnpos[1], data.spawnpos[2]]; // This sets the spawn points for each team, the spawns should be listed as 3 for blue then 3 for red
 		this.redspawnpos = [data.spawnpos[3], data.spawnpos[4], data.spawnpos[5]];
+		
+		for (var p in data.pointspawnpos) {
+			this.pointspawnpos.push(data.pointspawnpos[p]);
+		}
+		
+		console.log("AAAAAAAAAAA     " + this.pointspawnpos);
 
 		for (var c in data.chunks)
 			this.addChunk(c, data.chunks[c]);

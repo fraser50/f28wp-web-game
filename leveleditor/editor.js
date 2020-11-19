@@ -94,6 +94,11 @@ levelReader.onload = (e) => {
 		worldProperties.spawnpos = data.spawnpos;
 	else
 		console.warn("Opened world has no spawn point set (if spawn points use GameObjects, ignore this)");
+	
+	if (data.pointspawnpos)
+		worldProperties.pointspawnpos = data.pointspawnpos;
+	else
+		console.warn("Opened world has no point spawn positions set");
 
 	worldPropertiesButton.enable();
 	console.info(`Loaded world "${data.name}" successfully`);
@@ -157,6 +162,7 @@ window.addEventListener("load", () => {
 
 		worldPropertiesNameInput.updateValue(worldProperties.name);
 		worldPropertiesSpawnInput.updateValue(spawnposToString(worldProperties.spawnpos));
+		worldPropertiesPointSpawnInput.updateValue(spawnposToString(worldProperties.pointspawnpos));
 	});
 	worldPropertiesButton.disable();
 	menuWindow.addObject(worldPropertiesButton);
@@ -185,7 +191,10 @@ window.addEventListener("load", () => {
 
 	var worldPropertiesSpawnInput = new UiTextInput("worldPropertiesSpawnInput", 10, 90, "tl", 380, null, "Spawn Position (e.g. 5,6)");
 	worldPropertiesWindow.addObject(worldPropertiesSpawnInput);
-
+	
+	var worldPropertiesPointSpawnInput = new UiTextInput("worldPropertiesPointSpawnInput", 10, 135, "tl", 380, null, "Point Spawn Position (e.g. 5,6");
+	worldPropertiesWindow.addObject(worldPropertiesPointSpawnInput);
+	
 	worldPropertiesWindow.hide();
 	worldPropertiesWindow.addToPage();
 
@@ -199,6 +208,13 @@ window.addEventListener("load", () => {
 		console.log(worldProperties.spawnpos)
 	});
 	worldPropertiesSpawnInput.setMovementDisableEditor();
+	
+	worldPropertiesPointSpawnInput.addEventListener("change", (e) => {
+		worldProperties.pointspawnpos = spawnposFromString(worldPropertiesPointSpawnInput.getValue());
+		console.log(wolrdProperties.pointspawnpos);
+	});
+	worldPropertiesSpawnInput.setMovementDisableEditor();
+
 
 	fileWindow = new UiWindow("fileWindow", 0, 0, "cc", 250, 58);
 	fileWindow.addObject(new UiLabel("", 10, 7, "tl", "Select blocktypes.json", "14px sans-serif"));
@@ -243,7 +259,7 @@ window.addEventListener("load", () => {
 });
 
 function saveWorld() {
-	var data = {name:worldProperties.name, spawnpos:worldProperties.spawnpos, chunks:chunks};
+	var data = {name:worldProperties.name, spawnpos:worldProperties.spawnpos, pointspawnpos:worldProperties.pointspawnpos, chunks:chunks};
 
 	var file = new Blob([JSON.stringify(data)], {type: "application/json"});
 

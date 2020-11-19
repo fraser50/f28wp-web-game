@@ -51,7 +51,7 @@ var levels = {};
 levels[0] = new level.GameLevel(0);
 
 // Load a test world
-levels[0].loadFromFile("small_world.json", fs);
+levels[0].loadFromFile("small_world_ball_spawn.json", fs);
 levels[0].update();
 var levelCount = 1;
 
@@ -370,11 +370,9 @@ function loop() {
 	for (var i in levels) {
 
 		var lvl = levels[i];
-		
-		//console.log(lvl.clientlist);
-		
+				
 		lvl.update();
-
+		
 		sendObjects(lvl.newobjects, lvl.clientlist);
 
 		lvl.newobjects.splice(0, lvl.newobjects.length); // Clear lvl.newobjects
@@ -714,7 +712,7 @@ function startTimer(level, sec=60) {
 
 		if(sec==50) { //Currently set to spawn at 50secs for testing
 			printLog("Adding balls to level");
-			addBallsToLevelFixed(level);
+			spawnBalls(level.id)
 		}
 
 		if (sec==0) {
@@ -759,11 +757,22 @@ function addBallsToLevelRandom() {
 function addBallsToLevelFixed(lvl) {
 	for(i = 0; i < lvl.gameobjects.length; i++) {
 		if (lvl.gameobjects[i] instanceof gameobjects.BallSpawnPoint) {
-			let spawnPosition = lvl.gameobjects[i].getPos;
-			let b = new gameobjects.Point(spawnPosition.clone(), 0, lvl);
+			var spawnPosition = lvl.gameobjects[i].pos;
+			var b = new gameobjects.Point(lvl.gameobjects[i].pos, 0, lvl);
 			lvl.addObject(b);
 		}
 	}
+}
+
+
+// This takes in the level where the balls have to spawn and loops through all instances of the pointspawnpos and adds a ball in each instance
+function spawnBalls(levelId) {
+	var level = levels[levelId]
+	for (var i in level.pointspawnpos) {
+		var newBall = new gameobjects.Point(new util.Position(level.pointspawnpos[i][0], level.pointspawnpos[i][1]), 0, level)
+		level.addObject(newBall);
+	}
+
 }
 
 // Write to the console in a standard format with different levels (valid levels: warning, error, info (default))

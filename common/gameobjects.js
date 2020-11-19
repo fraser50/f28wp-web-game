@@ -118,7 +118,8 @@ class Player extends GameObject {
 
 class Point extends GameObject {
 	constructor(pos, rotation, level) {
-		super(pos, rotation, 0, level);
+		super(pos, rotation);
+		this.level = level;
 	}
 }
 
