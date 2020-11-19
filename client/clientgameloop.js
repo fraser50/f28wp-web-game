@@ -55,7 +55,7 @@ function stopLoop() {
 
 function serverLoop(level) {
 	//socket.emit('playerstate', socket.player.toJSON());
-	socket.emit('playerposupdate', {'id' : socket.player.id, 'x' : socket.player.pos.x, 'y' : socket.player.pos.y, 'rotation' : socket.player.rotation, "isGuest" : socket.player.isGuest, "team" : socket.player.team, "levelId" : level.id, "holdingBall" : socket.player.holdingBall, "holdingBallChanged" : socket.player.holdingBallChanged});
+	socket.emit('playerposupdate', {'id' : socket.player.id, 'x' : socket.player.pos.x, 'y' : socket.player.pos.y, 'rotation' : socket.player.rotation, "isGuest" : socket.player.isGuest, "team" : socket.player.team, "levelId" : level.id});		//Might need to add in holdingBall and holdingBallChanged
 }
 
 var serverLoopf = () => {serverLoop(currentLevel)};
@@ -174,6 +174,7 @@ window.addEventListener("load", () => {
 		*/
 		var holding = data.holding;
 		var player = socket.player;
+		socket.player.holdingBall = data.holding;
 		var teamwithoutball = {'red' : "player_red.png", 'blue' : "player_up.png"};
 		var teamwithball = {'red' : "player_red_with_ball.png", 'blue' : "player_with_ball.png"};
 
