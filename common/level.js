@@ -57,7 +57,7 @@ class GameLevel {
 				//console.log(this.gameobjects);
 				//console.log(this.toremove[i]);
 				if (this.gameobjects.indexOf(this.toremove[i]) != -1) {
-					this.gameobjects.splice(this.gameobjects.indexOf(i));
+					this.gameobjects.splice(this.gameobjects.indexOf(this.toremove[i]), 1);
 					this.removedobjects.push(this.toremove[i]);
 				}
 			}
