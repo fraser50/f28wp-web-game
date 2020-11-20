@@ -36,10 +36,10 @@ class GameLevel {
 	}
 
 	update() {
+		this.toremove = [];
+
 		for (let i=0; i<this.gameobjects.length; i++) {
 			var obj = this.gameobjects[i];
-			this.toremove = [];
-			//console.log(obj);
 			
 			if (obj != null) {
 				if (obj.removed) {
