@@ -356,7 +356,7 @@ function sendObjects(objlist, clients) {
 		for (var p in clients) {
 			var pl = clientlist[p];		// might need a level. in there but should be getting sent the level clientlist from the function below
 
-			if (pl.controlledobject === obj) {
+			if (pl.controlledobject === obj || (obj instanceof gameobjects.Player)) {
 				continue;
 			}
 
@@ -718,6 +718,10 @@ function startTimer(level, sec=60) {
 			clearInterval(timerInterval);
 			for (i in level.gameobjects) {
 				if (level.gameobjects[i] instanceof gameobjects.Point) {
+					console.log(Object.keys(level.gameobjects[i]));
+					for (c in level.clientlist) {
+						level.clientlist[c].socket.emit('removeplayer', {id: level.gameobjects[i]})		//This removes the balls from the players level.gameobjects
+					}
 					level.gameobjects[i].remove();
 				}
 			} 
