@@ -30,3 +30,16 @@ For the world to function properly, the spawn points must be set in the World Pr
     `(x y),(x y),(x y),(x y),(x y),(x y)`
 
 where the first 3 sets of coordinates are for the blue team and the last 3 are for the red team.
+
+# Testing
+
+Before a commit that adds a feature or changes an existing one perform the following tests:
+
+* Check the player can login as a registered user/guest
+* Check there is no obvious UI errors
+* Check for server crashes/console errors
+* Check movement and collision still works
+* Test for multiplayer by adding in another client, check both players can see the other
+* Test there are no errors for multi-level support, do this by adding in more than 6 players to trigger new level creation
+
+Once these tests have passed, commit your code
