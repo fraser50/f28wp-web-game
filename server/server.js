@@ -165,7 +165,6 @@ io.on('connection', (socket) => {
 			message : "",
 			success: false
 		};
-		console.log("this is the socket.cli stuff: " + Object.keys(socket.cli));
 		login(data, returnPack, socket.cli);
 		checkLevelStart(socket.cli.levelId);
 	});
@@ -198,7 +197,7 @@ io.on('connection', (socket) => {
 		}
 		printLog(`chatmessage: <${c.name}> ${data.message}`);
 		c.socket.broadcast.emit('chatmessage', data);
-		levels[c.levelId].addObject(new gameobjects.Point(new util.Position(13, -13), 0, levels[c.levelId])); // Testing
+		//levels[c.levelId].addObject(new gameobjects.Point(new util.Position(13, -13), 0, levels[c.levelId])); // Testing
 	});
 
 	/*socket.on('playerstate', (data) => {
@@ -212,7 +211,7 @@ io.on('connection', (socket) => {
 	});*/
 	
 	socket.on('getLevelId', () => {
-		console.log(levels.length)	//This doesn't seem to actually get the length of the levels array
+		//console.log(levels.length)	//This doesn't seem to actually get the length of the levels array
 		var level = levels[levelCount-1];
 		console.log("playercount: " + level.playercount);
 		console.log("levelCount: " + levelCount);
@@ -228,14 +227,12 @@ io.on('connection', (socket) => {
 			c.levelId = id;
 		}
 		levels[id].clientlist.push(c);
-		console.log(levels[id].clientlist);
 		socket.emit('returnLevelId', {"id" : id});
 	});
 	
 	function setNewLevel(levelId) {
 		console.log("new level:  " + levelId)
 		levels[levelId] = new level.GameLevel(levelId);
-		console.log(levels[levelId]);
 		
 		levels[levelId].loadFromFile("small_world.json", fs);
 		levels[levelId].update();
@@ -245,7 +242,9 @@ io.on('connection', (socket) => {
 		var level = levels[data.level];		//Takes in level id as sending full level is unnecessarily large 
 		socket.cli.levelId = data.level;
 
-		sendObjects(level.gameobjects, [socket.cli]);
+		console.log("OBJECTS         " + level.gameobjects);
+		
+		sendObjects(level.gameobjects, [socket.cli.socket]);
 
 		var player = JSON.parse(data.player);	//Transform player back into JSON
 
@@ -710,18 +709,23 @@ function startTimer(level, sec=60) {
 			rClient.socket.emit('updateTimer', sec);
 		}
 
-		if(sec==50) { //Currently set to spawn at 50secs for testing
+		if(sec==55) { //Currently set to spawn at 50secs for testing
 			printLog("Adding balls to level");
 			spawnBalls(level.id)
 		}
 
 		if (sec==0) {
 			clearInterval(timerInterval);
-			  sec = 60;
-			  for (k in level.clientlist) {
-				  rClient = level.clientlist[k];
-				  rClient.socket.emit('updateTimer', "Game Over")
-			  }
+			for (i in level.gameobjects) {
+				if (level.gameobjects[i] instanceof gameobjects.Point) {
+					level.gameobjects[i].remove();
+				}
+			} 
+			sec = 60;
+			for (k in level.clientlist) {
+				rClient = level.clientlist[k];
+				rClient.socket.emit('updateTimer', "Game Over")
+			}
 			setTimeout(() => {startTimer(level.id)}, 5000);
 			printLog("Timer Done");
 		}

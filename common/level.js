@@ -219,8 +219,6 @@ class GameLevel {
 			this.pointspawnpos.push(data.pointspawnpos[p]);
 		}
 		
-		console.log("AAAAAAAAAAA     " + this.pointspawnpos);
-
 		for (var c in data.chunks)
 			this.addChunk(c, data.chunks[c]);
 	}
