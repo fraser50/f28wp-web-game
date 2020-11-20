@@ -728,6 +728,7 @@ function startTimer(level, sec=60) {
 			sec = 60;
 			for (k in level.clientlist) {
 				rClient = level.clientlist[k];
+				rClient.socket.emit('resetPos');
 				rClient.socket.emit('updateTimer', "Game Over")
 			}
 			setTimeout(() => {startTimer(level.id)}, 5000);

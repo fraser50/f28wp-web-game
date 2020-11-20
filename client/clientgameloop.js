@@ -79,6 +79,7 @@ function assignTeam(level) {	//This takes in level and sends the player of for t
 			} else {
 				socket.player.updatePlayerImg("player_up.png");
 			}
+			socket.player.spawnpos = new util.Position(data.pos[0], data.pos[1]);		// This stores the spawn point for the player for game resets
 			socket.player.pos.x = data.pos[0];	// This updates the players position with assigned spawn point
 			socket.player.pos.y = data.pos[1];
 			socket.removeListener('assignedTeam');	// This is just for security (did work earlier, might be redundant now)
@@ -158,6 +159,11 @@ window.addEventListener("load", () => {
 			currentLevel.addObject(obj);
 		}
 	});
+	
+	socket.on('resetPos', () => {
+		socket.player.pos.x = socket.player.spawnpos.x;
+		socket.player.pos.y = socket.player.spawnpos.y;
+	})
 	
 	socket.on('playerChangeImg', (data) => {		// This is for updating player images when another player has their image changed
 		var obj = currentLevel.findObject(data.playerId);	// Get your instance of this player
