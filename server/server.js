@@ -294,6 +294,10 @@ io.on('connection', (socket) => {
 			obj.holdingBall = data.holdingBall;
 		}
 	});
+	
+	socket.on('playerScored', (data) => {
+		playerScoring(data.playerId, data.playerTeam, data.levelId);
+	});
 
 	socket.on('disconnect', () => {
 		var c = socket.cli;
@@ -731,9 +735,23 @@ function startTimer(level, sec=60) {
 				}
 			} 
 			sec = 60;
+			var winner;
+			if (level.redteamscore > level.blueteamscore) {
+				winner = "Red Team Wins";
+			} else if (level.blueteamscore > level.redteamscore) {
+				winner = "Blue Team Wins";
+			} else if ( level.blueteamscore == level.redteamscore) {
+				winner = "Draw";
+			}
+			
+			level.redteamscore = 0;		// Reset team scores at the end of the match
+			level.blueteamscore = 0;
+			
+			
 			for (k in level.clientlist) {
 				rClient = level.clientlist[k];
-				rClient.socket.emit('updateTimer', "Game Over")
+				rClient.socket.emit('updateTimer', winner);
+				rClient.socket.emit('teamScoreReset');		// This informs the client's level that the team scores are to be reset
 			}
 			setTimeout(() => {startTimer(level.id)}, 5000);
 			printLog("Timer Done");
@@ -786,6 +804,26 @@ function spawnBalls(levelId) {
 		level.addObject(newBall);
 	}
 
+}
+
+function playerScoring(playerId, playerTeam, levelId) {
+	var level = levels[levelId];
+	if (playerTeam == "blue") {
+		level.blueteamscore++;
+	} else if (playerTeam = "red") {
+		level.redteamscore++;
+	}
+	
+	for (i in level.gameobjects) {
+		if (level.gameobjects[i].id == playerId) {
+			level.gameobjects[i].points++;
+		}
+	}
+	
+	for (c in level.clientlist) {
+		level.clientlist[c].socket.emit('playerScored', {"playerId" : playerId, "redteamscore" : level.redteamscore, "blueteamscore" : level.blueteamscore})
+	}
+	
 }
 
 // Write to the console in a standard format with different levels (valid levels: warning, error, info (default))

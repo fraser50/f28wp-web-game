@@ -98,6 +98,7 @@ function doMovement(player, lastFrametime) {
 			player.updatePlayerImg(image);
 			socket.emit('playerChangeImg', {"playerId" : player.id, "image" : image, "levelId" : player.level})		// add a point to the player
 			player.holdingBall = false;
+			socket.emit('playerScored', {"playerId" : player.id, "playerTeam" : player.team, "levelId" : player.level})
 			player.points++;
 			currentLevel.redteamscore++; // Should try to send this value out to server after it is increased, otherwise all other clients view it as 0
 		}
@@ -107,6 +108,7 @@ function doMovement(player, lastFrametime) {
 			player.updatePlayerImg(image);	//Updates local player image
 			socket.emit('playerChangeImg', {"playerId" : player.id, "image" : image, "levelId" : player.level}) //Sends info to server to tell other clients player has changed image
 			player.holdingBall = false;	// Set holding ball to false as user has desposited ball in base
+			socket.emit('playerScored', {"playerId" : player.id, "playerTeam" : player.team, "levelId" : player.level})
 			player.points++;	// Increment player points
 			currentLevel.blueteamscore++; // Should try to send this value out to server after it is increased, otherwise all other clients view it as 0. Use similar format as playerChangeImg
 		}

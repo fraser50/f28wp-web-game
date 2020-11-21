@@ -163,7 +163,25 @@ window.addEventListener("load", () => {
 	socket.on('resetPos', () => {
 		socket.player.pos.x = socket.player.spawnpos.x;
 		socket.player.pos.y = socket.player.spawnpos.y;
-	})
+	});
+	
+	socket.on('playerScored', (data) => {
+		for (i in currentLevel.gameobjects) {
+			if (currentLevel.gameobjects[i].id == data.playerId) {
+				currentLevel.gameobjects[i].points++;
+			}
+		};
+		
+		currentLevel.redteamscore = data.redteamscore;
+		currentLevel.blueteamscore = data.blueteamscore;
+		
+		console.log("blue team score:   " + currentLevel.blueteamscore)
+	});
+	
+	socket.on('teamScoreReset', () => {
+		currentLevel.redteamscore = 0;
+		currentLevel.blueteamscore = 0;
+	});
 	
 	socket.on('playerChangeImg', (data) => {		// This is for updating player images when another player has their image changed
 		var obj = currentLevel.findObject(data.playerId);	// Get your instance of this player
