@@ -709,7 +709,12 @@ function startTimer(level, sec=60) {
 			rClient.socket.emit('updateTimer', sec);
 		}
 
-		if(sec==55) { //Currently set to spawn at 50secs for testing
+		if(sec==55) { // Reset player position and spawn balls
+			for (i in level.clientlist) {
+				rClient = level.clientlist[i];
+				rClient.socket.emit('resetPos');
+			} 
+			
 			printLog("Adding balls to level");
 			spawnBalls(level.id)
 		}
@@ -728,7 +733,6 @@ function startTimer(level, sec=60) {
 			sec = 60;
 			for (k in level.clientlist) {
 				rClient = level.clientlist[k];
-				rClient.socket.emit('resetPos');
 				rClient.socket.emit('updateTimer', "Game Over")
 			}
 			setTimeout(() => {startTimer(level.id)}, 5000);
