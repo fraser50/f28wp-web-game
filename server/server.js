@@ -787,6 +787,16 @@ function startTimer(level, sec=60) {
 				rClient.socket.emit('teamScoreReset');		// This informs the client's level that the team scores are to be reset
 			}
 			updateUserStats(level.id);
+			
+			for (c in level.clientlist) {		// This resets the values of the server side instances of logged in users
+				player = level.clientlist[c].controlledobject
+				if (!(player.isGuest)) {		//NEED TO CREATE VARIABLES TO STORE SESSION STATS FOR GUESTS, FROM THERE WE CAN JUST RESET VALUES ACROSS THE BOARD
+					player.points = 0;
+					player.wins = 0;
+					player.kills = 0;
+					level.clientlist[c].socket.emit('resetPlayerStats');
+				}
+			}
 			setTimeout(() => {startTimer(level.id)}, 5000);
 			printLog("Timer Done");
 		}

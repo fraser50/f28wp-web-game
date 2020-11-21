@@ -189,6 +189,12 @@ window.addEventListener("load", () => {
 		currentLevel.blueteamscore = 0;
 	});
 	
+	socket.on('resetPlayerStats', () => {
+		socket.player.points = 0;
+		socket.player.wins = 0;
+		socket.player.kills = 0;
+	})
+	
 	socket.on('playerChangeImg', (data) => {		// This is for updating player images when another player has their image changed
 		var obj = currentLevel.findObject(data.playerId);	// Get your instance of this player
 		if (obj != null) 

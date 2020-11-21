@@ -221,7 +221,6 @@ function getUserStatVals() {
 				userTotalPoints.updateValue(data.points + socket.player.points);
 			});
 	} else {
-		console.log(socket.player);
 		userWins.updateValue(socket.player.wins);
 		userKills.updateValue(socket.player.kills);
 		userTotalPoints.updateValue(socket.player.points);
