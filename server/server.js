@@ -296,6 +296,12 @@ io.on('connection', (socket) => {
 	});
 	
 	socket.on('playerScored', (data) => {
+//		var level = levels[data.levelId];			// I think this doubled up the points
+//		for (i in level.clientlist) {
+//			if (level.clientlist[i].name == data.playerId){
+//				level.clientlist[i].controlledobject.points++;
+//			}
+//		}
 		playerScoring(data.playerId, data.playerTeam, data.levelId);
 	});
 
@@ -513,7 +519,7 @@ function addUser(data, returnPack, client) {
 		if (!(found)) {		//If there isnt a match for the entered username in the database
 			var hashedPassword = bcrypt.hashSync(data.pass, BCRYPT_ROUNDS);
 
-		db.run('INSERT INTO users(user, passhash) VALUES(?, ?)', [data.user, hashedPassword], (err) => {		// add username and password to the database
+		db.run('INSERT INTO users(user, passhash, wins, kills, totalPoints) VALUES(?, ?, ?, ?, ?)', [data.user, hashedPassword, 0, 0, 0], (err) => {		// add username and password to the database
 			if (err) {		//Error handling
 				printLog(err.message, returnPack);
 				returnPack.message = "Sorry, there was an error in creating your account, please try again.";
@@ -702,6 +708,25 @@ function checkLevelStart(level) {	//This checks to see if at least 2 players hav
 	}
 }
 
+function updateUserStats(levelId) {
+	var level = levels[levelId];
+	for (i in level.clientlist) {
+		if (!(level.clientlist[i].controlledobject.isGuest)) {
+			var player = level.clientlist[i].controlledobject;
+			printLog("wins: " + player.wins + "  kills: " + player.kills + "  points: " + player.points + "    id: " + player.id);
+			let sql = 'UPDATE users SET wins = wins + ?, kills = kills + ?, totalPoints = totalPoints + ? WHERE user = ?';
+				let values = [player.wins, player.kills, player.points, player.id];
+			db.run(sql, values, function(err) {
+				if (err) {
+					return printLog("Failure in updating user: " + player.id + " stats");
+				};
+				
+				printLog(player.id + " stats have been updated");
+			});
+		}
+ 	}
+};
+
 function startTimer(level, sec=60) {
 	var level = levels[level];
 	level.started = true;
@@ -752,13 +777,16 @@ function startTimer(level, sec=60) {
 			
 			for (k in level.clientlist) {
 				rClient = level.clientlist[k];
-				if (rClient.team == winner) {
-					rClient.wins++;
+				player = rClient.controlledobject;
+				if (player.team == winner) {
+					player.wins++;
 				}
+								
 				rClient.socket.emit('updateTimer', winnerMessage);
 				rClient.socket.emit('winningTeam', {"winningTeam" : winner});
 				rClient.socket.emit('teamScoreReset');		// This informs the client's level that the team scores are to be reset
 			}
+			updateUserStats(level.id);
 			setTimeout(() => {startTimer(level.id)}, 5000);
 			printLog("Timer Done");
 		}
