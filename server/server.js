@@ -735,13 +735,15 @@ function startTimer(level, sec=60) {
 				}
 			} 
 			sec = 60;
-			var winner;
 			if (level.redteamscore > level.blueteamscore) {
-				winner = "Red Team Wins";
+				winner = "red";
+				winnerMessage = "Red Team Wins";
 			} else if (level.blueteamscore > level.redteamscore) {
-				winner = "Blue Team Wins";
+				winner = "blue";
+				winnerMessage = "Blue Team Wins";
 			} else if ( level.blueteamscore == level.redteamscore) {
-				winner = "Draw";
+				winner = "draw";
+				winnerMessage = "Draw";
 			}
 			
 			level.redteamscore = 0;		// Reset team scores at the end of the match
@@ -750,7 +752,11 @@ function startTimer(level, sec=60) {
 			
 			for (k in level.clientlist) {
 				rClient = level.clientlist[k];
-				rClient.socket.emit('updateTimer', winner);
+				if (rClient.team == winner) {
+					rClient.wins++;
+				}
+				rClient.socket.emit('updateTimer', winnerMessage);
+				rClient.socket.emit('winningTeam', {"winningTeam" : winner});
 				rClient.socket.emit('teamScoreReset');		// This informs the client's level that the team scores are to be reset
 			}
 			setTimeout(() => {startTimer(level.id)}, 5000);

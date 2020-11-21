@@ -178,6 +178,12 @@ window.addEventListener("load", () => {
 		console.log("blue team score:   " + currentLevel.blueteamscore)
 	});
 	
+	socket.on('winningTeam', (data) => {
+		if (socket.player.team == data.winningTeam) {
+			socket.player.wins++;
+		}
+	});
+	
 	socket.on('teamScoreReset', () => {
 		currentLevel.redteamscore = 0;
 		currentLevel.blueteamscore = 0;
