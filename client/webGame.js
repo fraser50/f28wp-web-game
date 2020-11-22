@@ -148,7 +148,7 @@ window.addEventListener("load", () => {
 			assignTeam(currentLevel);	//Assign to a team when start loop
 			startLoop(currentLevel);
 			startServerLoop(currentLevel);
-			socket.emit('joinMatch', {levelId : socket.player.level});
+			socket.emit('joinMatch', {levelId : currentLevel.id});
 			loopStartButton.updateValue("Stop loop");
 			startTimer();
 		}

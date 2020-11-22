@@ -708,8 +708,10 @@ function checkLevelPlayerCount(id) {		// This removes the level if empty, althou
 
 function checkLevelStart(level) {	//This checks to see if at least 2 players have entered the game
 	var level = levels[level];		// Maybe add in a boolean to the level class to see if it is started
+	console.log("This is the player count currently:  " + level.playercount);
 	if (level.playercount > 1 && !level.started) {	// This would allow for a > 2 and !hasStarted check // The +1 is there as for some reason playercount is 1 less that what it should be
 		startTimer(level.id);
+		console.log("The timer should now start as the player count is:   " + level.playercount);
 	}
 }
 
