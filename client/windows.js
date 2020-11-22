@@ -194,8 +194,8 @@ function generateLeaderboard() {
 	leaderboardWindow.addObject(blueTeamTitle);
 	leaderboardWindow.addObject(redTeamTitle);
 	
-	var blueTeamScore = new UiLabel("blueTeamScore", 194.03, 60, "tl", "null", "24px sans-serif");
-	var redTeamScore = new UiLabel("redTeamScore", 405.97, 60, "tl", "null", "24px sans-serif");
+	var blueTeamScore = new UiLabel("blueTeamScore", 194.03, 60, "tl", "0", "24px sans-serif");
+	var redTeamScore = new UiLabel("redTeamScore", 405.97, 60, "tl", "0", "24px sans-serif");
 	leaderboardWindow.addObject(blueTeamScore);
 	leaderboardWindow.addObject(redTeamScore);
 
