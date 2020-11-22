@@ -155,7 +155,7 @@ io.on('connection', (socket) => {
 			success: false
 		};
 		addUser(data, returnPack, socket.cli);		//Call the addUser method
-		checkLevelStart(socket.cli.levelId);
+		//checkLevelStart(socket.cli.levelId);
 	});
 	
 	socket.on('login', (data) => {				//Listens for login requests
@@ -166,7 +166,7 @@ io.on('connection', (socket) => {
 			success: false
 		};
 		login(data, returnPack, socket.cli);
-		checkLevelStart(socket.cli.levelId);
+		//checkLevelStart(socket.cli.levelId);
 	});
 	
 	socket.on('guest', () => {				//Listens for guest login requests
@@ -177,7 +177,7 @@ io.on('connection', (socket) => {
 			isGuest : "true"
 		};
 		guest(returnPack, socket.cli);
-		checkLevelStart(socket.cli.levelId);
+		//checkLevelStart(socket.cli.levelId);
 	});
 	
 	socket.on('sign out', () => {
@@ -186,6 +186,11 @@ io.on('connection', (socket) => {
 	
 	socket.on('getStats', (stats) => {
 		getUserStats(stats, socket.cli);
+	});
+	
+	socket.on('joinMatch', (data) => {
+		checkLevelStart(data.levelId);
+		console.log(levels[data.levelId].playercount);
 	});
 
 	socket.on('chatmessage', (data) => {
@@ -703,7 +708,7 @@ function checkLevelPlayerCount(id) {		// This removes the level if empty, althou
 
 function checkLevelStart(level) {	//This checks to see if at least 2 players have entered the game
 	var level = levels[level];		// Maybe add in a boolean to the level class to see if it is started
-	if (level.playercount+1 > 1 && !level.started) {	// This would allow for a > 2 and !hasStarted check // The +1 is there as for some reason playercount is 1 less that what it should be
+	if (level.playercount > 1 && !level.started) {	// This would allow for a > 2 and !hasStarted check // The +1 is there as for some reason playercount is 1 less that what it should be
 		startTimer(level.id);
 	}
 }
@@ -727,7 +732,7 @@ function updateUserStats(levelId) {
  	}
 };
 
-function startTimer(level, sec=60) {
+function startTimer(level, sec=61) {
 	var level = levels[level];
 	level.started = true;
 	var timerInterval = setInterval(() => {		// This means it is synced across all levels, change this
@@ -738,7 +743,7 @@ function startTimer(level, sec=60) {
 			rClient.socket.emit('updateTimer', sec);
 		}
 
-		if(sec==55) { // Reset player position and spawn balls
+		if(sec==60) { // Reset player position and spawn balls
 			for (i in level.clientlist) {
 				rClient = level.clientlist[i];
 				rClient.socket.emit('resetPos');
@@ -759,7 +764,7 @@ function startTimer(level, sec=60) {
 					level.gameobjects[i].remove();
 				}
 			} 
-			sec = 60;
+			sec = 61;
 			if (level.redteamscore > level.blueteamscore) {
 				winner = "red";
 				winnerMessage = "Red Team Wins";

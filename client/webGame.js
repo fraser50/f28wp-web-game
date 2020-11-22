@@ -148,6 +148,7 @@ window.addEventListener("load", () => {
 			assignTeam(currentLevel);	//Assign to a team when start loop
 			startLoop(currentLevel);
 			startServerLoop(currentLevel);
+			socket.emit('joinMatch', {levelId : socket.player.level});
 			loopStartButton.updateValue("Stop loop");
 			startTimer();
 		}
@@ -180,8 +181,8 @@ window.addEventListener("load", () => {
 		
 		socket.on('updateTimer', (data) => {
 			sec = data;
-			if (sec == "Game Over") {
-				console.log("Timer Done");
+			if (sec == "0") {
+				console.log("Game Over");
 			}
 			timer.updateValue(sec);
 		});
