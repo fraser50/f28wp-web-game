@@ -193,6 +193,11 @@ function generateLeaderboard() {
 	var redTeamTitle = new UiLabel("redTeamTitle", 495.97, 60, "tl", "Red", "24px sans-serif", "red");
 	leaderboardWindow.addObject(blueTeamTitle);
 	leaderboardWindow.addObject(redTeamTitle);
+	
+	var blueTeamScore = new UiLabel("blueTeamScore", 194.03, 60, "tl", "null", "24px sans-serif");
+	var redTeamScore = new UiLabel("redTeamScore", 405.97, 60, "tl", "null", "24px sans-serif");
+	leaderboardWindow.addObject(blueTeamScore);
+	leaderboardWindow.addObject(redTeamScore);
 
 	return leaderboardWindow;
 }

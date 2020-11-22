@@ -15,10 +15,16 @@ let keyStates = {
 
 function checkLeaderboard() {		//Would've used tab, but would change focus to other objs. Might want to change how this works for better performance.
 //Need to add in blocks like if user is focused on chat or there is login/stats window up
-	if (keyStates.shift.pressed) {
-		document.getElementById("leaderboardWindow").style.display = "block";
-	} else {
-		document.getElementById("leaderboardWindow").style.display = "none";
+	var leaderboard = document.getElementById("leaderboardWindow");
+	if (keyStates.shift.pressed && leaderboard.style.display == "none") {
+		socket.emit('getTeamScores', {levelId : currentLevel.id});
+		socket.on('returnTeamScores', (data) => {
+			document.getElementById("redTeamScore").innerHTML = data.redTeamScore;		//Would prefer to use the UiLabel updateValue function but this won't work as the labels are not defined here
+			document.getElementById("blueTeamScore").innerHTML = data.blueTeamScore;
+		});
+		leaderboard.style.display = "block";
+	} else if (!(keyStates.shift.pressed) && leaderboard.style.display == "block"){
+		leaderboard.style.display = "none";
 	}
 }
 

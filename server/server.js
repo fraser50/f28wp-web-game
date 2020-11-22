@@ -309,6 +309,11 @@ io.on('connection', (socket) => {
 //		}
 		playerScoring(data.playerId, data.playerTeam, data.levelId);
 	});
+	
+	socket.on('getTeamScores', (data) => {
+		var level = levels[data.levelId];
+		socket.emit('returnTeamScores', {redTeamScore : level.redteamscore, blueTeamScore : level.blueteamscore});
+	});
 
 	socket.on('disconnect', () => {
 		var c = socket.cli;
