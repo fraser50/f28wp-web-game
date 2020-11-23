@@ -47,13 +47,7 @@ delete blockTypes.editorproperties;
 // Store all levels in here
 var levels = {};
 
-// Create level for testing
-levels[0] = new level.GameLevel(0);
-
-// Load a test world
-levels[0].loadFromFile("small_world_ball_spawn.json", fs);
-levels[0].update();
-var levelCount = 1;
+var levelCount = 0;
 
 // Store all the logged in users to use for security
 var loggedInUsers = {};
@@ -217,18 +211,20 @@ io.on('connection', (socket) => {
 	
 	socket.on('getLevelId', () => {
 		//console.log(levels.length)	//This doesn't seem to actually get the length of the levels array
-		var level = levels[levelCount-1];
-		console.log("playercount: " + level.playercount);
-		console.log("levelCount: " + levelCount);
-		if (level.playercount < 6) {
+		var level = levels[levelCount];
+		if (level) {
+		printLog("playercount: " + level.playercount);
+		printLog("levelCount: " + levelCount);
+		}
+		
+		if (level && level.playercount < 6) {
 			var id = level.id
 			c.levelId = id;
 		} else {
-			var id = levelCount
+			var id = levelCount + 1
 			levelCount++;
-			console.log("levelCountRedux: " + levelCount);
-			var tempLevelCount = levelCount-1;
-			setNewLevel(tempLevelCount);
+			printLog("New Level: " + levelCount);
+			setNewLevel(levelCount);
 			c.levelId = id;
 		}
 		levels[id].clientlist.push(c);
@@ -784,6 +780,13 @@ function startTimer(level, sec=61) {
 
 		if (sec==0) {
 			clearInterval(timerInterval);
+			
+			if (level.playercount==0) {	// Checks to see if level is empty at end of match, if it is exit this so not to restart the timer
+				printLog("Level " + level.id + " is empty. Deleting.")
+				delete levels[level.id];
+				return;
+			}
+				
 			for (i in level.gameobjects) {
 				if (level.gameobjects[i] instanceof gameobjects.Point) {
 					console.log(Object.keys(level.gameobjects[i]));
@@ -822,6 +825,7 @@ function startTimer(level, sec=61) {
 				rClient.socket.emit('winningTeam', {"winningTeam" : winner});
 				rClient.socket.emit('teamScoreReset');		// This informs the client's level that the team scores are to be reset
 			}
+			
 			updateUserStats(level.id);
 			
 			for (c in level.clientlist) {		// This resets the values of the server side instances of logged in users
@@ -834,6 +838,7 @@ function startTimer(level, sec=61) {
 					level.clientlist[c].socket.emit('resetPlayerStats');
 				}
 			}
+			
 			setTimeout(() => {startTimer(level.id)}, 5000);
 			printLog("Timer Done");
 		}
