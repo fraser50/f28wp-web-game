@@ -301,8 +301,6 @@ io.on('connection', (socket) => {
 			obj.rotation = data.rotation;
 			obj.isGuest = data.isGuest;
 			obj.team = data.team;
-			obj.holdingBallChanged = data.holdingBallChanged;
-			obj.holdingBall = data.holdingBall;
 		}
 	});
 	
