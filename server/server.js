@@ -194,6 +194,11 @@ io.on('connection', (socket) => {
 			printLog(`chatmessage: from non logged in user: <${c.name}> ${data.message}`, "warning");
 			return;
 		}
+
+		if (data.message.length > 60) {
+			socket.emit('chatmessagefail', "Failed to send message: Too long");
+		}
+
 		printLog(`chatmessage: <${c.name}> ${data.message}`);
 		c.socket.broadcast.emit('chatmessage', data);
 		//levels[c.levelId].addObject(new gameobjects.Point(new util.Position(13, -13), 0, levels[c.levelId])); // Testing
