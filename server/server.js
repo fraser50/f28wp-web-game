@@ -47,7 +47,13 @@ delete blockTypes.editorproperties;
 // Store all levels in here
 var levels = {};
 
-var levelCount = 0;
+//Create level for testing
+levels[0] = new level.GameLevel(0);
+
+// Load a test world
+levels[0].loadFromFile("small_world_ball_spawn.json", fs);
+levels[0].update();
+var levelCount = 1;
 
 // Store all the logged in users to use for security
 var loggedInUsers = {};
@@ -184,7 +190,6 @@ io.on('connection', (socket) => {
 	
 	socket.on('joinMatch', (data) => {
 		checkLevelStart(data.levelId);
-		console.log(levels[data.levelId].playercount);
 	});
 
 	socket.on('chatmessage', (data) => {
@@ -211,20 +216,21 @@ io.on('connection', (socket) => {
 	
 	socket.on('getLevelId', () => {
 		//console.log(levels.length)	//This doesn't seem to actually get the length of the levels array
-		var level = levels[levelCount];
-		if (level) {
-		printLog("playercount: " + level.playercount);
-		printLog("levelCount: " + levelCount);
+		
+		if (levels[levelCount] == undefined) {
+			setNewLevel(levelCount);
 		}
 		
-		if (level && level.playercount < 6) {
+		var level = levels[levelCount-1];
+		printLog("playercount: " + level.playercount);
+		printLog("levelCount: " + levelCount);
+		if (level.playercount < 6) {
 			var id = level.id
 			c.levelId = id;
 		} else {
-			var id = levelCount + 1
-			levelCount++;
-			printLog("New Level: " + levelCount);
+			var id = levelCount
 			setNewLevel(levelCount);
+			levelCount++;
 			c.levelId = id;
 		}
 		levels[id].clientlist.push(c);
@@ -232,7 +238,7 @@ io.on('connection', (socket) => {
 	});
 	
 	function setNewLevel(levelId) {
-		console.log("new level:  " + levelId)
+		printLog("New Level:  " + levelId)
 		levels[levelId] = new level.GameLevel(levelId);
 		
 		levels[levelId].loadFromFile("small_world.json", fs);
@@ -243,8 +249,6 @@ io.on('connection', (socket) => {
 		var level = levels[data.level];		//Takes in level id as sending full level is unnecessarily large 
 		socket.cli.levelId = data.level;
 
-		console.log("OBJECTS         " + level.gameobjects);
-		
 		sendObjects(level.gameobjects, [socket.cli.socket]);
 
 		var player = JSON.parse(data.player);	//Transform player back into JSON
@@ -263,7 +267,7 @@ io.on('connection', (socket) => {
 			}	
 			level.playercount++; // Increase the player count by 1.
 		} else {
-			console.log('level ' + level.id + " is full");	//Temp error message for when room is full, this should be changed once we have rooms working properly
+			printLog('level ' + level.id + " is full");	//Temp error message for when room is full, this should be changed once we have rooms working properly
 		}
 		
 		printLog(player.id + ' joined ' + player.team);
@@ -275,7 +279,6 @@ io.on('connection', (socket) => {
 		var level = levels[data.levelId];
 		for (k in level.clientlist) {
 			rClient = level.clientlist[k];
-			console.log(Object.keys(rClient))
 			if (rClient.controlledobject && rClient.controlledobject.name == data.playerId) {continue;};
 			rClient.socket.emit('playerChangeImg', {"playerId": data.playerId, "image" : data.image}); 
 		}
@@ -713,12 +716,12 @@ function checkLevelPlayerCount(id) {		// This removes the level if empty, althou
 }
 
 
-function checkLevelStart(level) {	//This checks to see if at least 2 players have entered the game
-	var level = levels[level];		// Maybe add in a boolean to the level class to see if it is started
-	console.log("This is the player count currently:  " + level.playercount);
+function checkLevelStart(levelId) {	//This checks to see if at least 2 players have entered the game
+	var level = levels[levelId];		// Maybe add in a boolean to the level class to see if it is started
+	printLog("Player count in level "+ levelId + ":  " + level.playercount);
 	if (level.playercount > 1 && !level.started) {	// This would allow for a > 2 and !hasStarted check // The +1 is there as for some reason playercount is 1 less that what it should be
 		startTimer(level.id);
-		console.log("The timer should now start as the player count is:   " + level.playercount);
+		printLog("Level " + level.id + " Timer Start");
 	}
 }
 
@@ -789,7 +792,6 @@ function startTimer(level, sec=61) {
 				
 			for (i in level.gameobjects) {
 				if (level.gameobjects[i] instanceof gameobjects.Point) {
-					console.log(Object.keys(level.gameobjects[i]));
 					for (c in level.clientlist) {
 						level.clientlist[c].socket.emit('removeplayer', {id: level.gameobjects[i]})		//This removes the balls from the players level.gameobjects
 					}
