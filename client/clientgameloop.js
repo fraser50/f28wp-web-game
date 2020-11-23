@@ -166,12 +166,7 @@ window.addEventListener("load", () => {
 	});
 	
 	socket.on('playerScored', (data) => {
-		for (i in currentLevel.gameobjects) {
-			if (currentLevel.gameobjects[i].id == data.playerId) {
-				currentLevel.gameobjects[i].points++;
-			}
-		};
-		
+	
 		currentLevel.redteamscore = data.redteamscore;
 		currentLevel.blueteamscore = data.blueteamscore;
 		
@@ -198,7 +193,7 @@ window.addEventListener("load", () => {
 	socket.on('playerChangeImg', (data) => {		// This is for updating player images when another player has their image changed
 		var obj = currentLevel.findObject(data.playerId);	// Get your instance of this player
 		if (obj != null) 
-			currentLevel.updatePlayerImg(obj, data.image);		//update this client for the changed player's image
+			currentLevel.updatePlayerImg(obj, data.image);	//Should change this	//update this client for the changed player's image
 	});
 
 	socket.on('ballstatechange', (data) => {
