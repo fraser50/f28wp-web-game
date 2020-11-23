@@ -13,6 +13,19 @@ Please complete the following steps to get the game running
 
 You should be the be able to access the game through the url "http://localhost:2000"
 
+# How To Play
+
+When you load up the game you must first either sign up or log in as a guest, or, If you already have an account - log in.
+Once you have signed into an account - guest or otherwise - you should now click the "Join Match" button in the bottom right window.
+
+The game will start once there are at least two players connected.
+The objective of this game is to collect balls that spawn around the map and deposit them in your team's base,
+your team wins the match if they deposit more balls than the opposing team.
+
+Use WASD to move, picking up and depositing the balls is automatic.
+To view the team scores and leaderboard hold Left Shift.
+To view your personal lifetime stats click on the button with you username in the top left of the screen
+
 # Level Editor
 
 To run the level editor, open the html file in a browser and load the file blocktypes.json when prompted.
