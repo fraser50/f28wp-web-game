@@ -295,12 +295,12 @@ io.on('connection', (socket) => {
 		if (!socket.cli) return;
 		if (c.loggedin && c.controlledobject != null) {
 			var obj = c.controlledobject;
-			obj.id = data.id;
+			//obj.id = data.id;
 			obj.pos.x = data.x;
 			obj.pos.y = data.y;
 			obj.rotation = data.rotation;
-			obj.isGuest = data.isGuest;
-			obj.team = data.team;
+			//obj.isGuest = data.isGuest;
+			//obj.team = data.team;
 		}
 	});
 	
@@ -381,7 +381,7 @@ function sendObjects(objlist, clients) {
 		for (var p in clients) {
 			var pl = clientlist[p];		// might need a level. in there but should be getting sent the level clientlist from the function below
 
-			if (pl.controlledobject === obj || (obj instanceof gameobjects.Player)) {
+			if (pl.controlledobject === obj) {
 				continue;
 			}
 
@@ -400,38 +400,6 @@ function loop() {
 		sendObjects(lvl.newobjects, lvl.clientlist);
 
 		lvl.newobjects.splice(0, lvl.newobjects.length); // Clear lvl.newobjects
-
-		for (j in lvl.gameobjects) { // TODO: Remove this soon, just for dealing with players, should be merged with posupdate
-			var obj = lvl.gameobjects[j];
-
-			if (!(obj instanceof gameobjects.Player)) {
-				continue; // Ignore object that are not players, this code is only designed for dealing with players
-			}
-
-			if (obj.holdingBallChanged) { // Send message to player if their ball holding state has changed
-				obj.holdingBallChanged = false;
-				for (k in lvl.clientlist) {
-					var cli = lvl.clientlist[k];
-
-					if (cli.controlledobject == obj) {
-						cli.socket.emit("ballstatechange", {'holding':obj.holdingBall}); // TODO: Probably don't need to send a JSON object
-						break; // No two players will control the same object, so can break out when we find them
-					}
-				}
-			}
-
-			if (obj.pos.changed) {
-				obj.pos.changed = false;
-	
-				for (k in lvl.clientlist) {
-					var c = lvl.clientlist[k];
-					if (!c.loggedin) continue;
-					if (c.controlledobject.id != obj.id) {
-						c.socket.emit('posupdate_old', {'id' : obj.id, 'x' : obj.pos.x, 'y' : obj.pos.y, 'rot' : obj.rotation, 'isGuest' : obj.isGuest, 'team' : obj.team});
-					}
-				}
-			}
-		}
 
 		for (j in lvl.gameobjects) {
 			var obj = lvl.gameobjects[j];
@@ -630,6 +598,7 @@ function login(data, returnPack, client) {
 }
 
 function initUser(client, level) {
+	console.log('inituser');
 	var p = new gameobjects.Player(new util.Position(0, 0), 0, level, new util.Vector(0, 0));
 	level.addObject(p);
 	client.controlledobject = p;

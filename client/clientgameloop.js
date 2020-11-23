@@ -100,30 +100,6 @@ window.addEventListener("load", () => {
 			console.log(currentLevel.gameobjects);
 		}
 	});
-	
-	socket.on('posupdate_old', (data) => { //TODO: Remove this later, see TODOS in server.js for more info
-		//if (isGuest) data.id = "guest_"+data.id;
-		var obj = currentLevel.findObject(data.id);
-		
-		if (data.isGuest && obj == null) {
-			obj = currentLevel.findObject('guest_'+data.id);
-		}
-		
-		var x = data.x;
-		var y = data.y;
-		var rot = data.rot;
-		var isGuest = data.isGuest;
-		var team = data.team;
-		
-		
-		if (obj != null) {
-			obj.pos.x = x;
-			obj.pos.y = y;
-			if (rot != null)		// This fixed rotation reset
-				obj.rotation = rot;
-		}
-
-	});
 
 	socket.on('posupdate', (data) => {
 		//if (isGuest) data.id = "guest_"+data.id;
@@ -147,6 +123,8 @@ window.addEventListener("load", () => {
 
 		if (currentLevel.findObject(objid) != null) { // If an object with this ID already exists, don't add it again
 			console.log('WARNING: Object that already exists was sent!');
+			console.log(objid);
+			print(currentLevel.gameobjects);
 
 		} else {
 			var obj = objFromJSON(data);
