@@ -88,7 +88,9 @@ class Player extends GameObject {
 		if (this.elem) {
 			this.elem.style.transform = `rotate(${this.rotation}rad)`;
 
-		} else { // This logic is to only run on the server
+		}
+		
+		if (typeof window == "undefined") { // This logic is to only run on the server
 			for (var i in this.level.gameobjects) {
 				var obj = this.level.gameobjects[i];
 
