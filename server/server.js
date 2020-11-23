@@ -278,7 +278,9 @@ io.on('connection', (socket) => {
 	socket.on('playerChangeImg', (data) => {	// Listens for when a client changes their image and send emit with details to all other clients. Might need to adapt this for multiple levels as it sends it to ALL clients. Probably an emit change to fix this
 		var level = levels[data.levelId];
 		for (k in level.clientlist) {
-			rClient = clientlist[k];
+			rClient = level.clientlist[k];
+			console.log(Object.keys(rClient))
+			if (rClient.controlledobject && rClient.controlledobject.name == data.playerId) {continue;};
 			rClient.socket.emit('playerChangeImg', {"playerId": data.playerId, "image" : data.image}); 
 		}
 		socket.emit()
@@ -723,6 +725,7 @@ function checkLevelStart(level) {	//This checks to see if at least 2 players hav
 function updateUserStats(levelId) {
 	var level = levels[levelId];
 	for (i in level.clientlist) {
+		if(!level.clientlist[i].controlledobject) continue;
 		if (!(level.clientlist[i].controlledobject.isGuest)) {
 			var player = level.clientlist[i].controlledobject;
 			printLog("wins: " + player.wins + "  kills: " + player.kills + "  points: " + player.points + "    id: " + player.id);
@@ -790,8 +793,10 @@ function startTimer(level, sec=61) {
 			for (k in level.clientlist) {
 				rClient = level.clientlist[k];
 				player = rClient.controlledobject;
-				if (player.team == winner) {
-					player.wins++;
+				if (player) {
+					if (player.team == winner) {
+						player.wins++;
+					}
 				}
 								
 				rClient.socket.emit('updateTimer', winnerMessage);
@@ -802,6 +807,7 @@ function startTimer(level, sec=61) {
 			
 			for (c in level.clientlist) {		// This resets the values of the server side instances of logged in users
 				player = level.clientlist[c].controlledobject
+				if (!player) continue;
 				if (!(player.isGuest)) {		//NEED TO CREATE VARIABLES TO STORE SESSION STATS FOR GUESTS, FROM THERE WE CAN JUST RESET VALUES ACROSS THE BOARD
 					player.points = 0;
 					player.wins = 0;
