@@ -323,6 +323,7 @@ io.on('connection', (socket) => {
 		var level = levels[c.levelId];	// This makes sure the things done below are to this clients level
 		
 		if (level) {
+			updateUserStats(c.levelId, c.controlledobject);
 			for (k in level.clientlist) {
 				rClient = level.clientlist[k];
 				if (rClient.name == c.name && rClient.name) {
@@ -683,7 +684,10 @@ function getUserStats(stats, socket) {
 }
 
 function signOut(client) {	//This removes client from their team, sends out emit package to tell all other clients that they have signed out and should remove the player from the screen
+
 	printLog("sign out " + client.name);
+	updateUserStats(client.levelId, client.controlledobject);
+
 	var level = levels[client.levelId];
 	
 	if (client.controlledobject.team == 'blue') {			//Need to get levels sorted so there is not only one, this doesn't allow for scalability atm
@@ -722,12 +726,9 @@ function checkLevelStart(level) {	//This checks to see if at least 2 players hav
 	}
 }
 
-function updateUserStats(levelId) {
-	var level = levels[levelId];
-	for (i in level.clientlist) {
-		if(!level.clientlist[i].controlledobject) continue;
-		if (!(level.clientlist[i].controlledobject.isGuest)) {
-			var player = level.clientlist[i].controlledobject;
+function updateUserStats(levelId, player = null) {
+	if (player) { // This runs specifically for only one player has to be updated
+		if (!player.isGuest) {
 			printLog("wins: " + player.wins + "  kills: " + player.kills + "  points: " + player.points + "    id: " + player.id);
 			let sql = 'UPDATE users SET wins = wins + ?, kills = kills + ?, totalPoints = totalPoints + ? WHERE user = ?';
 				let values = [player.wins, player.kills, player.points, player.id];
@@ -736,10 +737,28 @@ function updateUserStats(levelId) {
 					return printLog("Failure in updating user: " + player.id + " stats");
 				};
 				
-				printLog(player.id + " stats have been updated");
+				printLog(player.id + " stats have been updated on disconnect");
 			});
 		}
- 	}
+	} else {
+		var level = levels[levelId];
+		for (i in level.clientlist) {
+			if(!level.clientlist[i].controlledobject) continue;
+			if (!(level.clientlist[i].controlledobject.isGuest)) {
+				var player = level.clientlist[i].controlledobject;
+				printLog("wins: " + player.wins + "  kills: " + player.kills + "  points: " + player.points + "    id: " + player.id);
+				let sql = 'UPDATE users SET wins = wins + ?, kills = kills + ?, totalPoints = totalPoints + ? WHERE user = ?';
+					let values = [player.wins, player.kills, player.points, player.id];
+				db.run(sql, values, function(err) {
+					if (err) {
+						return printLog("Failure in updating user: " + player.id + " stats");
+					};
+					
+					printLog(player.id + " stats have been updated");
+				});
+			}
+	 	}
+	}
 };
 
 function startTimer(level, sec=61) {
