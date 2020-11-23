@@ -22,9 +22,11 @@ The game will start once there are at least two players connected.
 The objective of this game is to collect balls that spawn around the map and deposit them in your team's base,
 your team wins the match if they deposit more balls than the opposing team.
 
-Use WASD to move, picking up and depositing the balls is automatic.
-To view the team scores and leaderboard hold Left Shift.
-To view your personal lifetime stats click on the button with you username in the top left of the screen
+Controls:
+
+* Use WASD to move, picking up and depositing the balls is automatic.
+* Left Shift to view team scores and match leaderboard.
+* To view your personal lifetime stats click on the button with you username in the top left of the screen
 
 # Level Editor
 
