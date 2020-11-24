@@ -29,18 +29,21 @@ class GameObject {
 }
 
 class Player extends GameObject {
-	constructor(pos, rotation, level, velocity, team) {
+	constructor(pos, rotation, level, velocity, id, isGuest, team, image) {
 		super(pos, rotation, velocity, level);
 		//this.id = socket.id;
-
+		if (!this.id) {
+			this.id = id;
+		}
 		this.wins = 0;
 		this.kills = 0;
 		this.points = 0;
 		this.zPos = 5;
+		this.isGuest = isGuest;
 		this.team = team;
 		this.holdingBall = false;	// This is to track whether player currently has a ball
 		this.holdingBallChanged = false;
-		//this.image = image;
+		this.image = image;
 	}
 	
 	addToPage() { // Consider moving this to client
