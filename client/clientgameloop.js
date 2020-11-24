@@ -53,13 +53,9 @@ function stopLoop() {
 
 // Loop for handling server communications
 
-function serverLoop() {
+function serverLoop(level) {
 	//socket.emit('playerstate', socket.player.toJSON());
-	if (socket.player.pos.changed) {
-		socket.player.pos.changed = false;
-		socket.emit('playerposupdate', {'id' : socket.player.id, 'x' : socket.player.pos.x, 'y' : socket.player.pos.y, 'rotation' : socket.player.rotation});		//Might need to add in holdingBall and holdingBallChanged
-	}
-	
+	socket.emit('playerposupdate', {'id' : socket.player.id, 'x' : socket.player.pos.x, 'y' : socket.player.pos.y, 'rotation' : socket.player.rotation, "isGuest" : socket.player.isGuest, "team" : socket.player.team, "levelId" : level.id});		//Might need to add in holdingBall and holdingBallChanged
 }
 
 var serverLoopf = () => {serverLoop(currentLevel)};
