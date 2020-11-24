@@ -115,8 +115,11 @@ window.addEventListener("load", () => {
 		var isGuest = data.isGuest;
 		var team = data.team;
 		
-		
-		if (obj != null) {
+		if (obj == null) {
+			obj = new Player(new Position(x, y), rot, currentLevel, new Vector(0, 0), data.id, isGuest, team);
+			currentLevel.addObject(obj);
+			
+		} else {
 			obj.pos.x = x;
 			obj.pos.y = y;
 			if (rot != null)		// This fixed rotation reset
