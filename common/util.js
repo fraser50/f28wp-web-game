@@ -1,4 +1,4 @@
-DISABLE_VALIDATION = true; // This disables all username and password policies, useful for easy testing
+DISABLE_VALIDATION = false; // This disables all username and password policies, useful for easy testing
 
 function toRadians(angle) {
 	return angle * (Math.PI / 180);

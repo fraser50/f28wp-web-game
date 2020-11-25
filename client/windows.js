@@ -2,11 +2,11 @@ function generateLoginWindow(socket) {
 	var loginWindow = new UiWindow("logsignform", 0, 0, "cc", 300, 355);
 
 	loginWindow.addObject(new UiLabel("", 20, 20, "tl", "Please enter your username", "16px sans-serif"));
-	var loginUserBox = new UiTextInput("loguserinput", 20, 45, "tl", 260, 40, "Username");
+	var loginUserBox = new UiTextInput("loguserinput", 20, 45, "tl", 260, 40, "Username - 2-16 chars long");
 	loginWindow.addObject(loginUserBox);
 	
 	loginWindow.addObject(new UiLabel("", 20, 95, "tl", "Please enter your password", "16px sans-serif"));
-	var loginPassBox = new UiTextInput("passinput", 20, 120, "tl", 260, 40, "Password", "password");
+	var loginPassBox = new UiTextInput("passinput", 20, 120, "tl", 260, 40, "Password - 6-30 chars long with symbols", "password");
 	loginWindow.addObject(loginPassBox);
 
 	var loginButton = new UiButton("loginButton", 0, 205, "tc", 260, 60, "Login", "20px sans-serif", () => {
@@ -27,11 +27,11 @@ function generateLoginWindow(socket) {
 			return;
 		}
 		if (!isValidUsername(loginUserBox.getValue())) {
-			alert("Invalid username");
+			alert("Invalid username - must be between 2-16 characters long");
 			return;
 		}
 		if (!isValidPassword(loginPassBox.getValue())) {
-			alert("Invalid password");
+			alert("Invalid password - must be between 6-30 characters long with at least one symbol");
 			return;
 		}
 		userDetails.name = loginUserBox.getValue();
