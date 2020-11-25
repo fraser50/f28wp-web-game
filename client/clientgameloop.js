@@ -42,6 +42,8 @@ function loop(level) {
 		window.requestAnimationFrame(() => {loop(level)}); // Make it kind of recursive
 }
 
+// Starts and stops client side game loops
+
 function startLoop(level) {
 	loopShouldRun = true;
 	window.requestAnimationFrame(() => {loop(level)});
@@ -54,9 +56,11 @@ function stopLoop() {
 // Loop for handling server communications
 
 function serverLoop(level) {
-	//socket.emit('playerstate', socket.player.toJSON());
+	//sends necessary player info to server
 	socket.emit('playerposupdate', {'id' : socket.player.id, 'x' : socket.player.pos.x, 'y' : socket.player.pos.y, 'rotation' : socket.player.rotation, "isGuest" : socket.player.isGuest, "team" : socket.player.team, "levelId" : level.id});		//Might need to add in holdingBall and holdingBallChanged
 }
+
+// Starts and stops server side loop in relation to client
 
 var serverLoopf = () => {serverLoop(currentLevel)};
 
@@ -67,6 +71,8 @@ function startServerLoop(level) {
 function stopServerLoop(level) {
 	clearInterval(serverLoopf);
 }
+
+// When called it sends server request for client to be assigned to a team - updates client info/position on return
 
 function assignTeam(level) {	//This takes in level and sends the player of for team assign
 	if (socket.player.team == undefined) {	//Makes sure player doesn't already have a team
@@ -100,6 +106,9 @@ window.addEventListener("load", () => {
 			console.log(currentLevel.gameobjects);
 		}
 	});
+	
+	// Currently in the middle of changing from one pos update function to another - should sort this if we have time
+	// Looks for this clients instance of another player, updates positions with given values
 	
 	socket.on('posupdate_old', (data) => { //TODO: Remove this later, see TODOS in server.js for more info
 		//if (isGuest) data.id = "guest_"+data.id;
@@ -144,6 +153,8 @@ window.addEventListener("load", () => {
 		}
 	});
 
+	// This handles new objects being sent out to the client by adding them to this instance of the level
+	
 	socket.on('newobject', (data) => {
 		console.log('newobject handled');
 		var objid = data.id;
@@ -158,18 +169,22 @@ window.addEventListener("load", () => {
 		}
 	});
 	
+	
+	// This is normally called at the end of the match, so the clients position can be reset to spawn for the next match
+	
 	socket.on('resetPos', () => {
 		socket.player.pos.x = socket.player.spawnpos.x;
 		socket.player.pos.y = socket.player.spawnpos.y;
 	});
 	
-	socket.on('playerScored', (data) => {
+	// Updates teh team scores for this instance of the level
 	
+	socket.on('playerScored', (data) => {
 		currentLevel.redteamscore = data.redteamscore;
 		currentLevel.blueteamscore = data.blueteamscore;
-		
-		console.log("blue team score:   " + currentLevel.blueteamscore)
 	});
+	
+	// This will be called when the match ends, allows the client to update their session stats if they are on the winning team
 	
 	socket.on('winningTeam', (data) => {
 		if (socket.player.team == data.winningTeam) {
@@ -177,10 +192,14 @@ window.addEventListener("load", () => {
 		}
 	});
 	
+	// Resets team scores on client instance of level once match ends
+	
 	socket.on('teamScoreReset', () => {
 		currentLevel.redteamscore = 0;
 		currentLevel.blueteamscore = 0;
 	});
+	
+	// Resets this clients match stats once the match ends - they will already of been sent to the database for updating if client is logged in
 	
 	socket.on('resetPlayerStats', () => {
 		socket.player.points = 0;
