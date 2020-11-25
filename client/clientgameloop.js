@@ -169,11 +169,6 @@ window.addEventListener("load", () => {
 		}
 	});
 	
-	socket.on('spawnBall', (data) => {
-		currentLevel.addObject(new gameobjects.Point(new util.Position(data.posX, data.posY), 0, currentLevel));
-	});
-	
-	
 	// This is normally called at the end of the match, so the clients position can be reset to spawn for the next match
 	
 	socket.on('resetPos', () => {
@@ -213,8 +208,10 @@ window.addEventListener("load", () => {
 		
 	socket.on('playerChangeImg', (data) => {		// This is for updating player images when another player has their image changed
 		var obj = currentLevel.findObject(data.playerId);	// Get your instance of this player
+		
 		if (obj != null) 
 			currentLevel.updatePlayerImg(obj, data.image);	//Should change this	//update this client for the changed player's image
+		console.log(obj);
 	});
 
 	socket.on('ballstatechange', (data) => {

@@ -789,7 +789,14 @@ function startTimer(level, sec=61) {
 			clearInterval(timerInterval);
 			
 			if (level.playercount==0) {	// Checks to see if level is empty at end of match, if it is exit this so not to restart the timer
-				printLog("Level " + level.id + " is empty. Deleting.")
+				if (level.id == 0) {
+					printLog("Level 0 is empty. Putting on stand by.")
+					level.started = false;
+					return;
+				} else {
+					printLog("Level " + level.id + " is empty. Deleting.")
+				}
+								
 				delete levels[level.id];
 				return;
 			}
