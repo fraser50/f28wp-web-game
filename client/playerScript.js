@@ -13,17 +13,19 @@ let keyStates = {
 	shift: {codes: [16]}
 }
 
-function checkLeaderboard() {		//Would've used tab, but would change focus to other objs. Might want to change how this works for better performance.
-//Need to add in blocks like if user is focused on chat or there is login/stats window up
+// This function is called on a loop, only really activates if shift is pressed. Purpose is to update leaderboard with team scores
+// Need to add actual users to leaderboard - might not have time
+
+function checkLeaderboard() {		//Would've used tab, but would change focus to other objs.
 	var leaderboard = document.getElementById("leaderboardWindow");
-	if (keyStates.shift.pressed && leaderboard.style.display == "none") {
-		socket.emit('getTeamScores', {levelId : currentLevel.id});
-		socket.on('returnTeamScores', (data) => {
+	if (keyStates.shift.pressed && leaderboard.style.display == "none") {	// Checks to see if shift is pressed and the window is not already opened
+		socket.emit('getTeamScores', {levelId : currentLevel.id});	// Asks server to send team scores
+		socket.on('returnTeamScores', (data) => {		// On return updates the team score labels
 			document.getElementById("redTeamScore").innerHTML = data.redTeamScore;		//Would prefer to use the UiLabel updateValue function but this won't work as the labels are not defined here
 			document.getElementById("blueTeamScore").innerHTML = data.blueTeamScore;
 		});
-		leaderboard.style.display = "block";
-	} else if (!(keyStates.shift.pressed) && leaderboard.style.display == "block"){
+		leaderboard.style.display = "block";	// Sets the window visible
+	} else if (!(keyStates.shift.pressed) && leaderboard.style.display == "block"){	 // If shift is released and the window is open - close it
 		leaderboard.style.display = "none";
 	}
 }
@@ -108,7 +110,7 @@ function doMovement(player, lastFrametime) {
 			player.points++;
 			currentLevel.redteamscore++; // Should try to send this value out to server after it is increased, otherwise all other clients view it as 0
 		}
-		if (tile.isBluebase && player.team == 'blue') {	//Change this back after testing 
+		if (tile.isBluebase && player.team == 'blue') {
 			console.log("adding point for blue");
 			var image = "player_up.png";		
 			player.updatePlayerImg(image);	//Updates local player image

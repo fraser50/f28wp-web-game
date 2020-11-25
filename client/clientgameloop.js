@@ -169,6 +169,10 @@ window.addEventListener("load", () => {
 		}
 	});
 	
+	socket.on('spawnBall', (data) => {
+		currentLevel.addObject(new gameobjects.Point(new util.Position(data.posX, data.posY), 0, currentLevel));
+	});
+	
 	
 	// This is normally called at the end of the match, so the clients position can be reset to spawn for the next match
 	

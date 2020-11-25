@@ -235,8 +235,8 @@ io.on('connection', (socket) => {
 		} else {
 			var id = levelCount
 			setNewLevel(levelCount);
+			c.levelId = levelCount;
 			levelCount++;
-			c.levelId = id;
 		}
 		levels[id].clientlist.push(c);
 		socket.emit('returnLevelId', {"id" : id});
@@ -254,7 +254,7 @@ io.on('connection', (socket) => {
 		var level = levels[data.level];		//Takes in level id as sending full level is unnecessarily large 
 		socket.cli.levelId = data.level;
 
-		sendObjects(level.gameobjects, [socket.cli.socket]);
+		sendObjects(level.gameobjects, [socket.cli]);
 
 		var player = JSON.parse(data.player);	//Transform player back into JSON
 
@@ -313,7 +313,7 @@ io.on('connection', (socket) => {
 //		}
 
 		playerScoring(data.playerId, data.playerTeam, data.levelId);
-		socket.cli.controlledobject.holdingBall = false;
+		if(socket.cli.controlledobject) {socket.cli.controlledobject.holdingBall = false};
 	});
 	
 	socket.on('getTeamScores', (data) => {
@@ -381,8 +381,7 @@ function sendObjects(objlist, clients) {
 		var jobj = objectparsers.objToJSON(obj);
 
 		for (var p in clients) {
-			var pl = clientlist[p];		// might need a level. in there but should be getting sent the level clientlist from the function below
-
+			var pl = clients[p];		// might need a level. in there but should be getting sent the level clientlist from the function below
 			if (pl.controlledobject === obj || (obj instanceof gameobjects.Player)) {
 				continue;
 			}
@@ -895,6 +894,9 @@ function spawnBalls(levelId) {
 	for (var i in level.pointspawnpos) {
 		var newBall = new gameobjects.Point(new util.Position(level.pointspawnpos[i][0], level.pointspawnpos[i][1]), 0, level)
 		level.addObject(newBall);
+//		for (i in level.clientlist) {
+//			level.clientlist[i].socket.emit('spawnBall', {posX : level.pointspawnpos[i][0], posY : level.pointspawnpos[i][1]});
+//		}
 	}
 
 }
