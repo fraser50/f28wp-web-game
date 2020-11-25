@@ -93,6 +93,7 @@ class GameLevel {
 			if (obj.isGuest && ((''+obj.id).substring(0,6) != 'guest_')) {
 				obj.id = 'guest_'+obj.id;
 			}
+			console.log(obj);
 			this.gameobjects.push(obj);
 			this.newobjects.push(obj);
 
@@ -111,8 +112,7 @@ class GameLevel {
 	}
 	
 	updatePlayerImg(obj, image) {	// Remove player image when it has to be updated and add another of the same instance in but with the new image file name
-		var tempObj = obj;
-		tempObj.image = image;
+		var tempObj = new gameobjects.Player(obj.pos, obj.rotation, obj.level, obj.velocity, obj.id, obj.team, obj.isGuest, image);
 		this.removeObject(obj);
 		this.addObject(tempObj);
 	}

@@ -284,7 +284,7 @@ io.on('connection', (socket) => {
 		var level = levels[data.levelId];
 		for (k in level.clientlist) {
 			rClient = level.clientlist[k];
-			if (rClient.controlledobject && rClient.controlledobject.name == data.playerId) {continue;};
+			if (rClient.controlledobject && rClient.controlledobject.id == data.playerId) {continue;};
 			rClient.socket.emit('playerChangeImg', {"playerId": data.playerId, "image" : data.image}); 
 		}
 		socket.emit()

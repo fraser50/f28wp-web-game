@@ -80,7 +80,7 @@ class Player extends GameObject {
 	
 	updatePlayerImg(image) {
 		var filepath = 'client/assets/images/'
-		this.elem.src = filepath + image;
+		if (this.elem) {this.elem.src = filepath + image};
 		this.image = image;	// Maybe have to remove this if we struggle changing player image multiple times
 	}
 
