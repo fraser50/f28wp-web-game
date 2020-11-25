@@ -63,6 +63,7 @@ function render(level, skip = null) {
 
 		for (let j=0; j<elementbuilders.length; j++) {
 			if (newobj instanceof elementbuilders[j][0]) {
+				console.log(newobj);
 				newelement = elementbuilders[j][1](newobj, newobj.isGuest, newobj.image);
 				setElementPosition(newelement, newobj.pos);
 				objects.appendChild(newelement);
