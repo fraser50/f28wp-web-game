@@ -788,6 +788,16 @@ function startTimer(level, sec=61) {
 		if (sec==0) {
 			clearInterval(timerInterval);
 			
+			for (i in level.gameobjects) {
+				if (level.gameobjects[i] instanceof gameobjects.Point) {
+					for (c in level.clientlist) {
+						level.clientlist[c].socket.emit('removeplayer', {id: level.gameobjects[i]})		//This removes the balls from the players level.gameobjects
+					}
+					level.gameobjects[i].remove();
+				}
+			} 
+			sec = 61;			
+			
 			if (level.playercount==0) {	// Checks to see if level is empty at end of match, if it is exit this so not to restart the timer
 				if (level.id == 0) {
 					printLog("Level 0 is empty. Putting on stand by.")
@@ -801,15 +811,7 @@ function startTimer(level, sec=61) {
 				return;
 			}
 				
-			for (i in level.gameobjects) {
-				if (level.gameobjects[i] instanceof gameobjects.Point) {
-					for (c in level.clientlist) {
-						level.clientlist[c].socket.emit('removeplayer', {id: level.gameobjects[i]})		//This removes the balls from the players level.gameobjects
-					}
-					level.gameobjects[i].remove();
-				}
-			} 
-			sec = 61;
+
 			if (level.redteamscore > level.blueteamscore) {
 				winner = "red";
 				winnerMessage = "Red Team Wins";
