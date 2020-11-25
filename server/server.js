@@ -311,7 +311,9 @@ io.on('connection', (socket) => {
 //				level.clientlist[i].controlledobject.points++;
 //			}
 //		}
+
 		playerScoring(data.playerId, data.playerTeam, data.levelId);
+		socket.cli.controlledobject.holdingBall = false;
 	});
 	
 	socket.on('getTeamScores', (data) => {
