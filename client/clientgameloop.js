@@ -18,12 +18,16 @@ function loop(level) {
 	fps = 1000/ frametime;
 
 	// Update UI
-	frametimeLabel.updateValue(`frametime: ${frametime}ms`);
-	fpsLabel.updateValue("fps: " + roundNumber(fps, 2));
-	frametimeGraph.addBar(frametime/100);
-	posLabel.updateValue(`Pos: X: ${roundNumber(socket.player.pos.x, 4)}, Y: ${roundNumber(socket.player.pos.y, 4)}, CX: ${Math.floor(socket.player.pos.x/chunkSize)}, CY: ${Math.floor(socket.player.pos.y/chunkSize)}`);
-	velLabel.updateValue(`Vel: H: ${roundNumber(playerVelXY.x, 4)}, V: ${roundNumber(playerVelXY.y, 4)}, Total: ${roundNumber(Math.sqrt(playerVelXY.x**2 + playerVelXY.y**2), 4)}`);
-	pingLabel.updateValue(`ping: ${ping}ms`);
+
+	if (!DISABLE_PERF) {
+		frametimeLabel.updateValue(`frametime: ${frametime}ms`);
+		fpsLabel.updateValue("fps: " + roundNumber(fps, 2));
+		frametimeGraph.addBar(frametime/100);
+		posLabel.updateValue(`Pos: X: ${roundNumber(socket.player.pos.x, 4)}, Y: ${roundNumber(socket.player.pos.y, 4)}, CX: ${Math.floor(socket.player.pos.x/chunkSize)}, CY: ${Math.floor(socket.player.pos.y/chunkSize)}`);
+		velLabel.updateValue(`Vel: H: ${roundNumber(playerVelXY.x, 4)}, V: ${roundNumber(playerVelXY.y, 4)}, Total: ${roundNumber(Math.sqrt(playerVelXY.x**2 + playerVelXY.y**2), 4)}`);
+		pingLabel.updateValue(`ping: ${ping}ms`);
+	}
+	
 
 	checkLeaderboard();
 	
