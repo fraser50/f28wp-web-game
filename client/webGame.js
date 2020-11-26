@@ -42,7 +42,7 @@ var posLabel;
 var velLabel;
 var pingLabel;
 
-var DISABLE_PERF = true; // Allows for disabling performance monitor ui
+var DISABLE_PERF = false; // Allows for disabling performance monitor ui
 
 // Add the elements to the page when it finishes loading
 window.addEventListener("load", () => {
