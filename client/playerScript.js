@@ -1,3 +1,8 @@
+/*
+Copyright (c) 2020 fraser50, mta2k00, blast1113, dr62, frg2
+This work is licensed under the MIT license which can be found in the LICENSE file in the root of the project.
+*/
+
 // Constants for how the player should move TODO: Make these have a more reasonable range
 let playerVelMax = 0.004;
 let playerMinVel = 1e-8;

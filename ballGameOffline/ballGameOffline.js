@@ -1,3 +1,8 @@
+/*
+Copyright (c) 2020 fraser50, mta2k00, blast1113, dr62, frg2
+This work is licensed under the MIT license which can be found in the LICENSE file in the root of the project.
+*/
+
 class GameObject {
     constructor(xPos, yPos) {
         this.xPos = xPos;

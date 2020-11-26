@@ -1,3 +1,8 @@
+/*
+Copyright (c) 2020 fraser50, mta2k00, blast1113, dr62, frg2
+This work is licensed under the MIT license which can be found in the LICENSE file in the root of the project.
+*/
+
 var util_tmp = require('../common/util.js');
 if (util_tmp != null) util = util_tmp;
 
@@ -256,4 +261,9 @@ function clientExports() {
 	level.GameLevel = GameLevel;
 }
 
-serverExports();
+if (typeof window != "undefined") {
+	clientExports();
+
+} else{
+	serverExports();
+}
