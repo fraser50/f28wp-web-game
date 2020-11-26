@@ -256,4 +256,9 @@ function clientExports() {
 	util.getTileAt = getTileAt;
 }
 
-serverExports();
+if (typeof window != "undefined") {
+	clientExports();
+
+} else {
+	serverExports();
+}

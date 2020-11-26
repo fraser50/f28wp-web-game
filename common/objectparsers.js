@@ -1,27 +1,5 @@
 var util_tmp = require('../common/util.js');
-util = {};
-
 if (util_tmp != null) util = util_tmp;
-
-if (typeof window != "undefined") {
-    util.toRadians = toRadians;
-	util.toDegrees = toDegrees;
-	util.Position = Position;
-	util.Vector = Vector;
-	util.genChunkId = genChunkId;
-	util.fromChunkId = fromChunkId;
-	util.genTileImageId = genTileImageId;
-	util.getBackgroundColorRGBA = getBackgroundColorRGBA;
-	util.setBackgroundColorRGBA = setBackgroundColorRGBA;
-	util.genGuestName = genGuestName;
-	util.isValidUsername = isValidUsername;
-	util.isValidPassword = isValidPassword;
-	util.removeCommentsFromJSON = removeCommentsFromJSON;
-	util.roundNumber = roundNumber;
-	util.getTileAt = getTileAt;
-}
-
-gameobjects = {};
 
 var gameobjects_tmp = require('../common/gameobjects.js');
 if (gameobjects_tmp != null) gameobjects = gameobjects_tmp;
@@ -79,4 +57,9 @@ function serverExports() {
     exports.objFromJSON = objFromJSON;
 }
 
-serverExports();
+if (typeof window != "undefined") {
+	clientExports();
+
+} else{
+	serverExports();
+}

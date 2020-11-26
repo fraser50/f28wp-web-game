@@ -148,5 +148,9 @@ function clientExports() {
 	gameobjects.BallSpawnPoint = BallSpawnPoint;
 }
 
-serverExports();
-clientExports();
+if (typeof window != "undefined") {
+	clientExports();
+
+} else{
+	serverExports();
+}

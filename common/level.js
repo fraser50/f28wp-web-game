@@ -256,4 +256,9 @@ function clientExports() {
 	level.GameLevel = GameLevel;
 }
 
-serverExports();
+if (typeof window != "undefined") {
+	clientExports();
+
+} else{
+	serverExports();
+}
