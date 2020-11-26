@@ -1,3 +1,8 @@
+/*
+Copyright (c) 2020 fraser50, mta2k00, blast1113, dr62, frg2
+This work is licensed under the MIT license which can be found in the LICENSE file in the root of the project.
+*/
+
 elementbuilders = [ // A new function will be placed here for creating the
      [Player, function(obj, isGuest, image) {	// Takes image filename for when it has to be updated
      	var e = document.createElement("img");
