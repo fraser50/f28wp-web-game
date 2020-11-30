@@ -11,7 +11,8 @@ Please complete the following steps to get the game running
 * Run the command "npm install"
 * cd server and run "node server.js"
 
-You should be the be able to access the game through the url "http://localhost:2000"
+You should be the be able to access the game through the url "http://localhost:2000".
+
 Alternatively go to https://blast1113.cc/f28wp-web-game for a live version.
 
 # How To Play
